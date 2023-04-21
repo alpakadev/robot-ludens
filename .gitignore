@@ -9,6 +9,16 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
+/[Uu]ser[Ss]ettings/
+/[Uu][Ii][Ee]lements[Ss]chema/
+
+# Exclude Plugin Reachy-Assets (making version-change easier)
+/Assets/ReachySimulator/
+/Assets/ReachySimulator.meta
+
+# Exclude Plugin the grpc-plugin (Excessive in size would bloat up this project)
+/Assets/Plugins/
+/Assets/Plugins.meta
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
