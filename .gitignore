@@ -9,9 +9,19 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
+/[Uu]ser[Ss]ettings/
+/[Uu][Ii][Ee]lements[Ss]chema/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
+
+# Exclude Plugin Reachy-Assets (making version-change easier)
+/[Aa]ssets/[Rr]eachy[Ss]imulator/
+/[Aa]ssets/[Rr]eachy[Ss]imulator.meta
+
+# Exclude Plugin the grpc-plugin (Excessive in size would bloat up this project)
+/[Aa]ssets/[Pp]lugins/
+/[Aa]ssets/[Pp]lugins.meta
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
