@@ -13,12 +13,12 @@
 /[Uu][Ii][Ee]lements[Ss]chema/
 
 # Exclude Plugin Reachy-Assets (making version-change easier)
-/Assets/ReachySimulator/
-/Assets/ReachySimulator.meta
+/[Aa]ssets/[Rr]eachy[Ss]imulator/
+/[Aa]ssets/[Rr]eachy[Ss]imulator.meta
 
 # Exclude Plugin the grpc-plugin (Excessive in size would bloat up this project)
-/Assets/Plugins/
-/Assets/Plugins.meta
+/[Aa]ssets/[Pp]lugins/
+/[Aa]ssets/[Pp]lugins.meta
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
