@@ -2,6 +2,8 @@ import constants
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+import numpy as np
+
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
 # Older Docs (Content may be depricated):
@@ -31,6 +33,7 @@ POS_BASE = {
     reachy.r_arm.r_wrist_roll: 0,
     reachy.r_arm.r_gripper: 0,
 }
+POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
 
 POS_ABOVE_BOARD = {
     reachy.r_arm.r_shoulder_pitch: 0,
@@ -47,6 +50,7 @@ POS_ABOVE_BOARD = {
 class RobotMovement:
     def __init__(self, reachy):
         self.reachy = reachy
+        self._move_arm(POS_BASE_COORDINATES)
 
     def move_object(self, pos_from, pos_to):
         """
@@ -57,16 +61,28 @@ class RobotMovement:
         """
 
         # 1. Moves arm in front of the Object
+        pos_from[0] -= constants.DELTA_GRIP_OBJ
+        self._move_arm(pos_from)
+        pos_from[0] += constants.DELTA_GRIP_OBJ
         # 2. Opens Hand
+        self._grip_open()
         # 3. Moves Hand/arm to the object
+        self._move_arm(pos_from)
         # 4. closes Hand
+        self._grip_close()
         # 5. Moves arm above Board
+        ### self._move_arm() ##TODO: How to Handle POS_ABOVE_BOARD?
         # 6. moves arm to pos_to
+        self._move_arm(pos_to)
         # 7. opens Hand
+        self._grip_open()
         # 8. Moves arm up
+        pos_to[1] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to)
+        pos_to[1] -= constants.DELTA_ABOVE_OBJ
         # 9. Moves arm back to Base Position
+        ### self._move_arm() ##TODO: How to Handle POS_BASE?
 
-        self._move_arm()
         pass
 
     def _move_arm(self, pos_to):
@@ -74,18 +90,31 @@ class RobotMovement:
         Moving arm to Position
 
         """
+        #TODO: Moving
+        A = np.array([
+            [0, 0, -1, pos_to[0]],
+            [0, 1, 0, pos_to[1]],  
+            [1, 0, 0, pos_to[2]],
+            [0, 0, 0, 1],  
+        ])
+        joint_pos_A = reachy.r_arm.inverse_kinematics(A)
+        reachy.turn_on('r_arm')
+        goto({joint: pos for joint,pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=1.0)
+        reachy.turn_off('r_arm')
         pass
     
     def _grip_open(self):
         """
-        opens grip until is_holding is false
+        opens grip completly
         """
+        #TODO: Open completly
         pass
 
     def _grip_close(self):
         """
         closes grip until is_holding is true
         """
+        #TODO: CLOSE until _is_holding
         pass
 
     def _is_holding(self):
@@ -121,4 +150,7 @@ class RobotMovement:
 
 robot = RobotMovement(reachy)
 
+pos_cylinder = [-0.471, -0.3, 0.35]
+pos_goal = [-0.4,-0.3,0.018]
 
+robot.move_object(pos_cylinder, pos_goal)
