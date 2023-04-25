@@ -17,11 +17,15 @@ Accessed by '__grip_close()' and '_grip_open()'
 -> Closing until is_holding() == True to not put to much pressure on object
 TODO: There is definitly a more elegant Solution :)
 """
-gripper_number = 0
-POS_GRIPPER = {
-    reachy.r_arm.r_gripper: gripper_number,
+POS_GRIPPER_OPEN = {
+    reachy.r_arm.r_gripper: -60,
 }
 
+POS_GRIPPER_CLOSED = {
+    reachy.r_arm.r_gripper: 0,
+}
+
+"""
 # TODO: Somehow putting these into constants.py - Problem beeing 'reachy'
 POS_BASE = {
     reachy.r_arm.r_shoulder_pitch: 0,
@@ -33,17 +37,11 @@ POS_BASE = {
     reachy.r_arm.r_wrist_roll: 0,
     reachy.r_arm.r_gripper: 0,
 }
-POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
+"""
 
-POS_ABOVE_BOARD = {
-    reachy.r_arm.r_shoulder_pitch: 0,
-    reachy.r_arm.r_shoulder_roll: 0,
-    reachy.r_arm.r_arm_yaw: 0,
-    reachy.r_arm.r_elbow_pitch: -90,
-    reachy.r_arm.r_forearm_yaw: 0,
-    reachy.r_arm.r_wrist_pitch: 0,
-    reachy.r_arm.r_wrist_roll: 0,
-}
+POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
+POS_ABOVE_BOARD_COODINATES = [0.36, 0, 0]
+
 
 
 
@@ -59,11 +57,16 @@ class RobotMovement:
         :param pos_from (array): Coordinates where the Object to move is
         :param pos_to (array): Coordinates on where to move the object
         """
-
+        # Tiefe == x (nach vorne), breite == z , Hoehe ==y
+        pos_from[1] += constants.DELTA_HAND_WIDTH # To prevent knocking cylinder on 3.
+        # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
+        
         # 1. Moves arm in front of the Object
         pos_from[0] -= constants.DELTA_GRIP_OBJ
         self._move_arm(pos_from)
         pos_from[0] += constants.DELTA_GRIP_OBJ
+        # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
+
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
@@ -71,17 +74,18 @@ class RobotMovement:
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above Board
-        ### self._move_arm() ##TODO: How to Handle POS_ABOVE_BOARD?
+        self._move_arm(POS_ABOVE_BOARD_COODINATES) ##TODO: How to Handle POS_ABOVE_BOARD?
         # 6. moves arm to pos_to
         self._move_arm(pos_to)
         # 7. opens Hand
         self._grip_open()
         # 8. Moves arm up
-        pos_to[1] += constants.DELTA_ABOVE_OBJ
+        pos_to[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_to)
-        pos_to[1] -= constants.DELTA_ABOVE_OBJ
+        pos_to[2] -= constants.DELTA_ABOVE_OBJ
         # 9. Moves arm back to Base Position
-        ### self._move_arm() ##TODO: How to Handle POS_BASE?
+        self._grip_close()
+        self._move_arm(POS_BASE_COORDINATES) ##TODO: How to Handle POS_BASE?
 
         pass
 
@@ -90,6 +94,7 @@ class RobotMovement:
         Moving arm to Position
 
         """
+        print(pos_to)
         #TODO: Moving
         A = np.array([
             [0, 0, -1, pos_to[0]],
@@ -99,7 +104,7 @@ class RobotMovement:
         ])
         joint_pos_A = reachy.r_arm.inverse_kinematics(A)
         reachy.turn_on('r_arm')
-        goto({joint: pos for joint,pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=1.0)
+        goto({joint: pos for joint,pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
         reachy.turn_off('r_arm')
         pass
     
@@ -108,6 +113,9 @@ class RobotMovement:
         opens grip completly
         """
         #TODO: Open completly
+        reachy.turn_on("r_arm")
+        goto(goal_positions=POS_GRIPPER_OPEN,duration=1.0,interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        reachy.turn_off("r_arm")
         pass
 
     def _grip_close(self):
@@ -115,6 +123,9 @@ class RobotMovement:
         closes grip until is_holding is true
         """
         #TODO: CLOSE until _is_holding
+        reachy.turn_on("r_arm")
+        goto(goal_positions=POS_GRIPPER_CLOSED,duration=1.0,interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        reachy.turn_off("r_arm")
         pass
 
     def _is_holding(self):
@@ -150,7 +161,8 @@ class RobotMovement:
 
 robot = RobotMovement(reachy)
 
-pos_cylinder = [-0.471, -0.3, 0.35]
-pos_goal = [-0.4,-0.3,0.018]
+# Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
+pos_cylinder = [0.471, -0.35, -0.30] 
+pos_goal = [0.4,0,-0.30]
 
 robot.move_object(pos_cylinder, pos_goal)
