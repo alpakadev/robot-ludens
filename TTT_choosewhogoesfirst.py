@@ -2,6 +2,8 @@ import random
 
 board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 game_closed = False
+reachy_score = 0
+player_score = 0
 
 # Funktion: Spielbrett darstellen
 def print_board():
@@ -41,14 +43,18 @@ def combovalue(k):
 # prüft für jede Gewinnkombination, ob ein Sieg vorliegt
 def check_state():
     global game_closed
+    global reachy_score
+    global player_score
 
     for combo in range(len(wincombinations)):
         if combovalue(combo) == 3:
             print("Reachy won!")
             game_closed = True
+            reachy_score = reachy_score + 1
         elif combovalue(combo) == -3:
             print("You won!")
             game_closed = True
+            player_score = player_score + 1
 
 #   for i in range(0, 3):
 #       if (board[i][0] + board[i][1] + board[i][2]) == 3:
@@ -226,6 +232,7 @@ def player_first():
         if make_user_move(move) and not game_closed:
             make_computer_move()
         print_board()
+    print("current score: Reachy ({}) : Player ({})".format(reachy_score,player_score))
 
 def reachy_first():
     make_random_move()
@@ -237,15 +244,19 @@ def reachy_first():
         if make_user_move(move) and not game_closed:
             make_computer_move()
         print_board()
+    print("current score: Reachy ({}) : Player ({})".format(reachy_score,player_score))
 
-exit_game = 1
-while exit_game == 1:
+exit_game = "1"
+while exit_game == "1":
+    board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    game_closed = False
     first = input ("who goes first? \n 1 for Reachy, 2 for Player: ")
     if first == "1":
         reachy_first()
-        exit_game = input("Press any button to exit")
+        exit_game = input("Press 1 to play again, Press any button to exit: ")
     elif first == "2":
         player_first()
-        exit_game = input("Press any button to exit")
+        exit_game = input("Press 1 to play again, Press any button to exit: ")
     else:
         print("input invalid")
+    
