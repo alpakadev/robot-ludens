@@ -9,7 +9,7 @@ import time
 # This is a test file for programming linearly
 
 # connecting to reachy
-reachy = ReachySDK(host=constants.HOSTADRESS)
+reachy = ReachySDK(host=constants.HOSTADDRESS)
 
 # TODO: This should be in `constants.py`; Problem: Reachy is not yet defined there.
 POS_BASE2 = {
