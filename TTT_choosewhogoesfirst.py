@@ -56,32 +56,6 @@ def check_state():
             game_closed = True
             player_score = player_score + 1
 
-#   for i in range(0, 3):
-#       if (board[i][0] + board[i][1] + board[i][2]) == 3:
-#           game_closed = True
-#          print("Reachy won!")
-#       elif (board[i][0] + board[i][1] + board[i][2]) == -3:
-#           game_closed = True
-#           print("You won!")
-#       elif (board[0][i] + board[1][i] + board[2][i]) == 3:
-#           game_closed = True
-#           print("Reachy won!")
-#       elif (board[0][i] + board[1][i] + board[2][i]) == -3:
-#           game_closed = True
-#           print("You won!")
-#   if board[0][0] + board[1][1] + board[2][2] == 3:
-#       game_closed = True
-#       print("Reachy won!")
-#   elif board[0][0] + board[1][1] + board[2][2] == -3:
-#       game_closed = True
-#       print("You won!")
-#   elif board[0][2] + board[1][1] + board[2][0] == 3:
-#       game_closed = True
-#       print("Reachy won!")
-#   elif board[0][2] + board[1][1] + board[2][0] == -3:
-#       game_closed = True
-#       print("You won!")
-
     found_space = False
     for row in board:
         for cell in row:
@@ -106,22 +80,6 @@ def check_risk():
             for i in range(3):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
                     return wincombinations[combo][i][0], wincombinations[combo][i][1]
-
-#    for i in range(0, 3):
-#        if (board[i][0] + board[i][1] + board[i][2]) == -2:
-#            return i, board[i].index(0)
-#        elif (board[0][i] + board[1][i] + board[2][i]) == -2:
-#            for j in range(0, 3):
-#                if board[j][i] == 0:
-#                    return j, i
-#    if board[0][0] + board[1][1] + board[2][2] == -2:
-#        for k in range(0, 3):
-#            if board[k][k] == 0:
-#                return k, k
-#    elif board[0][2] + board[1][1] + board[2][0] == -2:
-#        for k in range(0, 3):
-#            if board[k][2-k] == 0:
-#                return k, 2-k
 
 def make_winning_move():
     coordinates = check_chance()
@@ -224,27 +182,20 @@ def make_user_move(coordinates):
         return True
 
 def player_first():
-    print_board()
+    reachy_moveCounter = 0
+    player_moveCounter = 0
     move = ''
     while move != "stop" and not game_closed:
         move = input("Chose the coordinates for your next move (i.g '1B'): ")
         # validate coordinate
         if make_user_move(move) and not game_closed:
+            player_moveCounter = player_moveCounter + 1
             make_computer_move()
+            reachy_moveCounter = reachy_moveCounter + 1 
+        print("reachy moved {} times".format(reachy_moveCounter))
         print_board()
     print("current score: Reachy ({}) : Player ({})".format(reachy_score,player_score))
 
-def reachy_first():
-    make_random_move()
-    print_board()
-    move = ''
-    while move != "stop" and not game_closed:
-        move = input("Chose the coordinates for your next move (i.g '1B'): ")
-        # validate coordinate
-        if make_user_move(move) and not game_closed:
-            make_computer_move()
-        print_board()
-    print("current score: Reachy ({}) : Player ({})".format(reachy_score,player_score))
 
 exit_game = "1"
 while exit_game == "1":
@@ -252,9 +203,12 @@ while exit_game == "1":
     game_closed = False
     first = input ("who goes first? \n 1 for Reachy, 2 for Player: ")
     if first == "1":
-        reachy_first()
+        make_random_move()
+        print_board()
+        player_first()
         exit_game = input("Press 1 to play again, Press any button to exit: ")
     elif first == "2":
+        print_board()
         player_first()
         exit_game = input("Press 1 to play again, Press any button to exit: ")
     else:
