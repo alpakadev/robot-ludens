@@ -52,6 +52,7 @@ def check_state():
         if combovalue(combo) == 3:
             print("Reachy won!")
             game_closed = True
+
             reachy_score = reachy_score + 1
         elif combovalue(combo) == -3:
             print("You won!")
@@ -159,13 +160,16 @@ def make_random_move():
 
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
 def make_computer_move():
+    global reachy_moveCounter 
     if not make_winning_move():
         if not make_preventing_move():
             if not make_good_move():
                 make_random_move()
+    reachy_moveCounter = reachy_moveCounter + 1 
 
 
 def make_user_move(coordinates):
+    global player_moveCounter
     # validate coordinates
     try:
         a = int(coordinates[0]) - 1
@@ -181,19 +185,17 @@ def make_user_move(coordinates):
     else:
         board[a][b] = -1
         check_state()
+        player_moveCounter = player_moveCounter + 1
         return True
 
 def play():
-    global reachy_moveCounter
-    global player_moveCounter
+    global reachy_moveCounter 
     move = ''
     while move != "stop" and not game_closed:
         move = input("Chose the coordinates for your next move (i.g '1B'): ")
         # validate coordinate
         if make_user_move(move) and not game_closed:
-            player_moveCounter = player_moveCounter + 1
             make_computer_move()
-            reachy_moveCounter = reachy_moveCounter + 1 
         print("reachy moved {} times".format(reachy_moveCounter))
         print_board()
     print("current score: Reachy ({}) : Player ({})".format(reachy_score,player_score))
@@ -203,6 +205,8 @@ exit_game = "1"
 while exit_game == "1":
     board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     game_closed = False
+    reachy_moveCounter = 0
+    player_moveCounter = 0
     first = input ("who goes first? \n 1 for Reachy, 2 for Player: ")
     if first == "1":
         #reachy's first move
