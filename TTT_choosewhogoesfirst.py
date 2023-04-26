@@ -4,6 +4,8 @@ board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 game_closed = False
 reachy_score = 0
 player_score = 0
+reachy_moveCounter = 0
+player_moveCounter = 0
 
 # Funktion: Spielbrett darstellen
 def print_board():
@@ -181,9 +183,9 @@ def make_user_move(coordinates):
         check_state()
         return True
 
-def player_first():
-    reachy_moveCounter = 0
-    player_moveCounter = 0
+def play():
+    global reachy_moveCounter
+    global player_moveCounter
     move = ''
     while move != "stop" and not game_closed:
         move = input("Chose the coordinates for your next move (i.g '1B'): ")
@@ -203,13 +205,15 @@ while exit_game == "1":
     game_closed = False
     first = input ("who goes first? \n 1 for Reachy, 2 for Player: ")
     if first == "1":
+        #reachy's first move
         make_random_move()
+        reachy_moveCounter = reachy_moveCounter + 1
         print_board()
-        player_first()
+        play()
         exit_game = input("Press 1 to play again, Press any button to exit: ")
     elif first == "2":
         print_board()
-        player_first()
+        play()
         exit_game = input("Press 1 to play again, Press any button to exit: ")
     else:
         print("input invalid")
