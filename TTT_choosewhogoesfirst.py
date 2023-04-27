@@ -78,6 +78,7 @@ def make_easy_move(n):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
                     board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] = 1
                     return True
+    return False
         
 def make_good_move():
     # try the middle cell and make move if possible
