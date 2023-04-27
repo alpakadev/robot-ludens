@@ -68,50 +68,17 @@ def check_state():
         print("No more moves possible...")
         game_closed = True
 
-#winning move coordinates ermitteln
-def check_chance():
+#versuche zu gewinnen (2) oder einen Gewinn zu verhindern (-2)
+def make_easy_move(n):
+    #prüfe ob eine Kombination passt
     for combo in range(len(wincombinations)):
-        if combovalue(combo) == 2:
+        if combovalue(combo) == n:
+            #setze auf das freie Feld in der Kombination
             for i in range(3):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
-                    return wincombinations[combo][i][0], wincombinations[combo][i][1]
-
-#preventing move coordinates ermitteln
-def check_risk():
-    for combo in range(len(wincombinations)):
-        if combovalue(combo) == -2:
-            for i in range(3):
-                if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
-                    return wincombinations[combo][i][0], wincombinations[combo][i][1]
-
-def make_winning_move():
-    coordinates = check_chance()
-    if coordinates:
-        print("found a chance")
-        a = coordinates[0]
-        b = coordinates[1]
-
-        board[a][b] = 1
-        check_state()
-        return True
-    else:
-        return False
-
-
-def make_preventing_move():
-    coordinates = check_risk()
-    if coordinates:
-        print("found a risk")
-        a = coordinates[0]
-        b = coordinates[1]
-
-        board[a][b] = 1
-        check_state()
-        return True
-    else:
-        return False
-
-
+                    board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] = 1
+                    return True
+        
 def make_good_move():
     # try the middle cell and make move if possible
     if board[1][1] == 0:
@@ -161,11 +128,13 @@ def make_random_move():
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
 def make_computer_move():
     global reachy_moveCounter 
-    if not make_winning_move():
-        if not make_preventing_move():
+    if not make_easy_move(2):
+        if not make_easy_move(-2):
             if not make_good_move():
                 make_random_move()
-    reachy_moveCounter = reachy_moveCounter + 1 
+    check_state()            
+    reachy_moveCounter = reachy_moveCounter + 1
+    return True
 
 
 def make_user_move(coordinates):
@@ -221,4 +190,3 @@ while exit_game == "1":
         exit_game = input("Press 1 to play again, Press any button to exit: ")
     else:
         print("input invalid")
-    

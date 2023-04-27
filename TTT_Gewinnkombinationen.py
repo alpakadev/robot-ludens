@@ -50,32 +50,6 @@ def check_state():
             print("You won!")
             game_closed = True
 
-#   for i in range(0, 3):
-#       if (board[i][0] + board[i][1] + board[i][2]) == 3:
-#           game_closed = True
-#          print("Reachy won!")
-#       elif (board[i][0] + board[i][1] + board[i][2]) == -3:
-#           game_closed = True
-#           print("You won!")
-#       elif (board[0][i] + board[1][i] + board[2][i]) == 3:
-#           game_closed = True
-#           print("Reachy won!")
-#       elif (board[0][i] + board[1][i] + board[2][i]) == -3:
-#           game_closed = True
-#           print("You won!")
-#   if board[0][0] + board[1][1] + board[2][2] == 3:
-#       game_closed = True
-#       print("Reachy won!")
-#   elif board[0][0] + board[1][1] + board[2][2] == -3:
-#       game_closed = True
-#       print("You won!")
-#   elif board[0][2] + board[1][1] + board[2][0] == 3:
-#       game_closed = True
-#       print("Reachy won!")
-#   elif board[0][2] + board[1][1] + board[2][0] == -3:
-#       game_closed = True
-#       print("You won!")
-
     found_space = False
     for row in board:
         for cell in row:
@@ -85,40 +59,17 @@ def check_state():
         print("No more moves possible...")
         game_closed = True
 
-#winning move coordinates ermitteln
-def check_chance():
+#winning move/ preventing move coordinates ermitteln
+def check_board(n):
     for combo in range(len(wincombinations)):
-        if combovalue(combo) == 2:
+        if combovalue(combo) == n:
             for i in range(3):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
                     return wincombinations[combo][i][0], wincombinations[combo][i][1]
 
-#preventing move coordinates ermitteln
-def check_risk():
-    for combo in range(len(wincombinations)):
-        if combovalue(combo) == -2:
-            for i in range(3):
-                if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
-                    return wincombinations[combo][i][0], wincombinations[combo][i][1]
-
-#    for i in range(0, 3):
-#        if (board[i][0] + board[i][1] + board[i][2]) == -2:
-#            return i, board[i].index(0)
-#        elif (board[0][i] + board[1][i] + board[2][i]) == -2:
-#            for j in range(0, 3):
-#                if board[j][i] == 0:
-#                    return j, i
-#    if board[0][0] + board[1][1] + board[2][2] == -2:
-#        for k in range(0, 3):
-#            if board[k][k] == 0:
-#                return k, k
-#    elif board[0][2] + board[1][1] + board[2][0] == -2:
-#        for k in range(0, 3):
-#            if board[k][2-k] == 0:
-#                return k, 2-k
 
 def make_winning_move():
-    coordinates = check_chance()
+    coordinates = check_board(2)
     if coordinates:
         print("found a chance")
         a = coordinates[0]
@@ -132,7 +83,7 @@ def make_winning_move():
 
 
 def make_preventing_move():
-    coordinates = check_risk()
+    coordinates = check_board(-2)
     if coordinates:
         print("found a risk")
         a = coordinates[0]
