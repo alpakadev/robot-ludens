@@ -1,11 +1,7 @@
 import random
 
-board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-game_closed = False
 reachy_score = 0
 player_score = 0
-reachy_moveCounter = 0
-player_moveCounter = 0
 
 # Funktion: Spielbrett darstellen
 def print_board():
@@ -37,6 +33,10 @@ wincombinations = [
     [[0,0], [1,1], [2,2]]
 ]
 
+corners = [
+    [0,0], [0,2], [2,0], [2,2]
+]
+
 #berechnet die Summe der Einträge einer Gewinnkombination
 def combovalue(k):
     wert = board[wincombinations[k][0][0]][wincombinations[k][0][1]] + board[wincombinations[k][1][0]][wincombinations[k][1][1]] + board[wincombinations[k][2][0]][wincombinations[k][2][1]];
@@ -52,7 +52,6 @@ def check_state():
         if combovalue(combo) == 3:
             print("Reachy won!")
             game_closed = True
-
             reachy_score = reachy_score + 1
         elif combovalue(combo) == -3:
             print("You won!")
@@ -79,38 +78,43 @@ def make_easy_move(n):
                     board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] = 1
                     return True
     return False
-        
-def make_good_move():
-    # try the middle cell and make move if possible
-    if board[1][1] == 0:
-        board[1][1] = 1
-        check_state()
-        return True
-    # else try to get into a corner cell
-    else:
-        if board[0][0] == 0 or board[0][2] == 0 or board[2][0] == 0 or board[2][2] == 0:
-            print("picking a corner")
-            while 1 != 0:
-                x = random.randint(0, 3)
-                if x == 0 and board[0][0] == 0:
-                    board[0][0] = 1
-                    check_state()
-                    return True
-                elif x == 1 and board[0][2] == 0:
-                    board[0][2] = 1
-                    check_state()
-                    return True
-                elif x == 2 and board[2][0] == 0:
-                    board[2][0] = 1
-                    check_state()
-                    return True
-                elif x == 3 and board[2][2] == 0:
-                    board[2][2] = 1
-                    check_state()
-                    return True
-        else:
-            return False
 
+def make_good_move():
+    if reachy_moveCounter == 0 and player_moveCounter == 1:
+        # try the middle cell and make move if possible
+        if board[1][1] == 0:
+            board[1][1] = 1
+            check_state()
+            return True
+        else:
+            corner_move()
+            return True
+            
+    elif reachy_moveCounter == 1 and player_moveCounter == 1:
+        print("CORNER MOVE")
+        corner_move()
+        return True
+
+    elif reachy_moveCounter == 1 and player_moveCounter == 2:
+        #FALLE VERHINDERN
+        print("HIER!!")
+        if combovalue(6) == -1 or combovalue(7) == -1:
+            x = 1
+            y = random.randint(0, 2)
+            randfeld = [x,y]
+            a = random.sample(randfeld,2)
+            board[a[0]][a[1]] = 1
+            return True
+
+
+def corner_move():
+    c = 1
+    while c == 1:
+        i = random.randint(0, 4)
+        if board[corners[i][0]][corners[i][1]] == 0:
+            board[corners[i][0]][corners[i][1]] = 1
+            check_state()
+            return True
 
 def make_random_move():
     # generate new coordinates until a free spot is found and place the mark
@@ -125,6 +129,14 @@ def make_random_move():
         board[x][y] = 1
         check_state()
 
+
+def make_first_move():
+    x = random.randint(0,2)
+    if x == 1:
+        board[1][1] = 1
+    else:
+        y = random.randint(0,1)
+        board[x][y*2] = 1
 
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
 def make_computer_move():
@@ -180,7 +192,7 @@ while exit_game == "1":
     first = input ("who goes first? \n 1 for Reachy, 2 for Player: ")
     if first == "1":
         #reachy's first move
-        make_random_move()
+        make_first_move()
         reachy_moveCounter = reachy_moveCounter + 1
         print_board()
         play()
