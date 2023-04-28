@@ -187,8 +187,7 @@ exit_game = "1"
 while exit_game == "1":
     board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     game_closed = False
-    reachy_moveCounter = 0
-    player_moveCounter = 0
+
     first = input ("who goes first? \n 1 for Reachy, 2 for Player: ")
     if first == "1":
         #reachy's first move
