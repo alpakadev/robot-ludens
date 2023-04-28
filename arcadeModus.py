@@ -2,7 +2,8 @@ import random
 
 board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 game_closed = False
-level = 1
+level = 2
+
 
 # Funktion: Spielbrett darstellen
 def print_board():
@@ -19,6 +20,26 @@ column = {
     'B': 1,
     'C': 2,
 }
+
+# Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
+winning = {
+    0: 10,
+    1: 50,
+    2: 100
+}
+
+preventing = {
+    0: 10,
+    1: 50,
+    2: 100
+}
+
+good = {
+    0: 20,
+    1: 50,
+    2: 100
+}
+
 
 # alle möglichen Gewinnkombinationen
 wincombinations = [
@@ -121,7 +142,13 @@ def check_risk():
 #            if board[k][2-k] == 0:
 #                return k, 2-k
 
-def make_winning_move():
+
+
+def make_winning_move(p):
+    # Wahrscheinlichkeit, einen Winningmove zu machen, falls möglich ist bei 80%
+    if p < (100-winning[level]):
+        return False
+    print('try winning move')
     coordinates = check_chance()
     if coordinates:
         print("found a chance")
@@ -135,7 +162,10 @@ def make_winning_move():
         return False
 
 
-def make_preventing_move():
+def make_preventing_move(p):
+    if p < (100-preventing[level]):
+        return False
+    print('try prevent move')
     coordinates = check_risk()
     if coordinates:
         print("found a risk")
@@ -149,7 +179,10 @@ def make_preventing_move():
         return False
 
 
-def make_good_move():
+def make_good_move(p):
+    if p < (100-good[level]):
+        return False
+    print('try good move')
     # try the middle cell and make move if possible
     if board[1][1] == 0:
         board[1][1] = 1
@@ -182,6 +215,7 @@ def make_good_move():
 
 
 def make_random_move():
+    print('random move')
     # generate new coordinates until a free spot is found and place the mark
     target = "start"
     while target != 0:
@@ -197,9 +231,11 @@ def make_random_move():
 
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
 def make_computer_move():
-    if not make_winning_move():
-        if not make_preventing_move():
-            if not make_good_move():
+    p = random.randint(0, 100)
+    print("p: ", str(p))
+    if not make_winning_move(p):
+        if not make_preventing_move(p):
+            if not make_good_move(p):
                 make_random_move()
 
 
@@ -264,12 +300,15 @@ def arcadeModus():
             move = input("Chose the coordinates for your next move (i.g '1B'): ")
             # validate coordinate
             if make_user_move(move) and not game_closed:
+                make_computer_move()
+                ''' 
                 if level == 0:
                     level0Move()
                 elif level == 1:
                     level1Move()
                 elif level == 2:
-                    level2Move()
+                # level2Move()
+                '''
             print_board()
         game_closed = False
         board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
