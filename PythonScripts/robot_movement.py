@@ -1,7 +1,8 @@
-import constants 
+import constants
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+from Helper.KinematicModelHelper import KinematicModelHelper
 import numpy as np
 
 # Docs:
@@ -43,12 +44,11 @@ POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
 POS_ABOVE_BOARD_COODINATES = [0.36, 0, 0]
 
 
-
-
 class RobotMovement:
     def __init__(self, reachy):
         self.reachy = reachy
         self._move_arm(POS_BASE_COORDINATES)
+        self.kinematic_model_helper = KinematicModelHelper()
 
     def move_object(self, pos_from, pos_to):
         """
@@ -58,9 +58,9 @@ class RobotMovement:
         :param pos_to (array): Coordinates on where to move the object
         """
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from[1] += constants.DELTA_HAND_WIDTH # To prevent knocking cylinder on 3.
+        pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
-        
+
         # 1. Moves arm in front of the Object
         pos_from[0] -= constants.DELTA_GRIP_OBJ
         self._move_arm(pos_from)
@@ -74,7 +74,7 @@ class RobotMovement:
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above Board
-        self._move_arm(POS_ABOVE_BOARD_COODINATES) ##TODO: How to Handle POS_ABOVE_BOARD?
+        self._move_arm(POS_ABOVE_BOARD_COODINATES)  ##TODO: How to Handle POS_ABOVE_BOARD?
         # 6. moves arm to pos_to
         self._move_arm(pos_to)
         # 7. opens Hand
@@ -85,7 +85,7 @@ class RobotMovement:
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
         # 9. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(POS_BASE_COORDINATES) ##TODO: How to Handle POS_BASE?
+        self._move_arm(POS_BASE_COORDINATES)  ##TODO: How to Handle POS_BASE?
 
         pass
 
@@ -95,26 +95,23 @@ class RobotMovement:
 
         """
         print(pos_to)
-        #TODO: Moving
-        A = np.array([
-            [0, 0, -1, pos_to[0]],
-            [0, 1, 0, pos_to[1]],  
-            [1, 0, 0, pos_to[2]],
-            [0, 0, 0, 1],  
-        ])
-        joint_pos_A = reachy.r_arm.inverse_kinematics(A)
+        # Only adjust the rot_direction [x, y, z] and the rot_axis of type deg and then the arm movement
+        # should be precise
+        target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rot_direction='y', rot_axis=-90)
+
+        joint_pos_A = reachy.r_arm.inverse_kinematics(target_kinematic)
         reachy.turn_on('r_arm')
-        goto({joint: pos for joint,pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
+        goto({joint: pos for joint, pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
         reachy.turn_off('r_arm')
         pass
-    
+
     def _grip_open(self):
         """
         opens grip completly
         """
-        #TODO: Open completly
+        # TODO: Open completly
         reachy.turn_on("r_arm")
-        goto(goal_positions=POS_GRIPPER_OPEN,duration=1.0,interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(goal_positions=POS_GRIPPER_OPEN, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         reachy.turn_off("r_arm")
         pass
 
@@ -122,9 +119,9 @@ class RobotMovement:
         """
         closes grip until is_holding is true
         """
-        #TODO: CLOSE until _is_holding
+        # TODO: CLOSE until _is_holding
         reachy.turn_on("r_arm")
-        goto(goal_positions=POS_GRIPPER_CLOSED,duration=1.0,interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(goal_positions=POS_GRIPPER_CLOSED, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         reachy.turn_off("r_arm")
         pass
 
@@ -137,7 +134,7 @@ class RobotMovement:
             return True
         else:
             return False
-    
+
     def move_body(self, pos_to):
         """
         Moves the Reachy/Robot Body to given Coordinates
@@ -147,7 +144,7 @@ class RobotMovement:
         """
         pass
 
-    def get_position():
+    def get_position(self):
         """
         Returns current Cartesian coordinitas Position
 
@@ -157,12 +154,10 @@ class RobotMovement:
         pass
 
 
-
-
 robot = RobotMovement(reachy)
 
 # Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
-pos_cylinder = [0.471, -0.35, -0.30] 
-pos_goal = [0.4,0,-0.30]
+pos_cylinder = [0.471, -0.35, -0.30]
+pos_goal = [0.4, 0, -0.30]
 
 robot.move_object(pos_cylinder, pos_goal)
