@@ -1,0 +1,18 @@
+color_bounds:
+  red_lower: [0, 70, 50]
+  red_upper: [10, 255, 255]
+  green_lower: [25, 52, 72]
+  green_upper: [102, 255, 255]
+thresholds:
+  red: 500
+  green: 500
+squares:
+  - {top_left: [360, 408], bottom_right: [433, 462]}
+  - {top_left: [433, 408], bottom_right: [502, 462]}
+  - {top_left: [502, 408], bottom_right: [570, 462]}
+  - {top_left: [330, 462], bottom_right: [422, 545]}
+  - {top_left: [422, 462], bottom_right: [510, 545]}
+  - {top_left: [510, 462], bottom_right: [590, 545]}
+  - {top_left: [295, 545], bottom_right: [405, 670]}
+  - {top_left: [405, 545], bottom_right: [515, 670]}
+  - {top_left: [515, 545], bottom_right: [620, 670]}
