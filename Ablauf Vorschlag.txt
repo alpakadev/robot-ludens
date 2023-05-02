@@ -1,0 +1,9 @@
+1. Spielstand erfassen
+2. Zustand an Strategie weitergeben
+3. Strategie trifft Entscheidung
+4. Zustand des Bretts überprüfen
+5. Bei Übereinstimmungen Entscheidung an Bewegung
+    => Wenn nicht => Fehler des anderen Spielers
+6. Bewegung wählt Movement und führt aus
+7. überprüfen des Spielstands ob so wie gewollt
+    => Wenn nicht => Fehler bei der Ausführung
