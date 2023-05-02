@@ -7,15 +7,17 @@ After starting the script, you can stop it by pressing q.
 
 from reachy_sdk import ReachySDK
 import time
+from movement import goal_position, base_position
 from detection import get_board_cases
 
-def reachy_test_module():
+def main():
+    # initialize Reachy
     reachy = ReachySDK(host='localhost')
     reachy.head.compliant = False
     time.sleep(0.1)
 
     # move head to goal position
-    goal_position = reachy.head.look_at(0.5, 0, -0.40, duration=1)
+    goal_position(reachy)
 
     board_cases = get_board_cases(reachy)
 
@@ -26,10 +28,11 @@ def reachy_test_module():
     # moving reachys arms and move game pieces
     # ...........
 
-    # move head back to base position
-    reachy.head.look_at(0.5, 0, 0, duration=1)
+    # move head to base position
+    base_position(reachy)
     time.sleep(0.2)
     reachy.head.compliant = True
 
 
-reachy_test_module()
+if __name__ == '__main__':
+    main()
