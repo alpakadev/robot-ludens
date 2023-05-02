@@ -13,6 +13,7 @@ from detection import get_board_cases
 def main():
     # initialize Reachy
     reachy = ReachySDK(host='localhost')
+    reachy.turn_on('head')
     reachy.head.compliant = False
     time.sleep(0.1)
 

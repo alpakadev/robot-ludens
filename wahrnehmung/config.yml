@@ -4,8 +4,8 @@ color_bounds:
   green_lower: [25, 52, 72]
   green_upper: [102, 255, 255]
 thresholds:
-  red: 500
-  green: 500
+  red: 0.08
+  green: 0.08
 squares:
   - {top_left: [360, 408], bottom_right: [433, 462]}
   - {top_left: [433, 408], bottom_right: [502, 462]}

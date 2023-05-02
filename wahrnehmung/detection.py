@@ -39,13 +39,7 @@ def get_board_cases(reachy):
 
         rectangles = []
         for idx, square in enumerate(squares):
-            color = square.get_color(imageFrame, 
-                                     square.x1, 
-                                     square.y1, 
-                                     square.x2, 
-                                     square.y2, 
-                                     color_bounds, 
-                                     thresholds)
+            color = square.get_color(imageFrame, color_bounds, thresholds)
             if color == 'red':
                 square.color = (0, 0, 255)
                 board_cases[idx//3][idx%3] = 2
