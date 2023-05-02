@@ -1,0 +1,16 @@
+Angepasste SDK um die look_at Funktion in der Simulation nutzen zu können.
+
+Nutzung:
+    - Für die Arbeit mit der Simulation:
+        reachy.head.look_at(x, y, z, duration, "simul")
+    - Für die Arbeit mit dem Roboter, falls o.g. nicht funktioniert:
+        reachy.head.look_at(x, y, z, duration, "real")
+        Das ist der Weg, der in der aktuellen SDK eingeschlagen wird, der zu einem Blocking Error führt
+
+Installation:
+    - Linux:
+        In /usr/local/lib/python<Version>/site-packages die Datei:
+            reachy_sdk-0.7.0-py<Version>.egg durch das hier hochgeladene Archiv ersetzen
+            !!!Vorher ein BACKUP machen!!!
+    - Windows:
+        Kommt bald
