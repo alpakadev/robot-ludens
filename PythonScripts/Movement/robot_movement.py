@@ -23,32 +23,16 @@ POS_GRIPPER_OPEN = {
 }
 
 POS_GRIPPER_CLOSED = {
-    reachy.r_arm.r_gripper: 0,
+    reachy.r_arm.r_gripper: 5,
 }
-
-"""
-# TODO: Somehow putting these into constants.py - Problem beeing 'reachy'
-POS_BASE = {
-    reachy.r_arm.r_shoulder_pitch: 0,
-    reachy.r_arm.r_shoulder_roll: 0,
-    reachy.r_arm.r_arm_yaw: 0,
-    reachy.r_arm.r_elbow_pitch: -90,
-    reachy.r_arm.r_forearm_yaw: 0,
-    reachy.r_arm.r_wrist_pitch: 0,
-    reachy.r_arm.r_wrist_roll: 0,
-    reachy.r_arm.r_gripper: 0,
-}
-"""
-
-POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
-POS_ABOVE_BOARD_COODINATES = [0.36, 0, 0]
-
 
 class RobotMovement:
+
     def __init__(self, reachy):
         self.reachy = reachy
-        self._move_arm(POS_BASE_COORDINATES)
         self.kinematic_model_helper = KinematicModelHelper()
+        self._move_arm(constants.POS_BASE_COORDINATES)
+        # Starting movement to Base Position
 
     def move_object(self, pos_from, pos_to):
         """
@@ -57,6 +41,9 @@ class RobotMovement:
         :param pos_from (array): Coordinates where the Object to move is
         :param pos_to (array): Coordinates on where to move the object
         """
+        # Setting arm joints to Stiff-mode for starting movement
+        reachy.turn_on("r_arm")
+
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
@@ -73,20 +60,28 @@ class RobotMovement:
         self._move_arm(pos_from)
         # 4. closes Hand
         self._grip_close()
-        # 5. Moves arm above Board
-        self._move_arm(POS_ABOVE_BOARD_COODINATES)  ##TODO: How to Handle POS_ABOVE_BOARD?
-        # 6. moves arm to pos_to
+        # 5. Moves arm above current position
+        pos_from[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_from)
+        pos_from[2] -= constants.DELTA_ABOVE_OBJ
+        # 6. Moves arm above pos_to
+        pos_to[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to)  ##TODO: How to Handle POS_ABOVE_BOARD?
+        pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        # 7. moves arm to pos_to
         self._move_arm(pos_to)
-        # 7. opens Hand
+        # 8. opens Hand
         self._grip_open()
-        # 8. Moves arm up
+        # 9. Moves arm up
         pos_to[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_to)
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
-        # 9. Moves arm back to Base Position
+        # 10. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(POS_BASE_COORDINATES)  ##TODO: How to Handle POS_BASE?
+        self._move_arm(constants.POS_BASE_COORDINATES)  ##TODO: How to Handle POS_BASE?
 
+        # Setting arm to compliant mode and lowering smoothly for preventing damaging
+        reachy.turn_off_smoothly("r_arm")
         pass
 
     def _move_arm(self, pos_to):
@@ -100,9 +95,7 @@ class RobotMovement:
         target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rot_direction='y', rot_axis=-90)
 
         joint_pos_A = reachy.r_arm.inverse_kinematics(target_kinematic)
-        reachy.turn_on('r_arm')
         goto({joint: pos for joint, pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
-        reachy.turn_off('r_arm')
         pass
 
     def _grip_open(self):
@@ -110,9 +103,7 @@ class RobotMovement:
         opens grip completly
         """
         # TODO: Open completly
-        reachy.turn_on("r_arm")
         goto(goal_positions=POS_GRIPPER_OPEN, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        reachy.turn_off("r_arm")
         pass
 
     def _grip_close(self):
@@ -120,9 +111,7 @@ class RobotMovement:
         closes grip until is_holding is true
         """
         # TODO: CLOSE until _is_holding
-        reachy.turn_on("r_arm")
         goto(goal_positions=POS_GRIPPER_CLOSED, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        reachy.turn_off("r_arm")
         pass
 
     def _is_holding(self):
@@ -154,10 +143,10 @@ class RobotMovement:
         pass
 
 
-robot = RobotMovement(reachy)
+if __name__ == "__main__":
+    robot = RobotMovement(reachy)
+    # Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
+    pos_cylinder = [0.4, -0.3, -0.38]
+    pos_goal = [0.4, 0, -0.38]
 
-# Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
-pos_cylinder = [0.471, -0.35, -0.30]
-pos_goal = [0.4, 0, -0.30]
-
-robot.move_object(pos_cylinder, pos_goal)
+    robot.move_object(pos_cylinder, pos_goal)
