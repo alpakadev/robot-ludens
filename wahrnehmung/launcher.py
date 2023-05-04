@@ -11,7 +11,7 @@ from movement import goal_position, base_position
 from detection import get_board_cases
 import yaml
 from stage import Stage
-config = yaml.safe_load(open("/wahrnehmung/config.yml"))
+config = yaml.safe_load(open("wahrnehmung/config.yml"))
 
 def getHost():
     if config["stage"] == Stage.SIMULATION.value:
@@ -23,7 +23,7 @@ def getHost():
 
 def main():
     # initialize Reachy
-    reachy = ReachySDK(host='192.168.1.94')
+    reachy = ReachySDK(getHost())
     reachy.turn_on('head')
     reachy.head.compliant = False
     time.sleep(0.1)
