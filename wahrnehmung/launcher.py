@@ -9,6 +9,17 @@ from reachy_sdk import ReachySDK
 import time
 from movement import goal_position, base_position, move_head
 from detection import get_board_cases
+import yaml
+from stage import Stage
+config = yaml.safe_load(open("/wahrnehmung/config.yml"))
+
+def getHost():
+    if config["stage"] == Stage.SIMULATION.value:
+        return "localhost"
+    elif config["stage"] == Stage.LAB.value:
+        #Add Reachys Lab IP here
+        return "Reachys Lab IP"
+
 
 def main():
     # initialize Reachy
