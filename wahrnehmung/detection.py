@@ -26,12 +26,25 @@ def get_board_cases(reachy):
                               bottom_right[0], 
                               bottom_right[1], 
                               None))
+        
+    # game_square = config['game_square']
+    # game_square_obj = Square(game_square[0]['top_left'][0],
+    #                          game_square[0]['top_left'][1],
+    #                          game_square[0]['bottom_right'][0],
+    #                          game_square[0]['bottom_right'][1],
+    #                          None)
 
     color_bounds = config['color_bounds']
     thresholds = config['thresholds']
 
     # Initialize 3x3 matrix which is later handed to movement team
     board_cases = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+    # Initialize previous frame to None
+    prev_frame = None
+
+    # Initialize movement to False
+    movement = False
 
     while True:
         frame = camera.last_frame
@@ -59,6 +72,39 @@ def get_board_cases(reachy):
                           rect[1], 
                           rect[2], 
                           2)
+
+        if prev_frame is not None:
+            # Define region of interest
+            roi = frame[290:560, 70:355]
+            prev_roi = prev_frame[290:560, 70:355]
+
+            # Perform motion detection on ROI
+            if prev_roi is not None:
+                diff = cv2.absdiff(roi, prev_roi)
+                gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, thresh = cv2.threshold(gray, 20, 255, cv2.THRESH_BINARY)
+                contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                movement_pixels = 0
+                for contour in contours:
+                    if cv2.contourArea(contour) < 500:
+                        continue
+                    (x, y, w, h) = cv2.boundingRect(contour)
+                    # Count the number of movement pixels
+                    movement_pixels += cv2.contourArea(contour)
+
+                # Calculate the percentage of changed pixels
+                total_pixels = roi.shape[0] * roi.shape[1]
+                movement_percentage = (movement_pixels / total_pixels) * 100
+
+                # Set movement flag based on the percentage of changed pixels
+                if movement_percentage > 0:
+                    movement = True
+                else:
+                    movement = False
+
+        print(movement)
+        # Update previous frame
+        prev_frame = frame.copy()
 
         cv2.imshow('Frame', imageFrame)
         # output.write(imageFrame)

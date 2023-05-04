@@ -7,12 +7,12 @@ thresholds:
   red: 0.08
   green: 0.08
 squares:
-  - {top_left: [360, 408], bottom_right: [433, 462]}
-  - {top_left: [433, 408], bottom_right: [502, 462]}
-  - {top_left: [502, 408], bottom_right: [570, 462]}
-  - {top_left: [330, 462], bottom_right: [422, 545]}
-  - {top_left: [422, 462], bottom_right: [510, 545]}
-  - {top_left: [510, 462], bottom_right: [590, 545]}
-  - {top_left: [295, 545], bottom_right: [405, 670]}
-  - {top_left: [405, 545], bottom_right: [515, 670]}
-  - {top_left: [515, 545], bottom_right: [620, 670]}
+  - {top_left: [73, 292], bottom_right: [153, 360]}
+  - {top_left: [153, 292], bottom_right: [244, 360]}
+  - {top_left: [244, 292], bottom_right: [330, 360]}
+  - {top_left: [61, 360], bottom_right: [150, 449]}
+  - {top_left: [150, 360], bottom_right: [245, 449]}
+  - {top_left: [245, 360], bottom_right: [340, 449]}
+  - {top_left: [43, 449], bottom_right: [143, 550]}
+  - {top_left: [143, 449], bottom_right: [246, 550]}
+  - {top_left: [246, 449], bottom_right: [350, 550]}
