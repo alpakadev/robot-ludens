@@ -1,5 +1,5 @@
 '''
-This is the test script that needs to be executed 
+This is the test script that needs to be executed
 in order to test Reachys ability to detect colors.
 
 After starting the script, you can stop it by pressing q.
@@ -7,12 +7,12 @@ After starting the script, you can stop it by pressing q.
 
 from reachy_sdk import ReachySDK
 import time
-from movement import goal_position, base_position
+from movement import goal_position, base_position, move_head
 from detection import get_board_cases
 
 def main():
     # initialize Reachy
-    reachy = ReachySDK(host='localhost')
+    reachy = ReachySDK(host='192.168.1.94')
     reachy.turn_on('head')
     reachy.head.compliant = False
     time.sleep(0.1)
