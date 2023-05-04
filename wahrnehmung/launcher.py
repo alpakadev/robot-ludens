@@ -7,7 +7,7 @@ After starting the script, you can stop it by pressing q.
 
 from reachy_sdk import ReachySDK
 import time
-from movement import goal_position, base_position, move_head
+from movement import goal_position, base_position
 from detection import get_board_cases
 import yaml
 from stage import Stage
