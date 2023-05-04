@@ -1,1 +1,3 @@
-*.egg
+reachy_sdk_look_at/
+__pycache__/
+output.mp4

@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 from square import Square
 from video import capture_video
-from config import parse_config
+import yaml
 
 def get_board_cases(reachy):
     # Use coordinates and thresholds from config.yml
-    config = parse_config()
+    config = yaml.safe_load(open("wahrnehmung/config.yml"))
 
     camera = reachy.right_camera
 
