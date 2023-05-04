@@ -13,4 +13,6 @@ Installation:
             reachy_sdk-0.7.0-py<Version>.egg durch das hier hochgeladene Archiv ersetzen
             !!!Vorher ein BACKUP machen!!!
     - Windows:
-        Kommt bald
+        Python Pfad ausfindig machen (meistens irgendow in AppData/Local/)
+        In \Python\Python311\Lib\site-packages\reachy_sdk die Datei head.py mit der Datei aus dem reachy_sdk zip tauschen
+            !!!Vorher ein BACKUP machen!!!
