@@ -10,29 +10,16 @@ import numpy as np
 # Older Docs (Content may be depricated):
 # https://pollen-robotics.github.io/reachy-2019-docs/docs/program-your-robot/control-the-arm/#forward-kinematics
 
-# Instantiate reachy instance
-reachy = ReachySDK(host=constants.HOSTADDRESS)
-
-"""
-Accessed by '__grip_close()' and '_grip_open()' 
--> Closing until is_holding() == True to not put to much pressure on object
-TODO: There is definitly a more elegant Solution :)
-"""
-POS_GRIPPER_OPEN = {
-    reachy.r_arm.r_gripper: -60,
-}
-
-POS_GRIPPER_CLOSED = {
-    reachy.r_arm.r_gripper: 5,
-}
-
 class RobotMovement:
 
     def __init__(self, reachy):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
-        self._move_arm(constants.POS_BASE_COORDINATES)
         # Starting movement to Base Position
+        self._move_arm(constants.POS_BASE_COORDINATES)
+        # Defines Dictionary for modifying the gripping force
+        self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
+
 
     def move_object(self, pos_from, pos_to):
         """
@@ -98,20 +85,28 @@ class RobotMovement:
         goto({joint: pos for joint, pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
         pass
 
+    def _change_grip_force(self, force):
+        self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
+        print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
+        pass
+
     def _grip_open(self):
         """
         opens grip completly
         """
-        # TODO: Open completly
-        goto(goal_positions=POS_GRIPPER_OPEN, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        # Open grip completly
+        self._change_grip_force(-60)
+        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
     def _grip_close(self):
         """
         closes grip until is_holding is true
         """
+        # Closes grip
         # TODO: CLOSE until _is_holding
-        goto(goal_positions=POS_GRIPPER_CLOSED, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        self._change_grip_force(5)
+        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
     def _is_holding(self):
@@ -144,6 +139,10 @@ class RobotMovement:
 
 
 if __name__ == "__main__":
+    
+    # Instantiate reachy instance
+    reachy = ReachySDK(host=constants.HOSTADDRESS)
+
     robot = RobotMovement(reachy)
     # Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
     pos_cylinder = [0.4, -0.3, -0.38]
