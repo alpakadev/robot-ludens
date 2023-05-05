@@ -29,7 +29,7 @@ class RobotMovement:
         :param pos_to (array): Coordinates on where to move the object
         """
         # Setting arm joints to Stiff-mode for starting movement
-        reachy.turn_on("r_arm")
+        self.reachy.turn_on("r_arm")
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
@@ -68,7 +68,7 @@ class RobotMovement:
         self._move_arm(constants.POS_BASE_COORDINATES)  ##TODO: How to Handle POS_BASE?
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
-        reachy.turn_off_smoothly("r_arm")
+        self.reachy.turn_off_smoothly("r_arm")
         pass
 
     def _move_arm(self, pos_to):
@@ -81,8 +81,8 @@ class RobotMovement:
         # should be precise
         target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rot_direction='y', rot_axis=-90)
 
-        joint_pos_A = reachy.r_arm.inverse_kinematics(target_kinematic)
-        goto({joint: pos for joint, pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
+        joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
+        goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
         pass
 
     def _change_grip_force(self, force):
@@ -113,7 +113,7 @@ class RobotMovement:
         """
         :returns: 'True' if Reachys right arm is holding something
         """
-        if abs(reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
+        if abs(self.reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
             # TODO: Warning when to much Force is applied
             return True
         else:
@@ -144,7 +144,9 @@ if __name__ == "__main__":
     reachy = ReachySDK(host=constants.HOSTADDRESS)
 
     robot = RobotMovement(reachy)
-    # Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
+   
+    # [depth, width, height]
+    # Unity: depth(front) == -x , width(side) == -z , height() == y
     pos_cylinder = [0.4, -0.3, -0.38]
     pos_goal = [0.4, 0, -0.38]
 
