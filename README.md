@@ -44,23 +44,6 @@ to switch to newest version enter:
   python3 -m pip install reachy-sdk
 ```
 
-Usage in Python:
-
-```python
-  
-  from reachy_sdk import ReachySDK 
-  
-  from reachy_sdk.trajectory import goto 
-  
-  from reachy_sdk.trajectory.interpolation import InterpolationMode 
-  
-  import numpy as np
-  
-  import time
-```
-
-
-
 ## Robot Movement Script Guide
 This is a small Guide on how to use the functions of the Movement-Group
 ### Setting up the Environment
