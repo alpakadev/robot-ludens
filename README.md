@@ -44,22 +44,34 @@ to switch to newest version enter:
   python3 -m pip install reachy-sdk
 ```
 
-Usage in Python:
-
+## Robot Movement Script Guide
+This is a small Guide on how to use the functions of the Movement-Group
+### Setting up the Environment
+First, import the required libraries and modules:
+(A path to: `/path/to/robot_movement` might be need)
 ```python
-  
-  from reachy_sdk import ReachySDK 
-  
-  from reachy_sdk.trajectory import goto 
-  
-  from reachy_sdk.trajectory.interpolation import InterpolationMode 
-  
-  import numpy as np
-  
-  import time
+from reachy_sdk import ReachySDK
+from robot_movement import RobotMovement
 ```
 
+Next, create an instance of the ReachySDK class. Create an instance of the RobotMovement class by passing the reachy instance as an argument:
 
+```python
+reachy = ReachySDK(host='localhost')
+robot = RobotMovement(reachy)
+```
 
-## Python Script Guide
-TODO: Information about which python file to execute to Play the Game; A Guide which functions to call from each group.
+### Moving Objects
+To move an object, call the `move_object()` method of the RobotMovement instance and pass in the coordinates of the object's initial and final positions.
+
+For Example: 
+
+```python
+# [depth, width, height]
+# Unity: depth(front) == -x , width(side) == -z , height() == y
+pos_cylinder = [0.4, -0.4, -0.38]
+pos_goal = [0.321, -0.1171, -0.38]
+
+robot.move_object(pos_cylinder, pos_goal)
+```
+

@@ -1,7 +1,8 @@
-import constants 
+import constants
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+from Helper.KinematicModelHelper import KinematicModelHelper
 import numpy as np
 
 # Docs:
@@ -9,46 +10,16 @@ import numpy as np
 # Older Docs (Content may be depricated):
 # https://pollen-robotics.github.io/reachy-2019-docs/docs/program-your-robot/control-the-arm/#forward-kinematics
 
-# Instantiate reachy instance
-reachy = ReachySDK(host=constants.HOSTADDRESS)
-
-"""
-Accessed by '__grip_close()' and '_grip_open()' 
--> Closing until is_holding() == True to not put to much pressure on object
-TODO: There is definitly a more elegant Solution :)
-"""
-POS_GRIPPER_OPEN = {
-    reachy.r_arm.r_gripper: -60,
-}
-
-POS_GRIPPER_CLOSED = {
-    reachy.r_arm.r_gripper: 0,
-}
-
-"""
-# TODO: Somehow putting these into constants.py - Problem beeing 'reachy'
-POS_BASE = {
-    reachy.r_arm.r_shoulder_pitch: 0,
-    reachy.r_arm.r_shoulder_roll: 0,
-    reachy.r_arm.r_arm_yaw: 0,
-    reachy.r_arm.r_elbow_pitch: -90,
-    reachy.r_arm.r_forearm_yaw: 0,
-    reachy.r_arm.r_wrist_pitch: 0,
-    reachy.r_arm.r_wrist_roll: 0,
-    reachy.r_arm.r_gripper: 0,
-}
-"""
-
-POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
-POS_ABOVE_BOARD_COODINATES = [0.36, 0, 0]
-
-
-
-
 class RobotMovement:
+
     def __init__(self, reachy):
         self.reachy = reachy
-        self._move_arm(POS_BASE_COORDINATES)
+        self.kinematic_model_helper = KinematicModelHelper()
+        # Starting movement to Base Position
+        self._move_arm(constants.POS_BASE_COORDINATES)
+        # Defines Dictionary for modifying the gripping force
+        self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
+
 
     def move_object(self, pos_from, pos_to):
         """
@@ -57,10 +28,13 @@ class RobotMovement:
         :param pos_from (array): Coordinates where the Object to move is
         :param pos_to (array): Coordinates on where to move the object
         """
+        # Setting arm joints to Stiff-mode for starting movement
+        self.reachy.turn_on("r_arm")
+
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from[1] += constants.DELTA_HAND_WIDTH # To prevent knocking cylinder on 3.
+        pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
-        
+
         # 1. Moves arm in front of the Object
         pos_from[0] -= constants.DELTA_GRIP_OBJ
         self._move_arm(pos_from)
@@ -73,20 +47,28 @@ class RobotMovement:
         self._move_arm(pos_from)
         # 4. closes Hand
         self._grip_close()
-        # 5. Moves arm above Board
-        self._move_arm(POS_ABOVE_BOARD_COODINATES) ##TODO: How to Handle POS_ABOVE_BOARD?
-        # 6. moves arm to pos_to
+        # 5. Moves arm above current position
+        pos_from[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_from)
+        pos_from[2] -= constants.DELTA_ABOVE_OBJ
+        # 6. Moves arm above pos_to
+        pos_to[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to)  ##TODO: How to Handle POS_ABOVE_BOARD?
+        pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        # 7. moves arm to pos_to
         self._move_arm(pos_to)
-        # 7. opens Hand
+        # 8. opens Hand
         self._grip_open()
-        # 8. Moves arm up
+        # 9. Moves arm up
         pos_to[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_to)
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
-        # 9. Moves arm back to Base Position
+        # 10. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(POS_BASE_COORDINATES) ##TODO: How to Handle POS_BASE?
+        self._move_arm(constants.POS_BASE_COORDINATES)  ##TODO: How to Handle POS_BASE?
 
+        # Setting arm to compliant mode and lowering smoothly for preventing damaging
+        self.reachy.turn_off_smoothly("r_arm")
         pass
 
     def _move_arm(self, pos_to):
@@ -95,49 +77,48 @@ class RobotMovement:
 
         """
         print(pos_to)
-        #TODO: Moving
-        A = np.array([
-            [0, 0, -1, pos_to[0]],
-            [0, 1, 0, pos_to[1]],  
-            [1, 0, 0, pos_to[2]],
-            [0, 0, 0, 1],  
-        ])
-        joint_pos_A = reachy.r_arm.inverse_kinematics(A)
-        reachy.turn_on('r_arm')
-        goto({joint: pos for joint,pos in zip(reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
-        reachy.turn_off('r_arm')
+        # Only adjust the rot_direction [x, y, z] and the rot_axis of type deg and then the arm movement
+        # should be precise
+        target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rot_direction='y', rot_axis=-90)
+
+        joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
+        goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
         pass
-    
+
+    def _change_grip_force(self, force):
+        self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
+        print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
+        pass
+
     def _grip_open(self):
         """
         opens grip completly
         """
-        #TODO: Open completly
-        reachy.turn_on("r_arm")
-        goto(goal_positions=POS_GRIPPER_OPEN,duration=1.0,interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        reachy.turn_off("r_arm")
+        # Open grip completly
+        self._change_grip_force(-60)
+        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
     def _grip_close(self):
         """
         closes grip until is_holding is true
         """
-        #TODO: CLOSE until _is_holding
-        reachy.turn_on("r_arm")
-        goto(goal_positions=POS_GRIPPER_CLOSED,duration=1.0,interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        reachy.turn_off("r_arm")
+        # Closes grip
+        # TODO: CLOSE until _is_holding
+        self._change_grip_force(5)
+        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
     def _is_holding(self):
         """
         :returns: 'True' if Reachys right arm is holding something
         """
-        if abs(reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
+        if abs(self.reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
             # TODO: Warning when to much Force is applied
             return True
         else:
             return False
-    
+
     def move_body(self, pos_to):
         """
         Moves the Reachy/Robot Body to given Coordinates
@@ -147,7 +128,7 @@ class RobotMovement:
         """
         pass
 
-    def get_position():
+    def get_position(self):
         """
         Returns current Cartesian coordinitas Position
 
@@ -157,12 +138,16 @@ class RobotMovement:
         pass
 
 
+if __name__ == "__main__":
+    
+    # Instantiate reachy instance
+    reachy = ReachySDK(host=constants.HOSTADDRESS)
 
+    robot = RobotMovement(reachy)
+   
+    # [depth, width, height]
+    # Unity: depth(front) == -x , width(side) == -z , height() == y
+    pos_cylinder = [0.4, -0.3, -0.38]
+    pos_goal = [0.4, 0, -0.38]
 
-robot = RobotMovement(reachy)
-
-# Tiefe == -x (nach vorne), breite == -z , Hoehe == -y
-pos_cylinder = [0.471, -0.35, -0.30] 
-pos_goal = [0.4,0,-0.30]
-
-robot.move_object(pos_cylinder, pos_goal)
+    robot.move_object(pos_cylinder, pos_goal)
