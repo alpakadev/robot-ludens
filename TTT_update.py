@@ -96,6 +96,33 @@ def check_state():
         game_closed = True
         nextLevel(0)
 
+
+def check_board(input):
+    global board, player_moveCounter
+    # max ein neuer Stein
+    new_piece = 0
+    # alte Steine bleiben unverändert und kein Reachy-stein auf ein leeres Feld
+    illegal_change = False
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] == 0 and input[i][j] == -1:
+                new_piece += 1
+            elif board[i][j] != input[i][j]:
+                illegal_change = True
+    if new_piece != 1 and illegal_change:
+        return "wrong amount of new pieces: " + str(new_piece) + " and illegal change detected"
+    if new_piece != 1:
+        return "wrong amount of new pieces: " + str(new_piece)
+    if illegal_change:
+        return "illegal change detected"
+    board = input
+    player_moveCounter += 1
+    return True
+
+
+
+
+
 #versuche zu gewinnen (2) oder einen Gewinn zu verhindern (-2)
 def make_easy_move(n, p):
     #Gewinn verhindern nur mit gewisser Wahrscheinlichkeit
@@ -117,19 +144,23 @@ def make_easy_move(n, p):
     return False
 
 def corner_move():
-    c = 1
-    while c == 1:
+    print("trying to make corner_move")
+    free_corner = False
+    for k in range(4):
+        if board[corners[k][0]][corners[k][1]] == 0:
+            free_corner = True
+    while free_corner:
         i = random.randint(0, 4)
         if board[corners[i][0]][corners[i][1]] == 0:
             board[corners[i][0]][corners[i][1]] = 1
             check_state()
             return True
+    return False
         
 def make_good_move(p):
     #nur mit bestimmter Wahrscheinlichkeit guten Zug machen
     if p < (100-good[level]):
         return False
-    # try the middle cell and make move if possible
 
     if reachy_moveCounter == 0 and player_moveCounter == 1:
         # try the middle cell and make move if possible
@@ -138,13 +169,12 @@ def make_good_move(p):
             check_state()
             return True
         else:
-            corner_move()
-            return True
+            if corner_move():
+                return True
             
     elif reachy_moveCounter == 1 and player_moveCounter == 1:
-        print("CORNER MOVE")
-        corner_move()
-        return True
+        if corner_move():
+            return True
 
     elif reachy_moveCounter == 1 and player_moveCounter == 2:
         #FALLE VERHINDERN
@@ -185,6 +215,7 @@ def make_good_move(p):
     #                 return True
     #     else:
     #         return False
+    return False
 
 
 def make_random_move():
@@ -218,8 +249,8 @@ def make_computer_move():
         if not make_easy_move(-2, p):
             if not make_good_move(p):
                 make_random_move()
-    check_state()            
     reachy_moveCounter = reachy_moveCounter + 1
+    check_state()
     return True
 
 
@@ -296,4 +327,10 @@ def arcadeModus():
         else:
             print("input invalid")
 
-arcadeModus()
+# arcadeModus()
+
+board = [[0, -1, 0], [0, 1, 0], [0, 0, 0]]
+input = [[0, -1, 0], [1, 1, 0], [-1, 0, 0]]
+
+print(check_board(input))
+
