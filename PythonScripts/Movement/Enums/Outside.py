@@ -1,0 +1,14 @@
+import random
+from enum import Enum, unique
+
+
+@unique
+class Outside(Enum):
+    """
+    Enum class representing the positions of the Tic Tac Toe blocks that Reachy can take and place.
+    """
+    BLOCK_1 = (0.0, 0.5, 0.0)
+    BLOCK_2 = (0.2, 0.5, 0.0)
+    BLOCK_3 = (0.4, 0.5, 0.0)
+    BLOCK_4 = (0.6, 0.5, 0.0)
+    BLOCK_5 = (0.8, 0.5, 0.0)
