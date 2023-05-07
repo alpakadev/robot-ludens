@@ -13,7 +13,7 @@ class OutsideBlockManager:
 
         return cls._instance
 
-    def take_block(self):
+    def take_block(self) -> Outside | None:
         if self.block_count > 0:
             block_to_take = random.choice(self.outside_blocks)
             self.outside_blocks.remove(block_to_take)
@@ -21,3 +21,6 @@ class OutsideBlockManager:
             return block_to_take
 
         return None
+
+    def reset(self) -> None:
+        self._instance = 5

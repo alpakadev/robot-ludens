@@ -13,8 +13,8 @@ import numpy as np
 
 class MoveImpl:
 
-    def __init__(self):
-        self.reachy = ReachySDK(host='localhost')
+    def __init__(self, reachy=ReachySDK(host='localhost')):
+        self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
         # Starting movement to Base Position
         self._move_arm(constants.POS_BASE_COORDINATES)

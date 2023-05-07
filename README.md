@@ -46,32 +46,71 @@ to switch to newest version enter:
 
 ## Robot Movement Script Guide
 This is a small Guide on how to use the functions of the Movement-Group
-### Setting up the Environment
+### Available Movement Interface
 First, import the required libraries and modules:
-(A path to: `/path/to/robot_movement` might be need)
+(A path to: `/path/to/MoveFacade.py` might be need)
+
 ```python
-from reachy_sdk import ReachySDK
-from robot_movement import RobotMovement
+from PythonScripts.Movement.MoveFacade import MoveFacade
+from PythonScripts.Movement.Enums.Board import Board
+```
+The Board Enum class represents the Tic Tac Toe board positions, possible options are:
+
+```python
+TOP_LEFT
+TOP_CENTER
+TOP_RIGHT
+CENTER_LEFT 
+CENTER
+CENTER_RIGHT
+BOTTOM_LEFT
+BOTTOM_CENTER
+BOTTOM_RIGHT
 ```
 
-Next, create an instance of the ReachySDK class. Create an instance of the RobotMovement class by passing the reachy instance as an argument:
+Next, create an instance of the MoveFacade class:
 
 ```python
-reachy = ReachySDK(host='localhost')
-robot = RobotMovement(reachy)
+move_facade = MoveFacade()
 ```
 
 ### Moving Objects
-To move an object, call the `move_object()` method of the RobotMovement instance and pass in the coordinates of the object's initial and final positions.
+To move an object, call the `do_move_block()` method of the MoveFacade instance and pass in a value of the Board Enum class:
 
 For Example: 
 
 ```python
-# [depth, width, height]
-# Unity: depth(front) == -x , width(side) == -z , height() == y
-pos_cylinder = [0.4, -0.4, -0.38]
-pos_goal = [0.321, -0.1171, -0.38]
+goal_pos = Board.TOP_LEFT # represents a value of (x, y, z)
 
-robot.move_object(pos_cylinder, pos_goal)
+move_facade.do_move_block(to=goal_pos)
 ```
 
+
+## Robot Outside Block Guide
+🔴NEW❗🔴<div>
+This Guide explains how the available outside block tracking works and how to use it.
+### Available Outside Block Interface
+First, import the required libraries and modules:
+(A path to: `/path/to/OutsideBlockFacade.py` might be need)
+```python
+from PythonScripts.OutsideBlockFacade import OutsideBlockFacade
+```
+
+Next, create an instance of the OutsideBlockFacade class:
+
+```python
+block_manager = OutsideBlockFacade()
+```
+
+With the help of this interface you can either get or reset the available block count
+
+```python
+available_blocks = block_manager.get_block_count() # Get available block count
+block_manager.reset() # Reset the block count to the initial state
+```
+
+### Important
+The available block count will be modified automatically when using the `do_move_block()` using the following interface method:
+```python
+block_manager.take_block() # Takes a block from the outside and decreases the block availability 
+```
