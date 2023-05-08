@@ -1,3 +1,11 @@
-stage: "simulation"
-BOARDCOLOR_BOUNDS_LOWER: [129, 50, 70]
-BOARDCOLOR_BOUNDS_UPPER: [158, 255, 255]
+stage: "testing"
+color_bounds:
+  red_lower: [0, 70, 50]
+  red_upper: [10, 255, 255]
+  green_lower: [25, 52, 72]
+  green_upper: [102, 255, 255]
+  board_lower: [129, 50, 70]
+  board_upper: [158, 255, 255]
+thresholds:
+  red: 0.08
+  green: 0.08
