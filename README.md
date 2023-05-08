@@ -15,8 +15,8 @@ Nutzung:
 
 Installation:
     - Linux:
-        In /usr/local/lib/python<Version>/site-packages die Datei:
-            reachy_sdk-0.7.0-py<Version>.egg durch das hier hochgeladene Archiv ersetzen
+        In /usr/local/lib/python<Version>/site-packages:
+            reachy_sdk-0.7.0-py<Version>.zip aus dem git in reachy_sdk-0.7.0-py<Version>.egg umbennen und damit das .egg in dem Ordner ersetzen
             !!!Vorher ein BACKUP machen!!!
     - Windows:
         Python Pfad ausfindig machen (meistens irgendow in AppData/Local/)
