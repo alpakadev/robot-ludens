@@ -17,26 +17,28 @@ def getHost():
     elif config["stage"] == Stage.LAB.value:
         #Add Reachys Lab IP here
         return "Reachys Lab IP"
+    else:
+        return "localhost"
     
 #reachy = ReachySDK(getHost())
 reachy=True
-"""
-reachy.turn_on('head')
-reachy.head.compliant = False
-time.sleep(0.1)
+if config["stage"] != Stage.TESTING.value:
+    reachy.turn_on('head')
+    reachy.head.compliant = False
+    time.sleep(0.1)
 
-# move head to goal position
-movement.goal_position(reachy)
-"""
+    # move head to goal position
+    movement.goal_position(reachy)
+
 stability = ImageStability(reachy)
-stableImage = cv2.imread("board_detection/img1.png") #stability.isStable()
+stableImage = cv2.imread("Pipeline Bilder/img1.png") #stability.isStable()
 
 if len(stableImage) > 1:
     
-    boardPipe = BoardcasesPipeline(stableImage, config["BOARDCOLOR_BOUNDS_LOWER"], config["BOARDCOLOR_BOUNDS_UPPER"])
+    boardPipe = BoardcasesPipeline(config["color_bounds"]["board_lower"], config["color_bounds"]["board_upper"])
 
+    board_cases = boardPipe.getBoardCases(stableImage)
 
-    board_cases = boardPipe.getBoardCases()
     squares = []
     for square, values in board_cases.items():
         print(values)
@@ -50,13 +52,12 @@ if len(stableImage) > 1:
     print(squares)
 
     statePipe = BoardcasesStatePipeline(reachy, squares)
-    state = statePipe.get_board_cases()
+    state = statePipe.get_board_cases(config)
 
     print(state)
 
 
-"""
-movement.base_position(reachy)
-time.sleep(0.2)
-reachy.head.compliant = True
-"""
+if config["stage"] != Stage.TESTING.value:
+    movement.base_position(reachy)
+    time.sleep(0.2)
+    reachy.head.compliant = True

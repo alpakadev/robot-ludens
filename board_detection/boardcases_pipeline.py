@@ -1,24 +1,29 @@
 import cv2
 import numpy as np
 
+# README: Bei der Bearbeitung daran denken, dass das Koordinaten System verkehrt herum ist
+# Statt:        Ist es:
+# x              __x
+# |__y          |y
+# 
+# X-Werte werden vom Ursprung gesehen nach Links größer, Y-Werte vom Ursprung gesehen nach Oben. Daher ergibt sich die UpDown-LeftRight Notation
+
 class BoardcasesPipeline:
-    def __init__(self, img, lowerBounds, upperBounds):
-        self.img = img.copy()
+    def __init__(self, lowerBounds, upperBounds):
         self.lowerBounds = np.array(lowerBounds)
         self.upperBounds = np.array(upperBounds)
 
     def _detectBoard(self, img, lowerBounds, upperBounds):
-        print(lowerBounds, type(lowerBounds))
         # Bounds in Form: (h, s, v)
         # Sucht nach Farben innerhalb der Bounds
-        # Gibt Bild mit allem Schwarz außer der gesuchten Farbe
+        # Gibt Bild mit allem Schwarz außer der gesuchten Farbe (s. Pipeline Bilder/colour_filter.png)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, lowerBounds, upperBounds)
         imask = mask>0
-        cFilter = np.zeros_like(img, np.uint8)
-        cFilter[imask] = img[imask]
+        colorFilter = np.zeros_like(img, np.uint8)
+        colorFilter[imask] = img[imask]
 
-        return cFilter
+        return colorFilter
 
     def _sort(self, array, index):
         # Bubblesort für 2D Array. Index bestimmt welche Stelle der Subarrays als Kriterium genutzt wird
@@ -56,126 +61,151 @@ class BoardcasesPipeline:
         contour = biggerContour
         return contour
 
-    def _getCornerMidwaypoints(self, start, end):
-        # Berechnet die Punkte (O) zwischen zwei Ecken (X):
-        # x -- O -- O -- X
-        # |              |
-        # O              O
-        # |              |
-        # O              O
-        # |              |
-        # X -- O -- O -- X
-        # Gibt die Koordinaten der Midway Points zurück: [[x1, y1], [x2, y2]]
+    def _addBetweenAnchors(self, corners):
+        # Berechnet die Punkte (O) zwischen zwei Ecken (X) und updatet das Corner Dictionary um die entsprechenden Koordinaten
+        # Der Weg ziwschne zwei Punkten wird gedrittelt. Der erste Punkt (firstAnchor) befindet sich auf 33% der Strecke und der zweite bei 66%
+        # (0,0)
+            # x -- O -- O -- X
+            # |              |
+            # O              O -> LEFT
+            # |              |
+            # O              O
+            # |              |
+            # X -- O -- O -- X
+            #        |
+            #        v
+            #       UP
 
-        xMidway1 = int((1 - 0.33) * start[0] + 0.33 * end[0])
-        xMidway2 = int((1 - 0.66) * start[0] + 0.66 * end[0])
-        yMidway1 = int((1 - 0.33) * start[1] + 0.33 * end[1])
-        yMidway2 = int((1 - 0.66) * start[1] + 0.66 * end[1])
-        midwayPoints = [[xMidway1, yMidway1], [xMidway2, yMidway2]]
-        return midwayPoints
-    
-    def _getContourBounds(self, contour):
-        # Sucht nach den Punkten der Kontur, die am wahrscheinlichsten die Ecken darstellen
-        # TODO: Testen, wie das mit dem Board als Raute funktioniert
-        # Gibt einen Array mit allen wichtigen Punkten auf dem Rand des Boards zurück
-        # [[corner, midway1, midway2, corner], [...], [...], [...]]
-        # Index 0 = Untere horizontale Grenze des Boards, 1 = Obere horizontale Grenze des Boards, 2 = linke vertikale Grenze des Boards, 3 = rechte vertikale Grenze des Boards
+        borderlines = {"upperBorder": {"start": corners["upRightCorner"], "end": corners["upLeftCorner"]}, 
+                       "lowerBorder": {"start": corners["downRightCorner"], "end": corners["downLeftCorner"]}, 
+                       "leftBorder": {"start": corners["downLeftCorner"], "end": corners["upLeftCorner"]}, 
+                       "rightBorder": {"start": corners["downRightCorner"], "end": corners["upRightCorner"]}}
+        
+        anchors = corners
 
-        corners = self._findCorners(contour) #eine corners = [[ax1 ay1], [bx2 by2]]
-        midwayPUnten = self._getCornerMidwaypoints(corners[0], corners[1])
-        midwayPOben = self._getCornerMidwaypoints(corners[2], corners[3])
-        midwayPRechts = self._getCornerMidwaypoints(corners[1], corners[3])
-        midwayPLinks = self._getCornerMidwaypoints(corners[0], corners[2])
+        for key, line in borderlines.items():
+            firstAnchor = {"x": int((1 - 0.33) * line["start"]["x"] + 0.33 * line["end"]["x"]), "y": int((1 - 0.33) * line["start"]["y"] + 0.33 * line["end"]["y"])}
+            secondAnchor = {"x": int((1 - 0.66) * line["start"]["x"] + 0.66 * line["end"]["x"]), "y": int((1 - 0.66) * line["start"]["y"] + 0.66 * line["end"]["y"])}
+            anchors[key + "Between1"] = firstAnchor
+            anchors[key + "Between2"] = secondAnchor
 
-        anchorsUnten = [corners[0], midwayPUnten[0], midwayPUnten[1], corners[1]]
-        anchorsOben = [corners[2], midwayPOben[0], midwayPOben[1], corners[3]]
-        anchorsLinks = [corners[0], midwayPLinks[0], midwayPLinks[1], corners[2]]
-        anchorsRechts = [corners[1], midwayPRechts[0], midwayPRechts[1], corners[3]]
-
-        return [anchorsUnten, anchorsOben, anchorsLinks, anchorsRechts]
+        return anchors
         
     def _findCorners(self, contour):
-        # Unnesting von der Contour:
-        # Bisher [[[x1, y1]]], Nachher: [[x1, y1], [...]]
+        # Findet die Punkte der Kontur, die am weitesten Oben-Links, Oben-Rechts, Unten-Links und Unten-Rechts sind
         cntr = contour[0]
         simpleCntr = []
         for i in range(0, len(cntr)):
             simpleCntr.append(cntr[i][0])
+        
         self._sort(simpleCntr, 1)
+
         bLC = simpleCntr[0]
         for point in simpleCntr:
-            if point[0] <= bLC[0] and point[1] >= bLC[1]:
+            if point[0] >= bLC[0] and point[1] <= bLC[1]:
                 bLC = point
 
         bRC = simpleCntr[0]
         for point in simpleCntr:
-            if point[0] >= bRC[0] and point[1] >= bRC[1]:
+            if point[0] <= bRC[0] and point[1] <= bRC[1]:
                 bRC = point
 
         tLC = simpleCntr[0]
         for point in simpleCntr:
-            if point[0] <= tLC[0] and point[1] <= tLC[1]:
+            if point[0] >= tLC[0] and point[1] >= tLC[1]:
                 tLC = point
         
         tRC = simpleCntr[0]
         for point in simpleCntr:
-            if point[0] >= tRC[0] and point[1] <= tRC[1]:
+            if point[0] <= tRC[0] and point[1] >= tRC[1]:
                 tRC = point
 
-        return [bLC, bRC, tLC, tRC]
+        return {"downLeftCorner": {"x": bLC[0], "y": bLC[1]}, "downRightCorner": {"x": bRC[0], "y": bRC[1]}, "upLeftCorner": {"x": tLC[0], "y": tLC[1]}, "upRightCorner": {"x": tRC[0], "y": tRC[1]}}
 
-    def _lineIntersection(self, verticalLine, horizontalLine):
-        # Berechnet Geradengleichungen von zwei horizontal und zwei vertikal gegenüberliegenden Punkten, um Schnittpunkte an den Ecken der Quadrate innerhalb des Spielfeld zu berechnen
-        # Gibt den Schnittpunkt dieser zwei Geraden zurück:
-        # [x1, y1]
-        xdiff = (verticalLine[0][0] - verticalLine[1][0], horizontalLine[0][0] - horizontalLine[1][0])
-        ydiff = (verticalLine[0][1] - verticalLine[1][1], horizontalLine[0][1] - horizontalLine[1][1])
+    def _lineIntersection(self, hLine, vLine, img):
+        # Berechnet Geradengleichungen von zwei horizontal und zwei vertikal gegenüberliegenden Punkten, 
+        # um durch die Schnittpunkte die Eckpunkte des mittleren Quadrats bestimmen zu können
+        # vLine und hLine sind Arrays mit je zwei Punkten: [{x: x, y: y}, {x2: x2, y2: y2}]
 
-        def _det( a, b):
-            return a[0] * b[1] - a[1] * b[0]
-        div = _det(xdiff, ydiff)
-        if div == 0:
-            raise Exception('lines do not intersect')
+        if vLine[0]["x"] > vLine[1]["x"]:
+            temp = vLine[0]
+            vLine[0] = vLine[1]
+            vLine[1] = temp
+        if hLine[0]["x"] > hLine[1]["x"]:
+            temp = hLine[0]
+            hLine[0] = hLine[1]
+            hLine[1] = temp
+               
+        mVert = (vLine[1]["y"] - vLine[0]["y"]) / (vLine[1]["x"] - vLine[0]["x"])
+        mHorizont = (hLine[1]["y"] - hLine[0]["y"]) / (hLine[1]["x"] - hLine[0]["x"])
+        nVert = vLine[0]["y"] - (mVert * vLine[0]["x"])
+        nHorizont = hLine[0]["y"] - (mHorizont * hLine[0]["x"])
+        x = (nVert - nHorizont) / (mHorizont - mVert)
+        y = mVert * x + nVert
 
-        d = (_det(*verticalLine), _det(*horizontalLine))
-        x = _det(d, xdiff) / div
-        y = _det(d, ydiff) / div
-        return [int(x), int(y)]
+        return {"x": int(x), "y": int(y)}
+
+    def _addLineintersectionAnchors(self, anchors, img):
+        # Ergänzt das Anchor Dictionary um die Eckpunkte des Quadrats in der Mitte des Boards
+        # Dazu werden Geradenschnittpunkte verwendet (s.u.)
+        # Berechnet die Schnittpunkte (DL, DR, TL, TR) zwischen zwei BetweenPoints (1 oder 2):
+        # x -- 1 -- 2 -- X
+        # |    |    |    |
+        # 1 -- DR   DL-- 1 -> LEFT
+        # |              |
+        # 2 -- UR   UL-- 2
+        # |    |    |    |
+        # X -- 1 -- 2 -- X
+        #        |
+        #       UP
+        upLeftIntersect = self._lineIntersection([anchors["rightBorderBetween2"], anchors["leftBorderBetween2"]], [anchors["lowerBorderBetween2"], anchors["upperBorderBetween2"]], img)
+        upRightIntersect = self._lineIntersection([anchors["rightBorderBetween2"], anchors["leftBorderBetween2"]], [anchors["lowerBorderBetween1"], anchors["upperBorderBetween1"]], img)
+        downLeftIntersect = self._lineIntersection([anchors["rightBorderBetween1"], anchors["leftBorderBetween1"]], [anchors["lowerBorderBetween2"], anchors["upperBorderBetween2"]], img)
+        downRightIntersect = self._lineIntersection([anchors["rightBorderBetween1"], anchors["leftBorderBetween1"]], [anchors["lowerBorderBetween1"], anchors["upperBorderBetween1"]], img)
+        anchors.update({"upRightIntersect": {"x": upRightIntersect["x"], "y": upRightIntersect["y"]}, 
+                        "upLeftIntersect": {"x": upLeftIntersect["x"], "y": upLeftIntersect["y"]}, 
+                        "downRightIntersect": {"x": downRightIntersect["x"], "y": downRightIntersect["y"]}, 
+                        "downLeftIntersect": {"x": downLeftIntersect["x"], "y": downLeftIntersect["y"]}})
+        
+        return anchors
 
     def _squares(self, anchors):
-        # 2 - 3
-        # 0 - 1
-        #anchors = [[corner, mW1, mW2, corner], []...], Reihenfolge: Unten, Oben, Links, Rechts
-        # Berechnet Koordinaten der Board Felder
-        # Gibt Dictionary mit den einzelnen Feldern zurück
-        upLeftIntersect = self._lineIntersection([anchors[0][1], anchors[1][1]], [anchors[2][2], anchors[3][2]])
-        upRightIntersect = self._lineIntersection([anchors[0][2], anchors[1][2]], [anchors[2][2], anchors[3][2]])
-        downLeftIntersect = self._lineIntersection([anchors[0][1], anchors[1][1]], [anchors[2][1], anchors[3][1]])
-        downRightIntersect = self._lineIntersection([anchors[0][2], anchors[1][2]], [anchors[2][1], anchors[3][1]])
-
-        squares = {"tL": [anchors[1][0], anchors[1][1], anchors[2][2], upLeftIntersect], 
-                "tM": [anchors[1][1], anchors[1][2], upLeftIntersect, upRightIntersect], 
-                "tR": [anchors[1][2], anchors[1][-1], upRightIntersect, anchors[3][2]], 
-                "mL": [anchors[2][2], upLeftIntersect, anchors[2][1], downLeftIntersect], 
-                "mM": [upLeftIntersect, upRightIntersect, downLeftIntersect, downRightIntersect], 
-                "mR": [upRightIntersect, anchors[3][2], downRightIntersect, anchors[3][1]], 
-                "bL": [anchors[2][1], downLeftIntersect, anchors[0][0], anchors[0][1]], 
-                "bM": [downLeftIntersect, downRightIntersect, anchors[0][1], anchors[0][2]],
-                "bR": [downRightIntersect, anchors[3][1], anchors[0][2], anchors[0][3]]}
+        # Definiert die Eckpunkte der einzelnen Bildquadrate. Die Richtungsangaben sind vom Ursprung ausgesehen
+        squares = {"upL": {"upLeft": anchors["upLeftCorner"], "upRight": anchors["upperBorderBetween2"], "downLeft": anchors["leftBorderBetween2"], "downRight": anchors["upLeftIntersect"]}, 
+                "upMid": {"upLeft": anchors["upperBorderBetween2"], "upRight": anchors["upperBorderBetween1"], "downLeft": anchors["upLeftIntersect"], "downRight": anchors["upRightIntersect"]}, 
+                "upR": {"upLeft": anchors["upperBorderBetween1"], "upRight": anchors["upRightCorner"], "downLeft": anchors["upRightIntersect"], "downRight": anchors["rightBorderBetween2"]}, 
+                "midL": {"upLeft": anchors["leftBorderBetween2"], "upRight": anchors["upLeftIntersect"], "downLeft": anchors["leftBorderBetween1"], "downRight": anchors["downLeftIntersect"]}, 
+                "midMid": {"upLeft": anchors["upLeftIntersect"], "upRight": anchors["upRightIntersect"], "downLeft": anchors["downLeftIntersect"], "downRight": anchors["downRightIntersect"]}, 
+                "midR": {"upLeft": anchors["upRightIntersect"], "upRight": anchors["rightBorderBetween2"], "downLeft": anchors["downRightIntersect"], "downRight": anchors["rightBorderBetween1"]}, 
+                "downL": {"upLeft": anchors["leftBorderBetween1"], "upRight": anchors["downLeftIntersect"], "downLeft": anchors["downLeftCorner"], "downRight": anchors["lowerBorderBetween2"]}, 
+                "downMid": {"upLeft": anchors["downLeftIntersect"], "upRight": anchors["downRightIntersect"], "downLeft": anchors["lowerBorderBetween2"], "downRight": anchors["lowerBorderBetween1"]},
+                "downR": {"upLeft": anchors["downRightIntersect"], "upRight": anchors["rightBorderBetween1"], "downLeft": anchors["lowerBorderBetween1"], "downRight": anchors["downRightCorner"]}}
         return squares
 
-    def getBoardCases(self):
+    def getBoardCases(self, img):
+        # Nur für das Showcase
         color = (255, 0, 0)
-        cFilteredImg = self._detectBoard(self.img, self.lowerBounds, self.upperBounds)
-        boardCntr = self._getBoardContour(cFilteredImg, self.lowerBounds, self.upperBounds)
-        boardCntrBounds = self._getContourBounds(boardCntr)
-        sqrs = self._squares(boardCntrBounds)
 
+        # Bild nach Farbe Filtern
+        colorFilteredImg = self._detectBoard(img, self.lowerBounds, self.upperBounds)
+        # Kontur der gefilterten Figur finden
+        boardCntr = self._getBoardContour(colorFilteredImg, self.lowerBounds, self.upperBounds)
+        # Eindeutige Eckpunkte finden
+        boardCorners = self._findCorners(boardCntr)
+        # Eckpunkte um Punkte zwischen den Ecken ergänzen
+        anchors  = self._addBetweenAnchors(boardCorners)
+        # Ankerpunkte um die Punkte in der Mitte des Boards ergänzen
+        allAnchors = self._addLineintersectionAnchors(anchors, colorFilteredImg)
+        # Koordinaten der Board Quadrate bestimmen
+        sqrs = self._squares(allAnchors)
+
+        # Darstellen der Quadrate für das Showcase
         for square, values in sqrs.items():
-            cv2.rectangle(cFilteredImg, (values[0][0], values[0][1]), (values[-1][0], values[-1][1]), color, 2)
-            cv2.putText(cFilteredImg, square, (values[0][0], values[0][1]), cv2.FONT_HERSHEY_COMPLEX, 1, color, 1, cv2.LINE_AA)
+            print(values)
+            cv2.rectangle(colorFilteredImg, (values["upLeft"]["x"], values["upLeft"]["y"]), (values["downRight"]["x"], values["downRight"]["y"]), color, 2)
+            cv2.putText(colorFilteredImg, square, (values["upRight"]["x"], values["upRight"]["y"]), cv2.FONT_HERSHEY_COMPLEX, 1, color, 1, cv2.LINE_AA)
         
+        cv2.imshow("squares.png", colorFilteredImg)
+        cv2.waitKey()
 
-        #cv2.imshow("test", cFilteredImg)
-        #cv2.waitKey()
         return sqrs

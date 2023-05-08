@@ -6,11 +6,10 @@ class BoardcasesStatePipeline:
     def __init__(self, reachy, squares):
         self.reachy = reachy
         self.squares = squares
-        self.config = yaml.safe_load(open("game_state_detection/config.yaml"))
         
-    def get_board_cases(self):
-        color_bounds = self.config['color_bounds']
-        thresholds = self.config['thresholds']
+    def get_board_cases(self, config):
+        color_bounds = config['color_bounds']
+        thresholds = config['thresholds']
 
         # Initialize 3x3 matrix which is later handed to movement team
         board_cases = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
