@@ -13,7 +13,7 @@ import numpy as np
 
 class MoveImpl:
 
-    def __init__(self, reachy=ReachySDK(host='localhost')):
+    def __init__(self, reachy):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
         # Starting movement to Base Position
@@ -140,9 +140,9 @@ class MoveImpl:
 
 if __name__ == "__main__":
     # Instantiate reachy instance
-    reachy = ReachySDK(host=constants.HOSTADDRESS)
+    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
 
-    robot = MoveImpl(reachy)
+    robot = MoveImpl(reachy_sdk)
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
