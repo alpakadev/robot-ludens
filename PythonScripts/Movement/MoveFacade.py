@@ -5,9 +5,9 @@ from Enums.Board import Board
 
 
 class MoveFacade:
-    def __init__(self):
+    def __init__(self, reachy):
         self.block_manager = OutsideBlockFacade()
-        self.move = MoveImpl()
+        self.move = MoveImpl(reachy)
         self.interrupt = InterruptImpl()
 
     def do_move_block(self, to: Board):
