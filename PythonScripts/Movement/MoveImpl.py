@@ -128,6 +128,13 @@ class MoveImpl:
         """
         pass
 
+    def turn_body(self, degree):
+        """
+        Rotates the mobile base by a given angle (counterclockwise)
+        :param degree: The angle to rotate
+        """
+        pass
+
     def get_position(self):
         """
         Returns current Cartesian coordinitas Position
