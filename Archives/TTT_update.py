@@ -330,7 +330,7 @@ def arcadeModus():
 # arcadeModus()
 
 board = [[0, -1, 0], [0, 1, 0], [0, 0, 0]]
-input = [[0, -1, 0], [1, 1, 0], [-1, 0, 0]]
+input = [[0, -1, 0], [1, 1, 0], [0, -1, 0]]
 
 print(check_board(input))
 
