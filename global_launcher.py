@@ -47,9 +47,8 @@ if len(stableImage) > 1:
     game_board_coords = game_board_detection(reachy)
     cases_coords = cases_detection(reachy)
 
-
     red_figure_coords, green_figure_coords = game_figure_detection(reachy, game_board_coords)
-    game_score = game_score_detection(cases_coords, red_figure_coords, green_figure_coords)
+    # game_score = game_score_detection(cases_coords, red_figure_coords, green_figure_coords)
 
 if config["stage"] != Stage.TESTING.value:
     movement.base_position(reachy)
