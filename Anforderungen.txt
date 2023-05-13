@@ -13,3 +13,18 @@ Probleme:
  - Unterscheidung zwischen Steinen auf dem Brett und neben dem Brett (zusätzliche Markierungen oder nur anhand von Farbe und relativer Position zum Brett)
  - Verfahren zur Kalibrierung von Reachy, damit automatisch die selbe Entfernung zum Tisch eingenommen wird (Vielleicht an Referenzpunkt ausrichten?)
  - Bewegungserkennung um zu verhindern, dass relevante Teile des Bretts verdeckt sind und stabil verdeckte Bilder akzeptiert werden (Bewegung im Bild erkennen, prüfen ob alles relevante konstant zu sehen ist)
+
+Funktionen die wir anbieten:
+
+getBoardObjects() -> (Echt-Welt?) Koordinaten aller Objekte auf dem Brett
+getBoardState() -> Aktuelle Spielbrett Belegung als 2D Array
+getNearestFreePiece() -> (Echt-Welt?) Koordinaten des nähesten freien Reachy Steins
+
+Daten auf die wir angewiesen sind:
+
+isInPosition -> Ob der Roboter in der richtigen Position ist um Wahrnehmung zu starten (True/False)
+distanceFromBoard -> x und y Entfernung vom Board in cm
+
+Gemeinsame Konfiguration:
+
+- Winkel des Kopfes bei der Wahrnehmung
