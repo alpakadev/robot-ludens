@@ -1,18 +1,36 @@
 import numpy
-
+import numpy as np
+from enum import Enum
 from scipy.spatial.transform import Rotation as R
 from numpy import ndarray
 
 
+class RotationAxis(Enum):
+    X = 'x',
+    Y = 'y',
+    Z = 'z'
+
+
 class KinematicModelHelper:
-    def _build_rot_mat(self, rot_direction: str, rot_axis: int):
+    def _build_rot_mat(self, rotation: dict):
         """
 
-        :param rot_direction: the rotation axis
-        :param rot_axis: the rotation amount around the axis
-        :return: ndarray
         """
-        return numpy.around(R.from_euler(rot_direction, numpy.deg2rad(rot_axis)).as_matrix(), 3)
+        Z = None
+        Y = None
+        X = None
+
+        for key, value in rotation.items():
+            rot = (numpy.around(R.from_euler(key, numpy.deg2rad(value)).as_matrix(), 3))
+            if key == 'x':
+                X = rot
+            if key == 'y':
+                Y = rot
+            if key == 'z':
+                Z = rot
+
+        rotations_combined = np.matmul(Z, Y, X)
+        return rotations_combined
 
     def _build_target_pos_mat(self, rot_mat: ndarray, pose: list):
         """
@@ -28,6 +46,6 @@ class KinematicModelHelper:
         target_pos.append([0, 0, 0, 1])
         return numpy.array(target_pos)
 
-    def get_kinematic_move(self, pose: list, rot_direction: str, rot_axis: int):
-        rotation_matrix = self._build_rot_mat(rot_direction, rot_axis)
+    def get_kinematic_move(self, pose: list, rotation: dict):
+        rotation_matrix = self._build_rot_mat(rotation)
         return self._build_target_pos_mat(rotation_matrix, pose)
