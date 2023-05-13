@@ -1,6 +1,9 @@
+from game_state_detection.game_score_detection import game_score_detection
+from game_state_detection.game_figure_detection import game_figure_detection
+from game_state_detection.cases_detection import cases_detection
+from game_state_detection.game_board_detection import game_board_detection
 from square import Square
 from board_detection.boardcases_pipeline import BoardcasesPipeline
-from game_state_detection.boardcases_state_pipeline import BoardcasesStatePipeline
 from reachy_sdk import ReachySDK
 import yaml
 import movement
@@ -20,7 +23,7 @@ def getHost():
     else:
         return "localhost"
     
-#reachy = ReachySDK(getHost())
+reachy = ReachySDK(getHost())
 reachy=True
 if config["stage"] != Stage.TESTING.value:
     reachy.turn_on('head')
@@ -39,23 +42,14 @@ if len(stableImage) > 1:
 
     board_cases = boardPipe.getBoardCases(stableImage)
 
-    squares = []
-    for square, values in board_cases.items():
-        print(values)
-        top_left = values[2]
-        bottom_right = values[1]
-        squares.append(Square(top_left[0], 
-                                top_left[1], 
-                                bottom_right[0], 
-                                bottom_right[1], 
-                                None))
-    print(squares)
+    # game_board_coords AND cases_coords SHOULD BE RETURNED FROM board_cases, 
+    # I used my own test functions here
+    game_board_coords = game_board_detection(reachy)
+    cases_coords = cases_detection(reachy)
 
-    statePipe = BoardcasesStatePipeline(reachy, squares)
-    state = statePipe.get_board_cases(config)
 
-    print(state)
-
+    red_figure_coords, green_figure_coords = game_figure_detection(reachy, game_board_coords)
+    game_score = game_score_detection(cases_coords, red_figure_coords, green_figure_coords)
 
 if config["stage"] != Stage.TESTING.value:
     movement.base_position(reachy)

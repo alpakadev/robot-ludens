@@ -207,5 +207,4 @@ class BoardcasesPipeline:
         
         cv2.imshow("squares.png", colorFilteredImg)
         cv2.waitKey()
-
         return sqrs
