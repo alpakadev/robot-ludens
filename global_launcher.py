@@ -1,4 +1,3 @@
-from game_state_detection.game_score_detection import game_score_detection
 from game_state_detection.game_figure_detection import game_figure_detection
 from game_state_detection.cases_detection import cases_detection
 from game_state_detection.game_board_detection import game_board_detection
