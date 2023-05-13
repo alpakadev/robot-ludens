@@ -5,7 +5,7 @@ from reachy_sdk.trajectory.interpolation import InterpolationMode
 from Helper.KinematicModelHelper import KinematicModelHelper
 from Helper.KinematicModelHelper import RotationAxis
 import numpy as np
-
+import time
 
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
@@ -31,17 +31,23 @@ class MoveImpl:
         """
         # Setting arm joints to Stiff-mode for starting movement
         self.reachy.turn_on("r_arm")
+        # Setting head joints to stiff mode
+        self.reachy.turn_on("head")
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
-
+        # starting movement of reachy's head
+        self.move_head(constants.HEAD_LOOK_DOWN)
+        time.sleep(1.0)
+        self.move_head(constants.HEAD_LOOK_AHEAD)
+        self.move_head()
         # 1. Moves arm in front of the Object
         pos_from[0] -= constants.DELTA_GRIP_OBJ
         self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
         pos_from[0] += constants.DELTA_GRIP_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
-
+        self.move_head()
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
@@ -52,10 +58,12 @@ class MoveImpl:
         pos_from[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
         pos_from[2] -= constants.DELTA_ABOVE_OBJ
+        self.move_head(pos_goal)
         # 6. Moves arm above pos_to
         pos_to[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})  ##TODO: How to Handle POS_ABOVE_BOARD?
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        self.move_head()
         # 7. moves arm to pos_to
         self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
         # 8. opens Hand
@@ -64,12 +72,17 @@ class MoveImpl:
         pos_to[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        self.move_head()
         # 10. Moves arm back to Base Position
+        
         self._grip_close()
         self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
         self.reachy.turn_off_smoothly("r_arm")
+        # head back to default and setting head to compliant mode
+        self.move_head(constants.HEAD_LOOK_AHEAD)
+        self.reachy.turn_off("head")
         pass
 
     def _move_arm(self, pos_to: list, rotation: dict):
@@ -136,6 +149,22 @@ class MoveImpl:
         :return: array
         """
         pass
+    
+    def move_head(self, look_at = None):
+        """
+        Moves reachy's head either by the given coordinates defined by look_at or
+        follows the right arm's coordinates 
+        
+        """
+        # head follows arm
+        if look_at is None:
+            x, y, z = self.reachy.r_arm.forward_kinematics()[:3,-1] 
+            self.reachy.head.look_at(x=x, y=y, z=z-0.05, duration=1.0)
+            
+        # head looks at given x,y,z
+        else:
+            x,y,z = look_at
+            self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0) 
 
 
 if __name__ == "__main__":
