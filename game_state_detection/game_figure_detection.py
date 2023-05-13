@@ -25,13 +25,10 @@ def game_figure_detection(reachy, game_board_coords):
     # Define the lower and upper bounds for red color
     lower_red = np.array([0, 70, 50])
     upper_red = np.array([10, 255, 255])
-    lower_red1 = np.array([170, 70, 50])
-    upper_red1 = np.array([180, 255, 255])
 
     # Threshold the image to get the red color regions
-    red_mask1 = cv2.inRange(hsv, lower_red, upper_red)
-    red_mask2 = cv2.inRange(hsv, lower_red1, upper_red1)
-    red_mask = cv2.bitwise_or(red_mask1, red_mask2)
+    red_mask = cv2.inRange(hsv, lower_red, upper_red)
+    red_mask = cv2.bitwise_or(red_mask)
 
     # Find the contours of red regions
     red_contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
