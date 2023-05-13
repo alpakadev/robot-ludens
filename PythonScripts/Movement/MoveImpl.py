@@ -74,7 +74,6 @@ class MoveImpl:
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 10. Moves arm back to Base Position
-        
         self._grip_close()
         self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
 
