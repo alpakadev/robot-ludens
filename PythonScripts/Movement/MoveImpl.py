@@ -3,6 +3,7 @@ from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 from Helper.KinematicModelHelper import KinematicModelHelper
+from Helper.KinematicModelHelper import RotationAxis
 import numpy as np
 
 
@@ -17,7 +18,7 @@ class MoveImpl:
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
         # Starting movement to Base Position
-        self._move_arm(constants.POS_BASE_COORDINATES)
+        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
@@ -37,49 +38,48 @@ class MoveImpl:
 
         # 1. Moves arm in front of the Object
         pos_from[0] -= constants.DELTA_GRIP_OBJ
-        self._move_arm(pos_from)
+        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
         pos_from[0] += constants.DELTA_GRIP_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
 
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
-        self._move_arm(pos_from)
+        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above current position
         pos_from[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_from)
+        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
         pos_from[2] -= constants.DELTA_ABOVE_OBJ
         # 6. Moves arm above pos_to
         pos_to[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to)  ##TODO: How to Handle POS_ABOVE_BOARD?
+        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})  ##TODO: How to Handle POS_ABOVE_BOARD?
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
         # 7. moves arm to pos_to
-        self._move_arm(pos_to)
+        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
         pos_to[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to)
+        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
         pos_to[2] -= constants.DELTA_ABOVE_OBJ
         # 10. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(constants.POS_BASE_COORDINATES)  ##TODO: How to Handle POS_BASE?
+        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
         self.reachy.turn_off_smoothly("r_arm")
         pass
 
-    def _move_arm(self, pos_to):
+    def _move_arm(self, pos_to: list, rotation: dict):
         """
         Moving arm to Position
 
         """
-        print(pos_to)
         # Only adjust the rot_direction [x, y, z] and the rot_axis of type deg and then the arm movement
         # should be precise
-        target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rot_direction='y', rot_axis=-90)
+        target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
 
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
         goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
