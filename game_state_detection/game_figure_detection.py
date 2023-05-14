@@ -28,7 +28,7 @@ def game_figure_detection(reachy, game_board_coords):
 
     # Threshold the image to get the red color regions
     red_mask = cv2.inRange(hsv, lower_red, upper_red)
-    red_mask = cv2.bitwise_or(red_mask)
+    # red_mask = cv2.bitwise_or(red_mask)
 
     # Find the contours of red regions
     red_contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
