@@ -1,12 +1,10 @@
-from game_state_detection.game_figure_detection import game_figure_detection
-from game_state_detection.cases_detection import cases_detection
+from game_state_detection.game_figure_detection import get_all_pieces_coordinates
+from game_state_detection.game_state_detection import get_board_state
+from game_state_detection.board_cases_detection import get_board_cases
 from game_state_detection.game_board_detection import game_board_detection
-from square import Square
-from board_detection.boardcases_pipeline import BoardcasesPipeline
 from reachy_sdk import ReachySDK
 import yaml
 import movement
-import cv2
 from stage import Stage
 import time
 from image_stability import ImageStability
@@ -23,31 +21,23 @@ def getHost():
         return "localhost"
     
 reachy = ReachySDK(getHost())
-reachy=True
+
 if config["stage"] != Stage.TESTING.value:
     reachy.turn_on('head')
     reachy.head.compliant = False
     time.sleep(0.1)
-
-    # move head to goal position
     movement.goal_position(reachy)
 
 stability = ImageStability(reachy)
-stableImage = cv2.imread("Pipeline Bilder/img1.png") #stability.isStable()
+stableImage = stability.isStable()
 
 if len(stableImage) > 1:
-    
-    boardPipe = BoardcasesPipeline(config["color_bounds"]["board_lower"], config["color_bounds"]["board_upper"])
+    game_board_coords = game_board_detection(stableImage)
+    cases_coords = get_board_cases(game_board_coords)
 
-    board_cases = boardPipe.getBoardCases(stableImage)
-
-    # game_board_coords AND cases_coords SHOULD BE RETURNED FROM board_cases, 
-    # I used my own test functions here
-    game_board_coords = game_board_detection(reachy)
-    cases_coords = cases_detection(reachy)
-
-    red_figure_coords, green_figure_coords = game_figure_detection(reachy, game_board_coords)
-    # game_score = game_score_detection(cases_coords, red_figure_coords, green_figure_coords)
+    red_figure_coords, green_figure_coords = get_all_pieces_coordinates(stableImage, game_board_coords)
+    game_score = get_board_state(stableImage, cases_coords)
+    print(game_score)
 
 if config["stage"] != Stage.TESTING.value:
     movement.base_position(reachy)
