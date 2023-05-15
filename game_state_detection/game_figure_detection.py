@@ -13,7 +13,7 @@ def get_all_pieces_coordinates(frame, game_board_coords):
     lower_green = np.array(config["color_bounds"]["green_lower"])
     upper_green = np.array(config["color_bounds"]["green_upper"])
 
-    lower_red = np.array(config["color_bounds"]["red_upper"])
+    lower_red = np.array(config["color_bounds"]["red_lower"])
     upper_red = np.array(config["color_bounds"]["red_upper"])
 
     # Crop the image to get only the shape of the board

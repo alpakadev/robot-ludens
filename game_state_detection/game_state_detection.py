@@ -14,7 +14,7 @@ lower_green = np.array(config["color_bounds"]["green_lower"])
 upper_green = np.array(config["color_bounds"]["green_upper"])
 
 # Define the lower and upper bounds for red color
-lower_red = np.array(config["color_bounds"]["red_upper"])
+lower_red = np.array(config["color_bounds"]["red_lower"])
 upper_red = np.array(config["color_bounds"]["red_upper"])
 
 def get_board_state(frame, cases_coords):
