@@ -158,13 +158,15 @@ def make_good_move(p):
         # FALLE VERHINDERN
         print("Zug 2.1")
         if combovalue(6) == -1 or combovalue(7) == -1:
-            x = 1
-            y = random.randint(0, 2)
-            randfeld = [x, y]
-            a = random.sample(randfeld, 2)
-            print(a)
-            board[a[0]][a[1]] = 1 ##PROBELM HIER
-            return True
+            while 1:
+                x = 1
+                y = random.randint(0, 2)
+                randfeld = [x, y]
+                a = random.sample(randfeld, 2)
+                if a != [1,1]:
+                    print(a)
+                    board[a[0]][a[1]] = 1
+                    return True
     # TODO: Zug == 2.1: bei 4+1+4:Rand Feld, sonst Gewinnkombination mit Summe = 1 = 1+0+0
 
     return False
