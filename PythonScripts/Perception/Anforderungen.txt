@@ -1,0 +1,30 @@
+Aufgaben Definition:
+ - Entfernung zu einzelnen Spielobjekten relativ zu Reachy in cm an das Bewegungsteam
+ - Spielfeld Belegung (+ Anzahl freier Steine) an das Strategieteam
+
+Voraussetzungen für uns:
+ - Reachy muss immer die gleiche Entfernung vom Tisch haben, damit unsere Berechnungen genau sind
+ - Reachy muss immer im gleichen Winkel auf den Tisch gucken, wenn etwas wahrgenommen werden soll
+ - Fürs erste können wir davon ausgehen, dass alle Anforderungen erfüllt sind
+
+Probleme:
+ - Berechnung von Echt-Welt Entfernungen aus Bildpunkten (Anhaltspunkte: Referenzpunkt auf dem Brett, gleiche Distanz zum Tisch, selber Winkel, ggf. selbst etwas ausmessen?)
+ - Erkennung der Brett Belegung mit Unterscheidung zwischen eigenen und fremden Steinen (getrennt von Koordinaten Aufnahme oder parallel?)
+ - Unterscheidung zwischen Steinen auf dem Brett und neben dem Brett (zusätzliche Markierungen oder nur anhand von Farbe und relativer Position zum Brett)
+ - Verfahren zur Kalibrierung von Reachy, damit automatisch die selbe Entfernung zum Tisch eingenommen wird (Vielleicht an Referenzpunkt ausrichten?)
+ - Bewegungserkennung um zu verhindern, dass relevante Teile des Bretts verdeckt sind und stabil verdeckte Bilder akzeptiert werden (Bewegung im Bild erkennen, prüfen ob alles relevante konstant zu sehen ist)
+
+Funktionen die wir anbieten:
+
+getBoardObjects() -> (Echt-Welt?) Koordinaten aller Objekte auf dem Brett
+getBoardState() -> Aktuelle Spielbrett Belegung als 2D Array
+getNearestFreePiece() -> (Echt-Welt?) Koordinaten des nähesten freien Reachy Steins
+
+Daten auf die wir angewiesen sind:
+
+isInPosition -> Ob der Roboter in der richtigen Position ist um Wahrnehmung zu starten (True/False)
+distanceFromBoard -> x und y Entfernung vom Board in cm
+
+Gemeinsame Konfiguration:
+
+- Winkel des Kopfes bei der Wahrnehmung

@@ -1,0 +1,43 @@
+The coordinates of Reachy, Table Top and TicTacToe Field in Unity:
+
+Reachy:
+    - Position:
+        - X: 0.1188927
+        - Y: 0.388
+        - Z: -0.850124
+    - Rotation:
+        - X: -90
+        - Y: 0
+        - Z: -91.534
+    - Scale:
+        - X: 99.99998
+        - Y: 100
+        - Z: 100
+
+Table Top:
+    - Position:
+        - X: 0.2594443
+        - Y: 0.0694689
+        - Z: 0.005280456
+    - Rotation:
+        - X: 0
+        - Y: 0
+        - Z: 0
+    - Scale:
+        - X: 1
+        - Y: 1
+        - Z: 1
+
+Tic Tac Toe Field:
+    - Position:
+        - X: -0.722
+        - Y: 1.048
+        - Z: -0.436
+    - Rotation:
+        - X: 0
+        - Y: -1.746
+        - Z: 0
+    - Scale:
+        - X: 0.07043236
+        - Y: 0.07043236
+        - Z: 0.07043236
