@@ -1,6 +1,6 @@
 from MoveImpl import MoveImpl
 from InterruptImpl import InterruptImpl
-from ..OutsideBlockFacade import OutsideBlockFacade
+from OutsideBlockFacade import OutsideBlockFacade
 from Enums.Board import Board
 
 
