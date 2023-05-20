@@ -8,3 +8,7 @@ DELTA_HAND_WIDTH = 0.02 # A Distance from the middle of the Hand to the non-movi
 DELTA_HAND_TIP = 0.02 # A Distance from the middle of the Hand to tip of the hand
 
 POS_BASE_COORDINATES = [0.36, -0.20, -0.28]
+
+# head
+HEAD_LOOK_AHEAD = [0.5, 0, 0] # default Position
+HEAD_LOOK_DOWN = [0.05, 0, -0.05] # looks at board
