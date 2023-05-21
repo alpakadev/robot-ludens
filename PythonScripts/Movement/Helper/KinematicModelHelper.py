@@ -12,6 +12,10 @@ class RotationAxis(Enum):
 
 
 class KinematicModelHelper:
+
+    def _calculate_rot_mat(self, direction: str, deg: int):
+        return numpy.around(R.from_euler(direction, numpy.deg2rad(deg)).as_matrix(), 3)
+
     def _build_rot_mat(self, rotation: dict):
         """
 
@@ -21,7 +25,7 @@ class KinematicModelHelper:
         X = None
 
         for key, value in rotation.items():
-            rot = (numpy.around(R.from_euler(key, numpy.deg2rad(value)).as_matrix(), 3))
+            rot = self._calculate_rot_mat(key, value)
             if key == 'x':
                 X = rot
             if key == 'y':

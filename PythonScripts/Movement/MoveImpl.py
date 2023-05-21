@@ -6,6 +6,7 @@ from Helper.KinematicModelHelper import KinematicModelHelper
 from Helper.KinematicModelHelper import RotationAxis
 import numpy as np
 import time
+from Enums.Board import Board
 
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
@@ -22,7 +23,7 @@ class MoveImpl:
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
-    def move_object(self, pos_from, pos_to):
+    def move_object(self, pos_from, pos_to: Board):
         """
         Moves Object from A (pos_from) to B (pos_to)
 
@@ -33,6 +34,8 @@ class MoveImpl:
         self.reachy.turn_on("r_arm")
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
+
+        pos_to_value = pos_to.value
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
@@ -60,18 +63,18 @@ class MoveImpl:
         pos_from[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head(pos_goal)
         # 6. Moves arm above pos_to
-        pos_to[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})  ##TODO: How to Handle POS_ABOVE_BOARD?
-        pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': Board.HAND_ROTATIONS[pos_to]})  ##TODO: How to Handle POS_ABOVE_BOARD?
+        pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 7. moves arm to pos_to
-        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': Board.HAND_ROTATIONS[pos_to]})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
-        pos_to[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
-        pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': Board.HAND_ROTATIONS[pos_to]})
+        pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 10. Moves arm back to Base Position
         self._grip_close()
@@ -83,6 +86,7 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.reachy.turn_off("head")
         pass
+
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
