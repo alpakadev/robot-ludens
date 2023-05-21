@@ -3,6 +3,7 @@ from BoardPerception.BoardPerception import BoardPerception
 from GameState.GameState import GameState
 from Helpers.Helpers import Helpers
 from Exceptions.Exceptions import ViewClouded
+from PiecePerception.PiecePerception import PiecePerception
 import cv2
 
 class PerceptionImplementation:
@@ -10,6 +11,7 @@ class PerceptionImplementation:
         self.config = yaml.safe_load(open("PythonScripts/Perception/config.yml"))
         self.board_perception = BoardPerception(self.config)
         self.game_state = GameState()
+        self.piece_perception = PiecePerception(self.config)
         self.helpers = Helpers(reachy, self.config)
 
     def get_non_moving_image(self):
@@ -50,3 +52,19 @@ class PerceptionImplementation:
         # Square = "TOP_LEFT_CORNER", "TOP_RIGHT_CORNER", "TOP_MIDDLE", "BOTTOM_LEFT_CORNER", "BOTTOM_RIGHT_CORNER", "BOTTOM_MIDDLE", "LEFT_MIDDLE", "RIGHT_MIDDLE", "CENTER"
         # Get Real World Coordinates of certain square
         return self.board_perception.get_coordinates_of_square(square)
+
+    def get_nearest_unused_piece(self):
+        # Nur ein Dummy, genaue Implementation fehlt
+        # Soll die Position des nähesten freien Spielsteins bestimmen und in der Form (X, Y) zurückgeben
+        # @return: (12, 12)
+        # Implementation in /PiecePerception/nearest_unused_piece.py
+        frame = self.get_non_moving_image()
+        piece_positions = self.check_for_unused_pieces(frame)
+        nearest_piece = self.piece_perception.get_nearest_unused_piece(piece_coordinates)
+        return nearest_piece
+
+    def check_for_unused_pieces(self, frame):
+        # Untersucht den aktuellen Frame nach ungenutzen Spielsteinen
+        # Implementation in /PiecePerception/unused_pieces_detection.py
+        unused_pieces = self.piece_perception.get_unused_pieces_from_frame(frame)
+        return unused_pieces

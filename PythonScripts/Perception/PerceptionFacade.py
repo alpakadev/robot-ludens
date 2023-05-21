@@ -14,6 +14,10 @@ class PerceptionFacade:
     
     def get_coordinates_of_square(self, square):
         return self.perception_implentation.get_coordinates_of_square(square)
+    
+    def get_nearest_unused_piece(self):
+        """Returns fixed position of the nearest available token not currently in the game"""
+        return self.perception_implentation.get_nearest_unused_piece()
 
     def set_dependencies(self, reachy, move, strat):
         self.perception_implentation = PerceptionImplementation(reachy)
