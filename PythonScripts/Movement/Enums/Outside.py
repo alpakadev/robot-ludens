@@ -12,3 +12,11 @@ class Outside(Enum):
     BLOCK_3 = (0.4, 0.5, 0.0)
     BLOCK_4 = (0.6, 0.5, 0.0)
     BLOCK_5 = (0.8, 0.5, 0.0)
+    
+    #As Vectors from bottom right corner
+    
+    V_BLOCK_1 = (0.125, -0.085, 0.0)
+    V_BLOCK_2 = (0.125, -0.185, 0.0)
+    V_BLOCK_3 = (0.195, -0.085, 0.0)
+    V_BLOCK_4 = (0.195, -0.185, 0.0)
+    V_BLOCK_5 = (0.265, -0.085, 0.0)
