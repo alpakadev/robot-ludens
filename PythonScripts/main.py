@@ -5,12 +5,12 @@ from Perception import PerceptionFacade
 reachy = ReachySDK("localhost")
 
 move = MoveFacade(reachy)
-perc = PerceptionFacade()
+perc = PerceptionFacade(reachy)
 
 """
 strat = CStrategie()
 
-perc.set_dependencies(reachy, move, strat)
+perc.set_dependencies(move, strat)
 move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(reachy, move, perc)
 

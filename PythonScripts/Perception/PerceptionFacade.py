@@ -1,8 +1,8 @@
 from PerceptionImpl import PerceptionImplementation
 
 class PerceptionFacade:
-    def __init__(self):
-        self.perception_implentation = None
+    def __init__(self, reachy):
+        self.perception_implentation = PerceptionImplementation(reachy)
         self.move = None
         self.strat = None
     
@@ -19,7 +19,6 @@ class PerceptionFacade:
         """Returns fixed position of the nearest available token not currently in the game"""
         return self.perception_implentation.get_nearest_unused_piece()
 
-    def set_dependencies(self, reachy, move, strat):
-        self.perception_implentation = PerceptionImplementation(reachy)
+    def set_dependencies(self, move, strat):
         self.move = move
         self.strat = strat
