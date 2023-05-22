@@ -76,9 +76,7 @@ def make_combo_move(n, p):
 def setup_trap():
 
     print("trying to setup trap")
-    # 2 GK die frei sind bis auf 1Feld(was mit 1 belegt ist(Reacy))  und  1 gemeinsames Feld haben
-    #gesuchte GK: SUM==1 (combovalue)
-
+    
     # Problem: -1 + 1 + 1 == 1
     # board[]: [[x,x,x],
     #           [x,x,x],
