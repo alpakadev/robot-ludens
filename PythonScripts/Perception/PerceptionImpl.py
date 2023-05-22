@@ -56,7 +56,7 @@ class PerceptionImplementation:
     def get_nearest_unused_piece(self):
         # Nur ein Dummy, genaue Implementation fehlt
         # Soll die Position des nähesten freien Spielsteins bestimmen und in der Form (X, Y) zurückgeben
-        # @return: (12, 12)
+        # @return: (flaot, float)
         # Implementation in /PiecePerception/nearest_unused_piece.py
         frame = self.get_non_moving_image()
         piece_positions = self.check_for_unused_pieces(frame)

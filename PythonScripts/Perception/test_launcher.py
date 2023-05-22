@@ -8,8 +8,8 @@ def getHost():
     if config["stage"] == Stage.SIMULATION.value:
         return "localhost"
     elif config["stage"] == Stage.LAB.value:
-        #Add Reachys Lab IP here
-        return "Reachys Lab IP"
+        #NICHT AKTUELL BITTE KORRIGIEREN
+        return "192.168.3.94"
     else:
         return "localhost"
     

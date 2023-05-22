@@ -1,3 +1,4 @@
+# TODO: Move this to Movement Module
 def goal_position(reachy):
     try:
         reachy.head.look_at(0.5, 0, -0.6, duration=1)

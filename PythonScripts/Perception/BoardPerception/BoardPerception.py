@@ -1,4 +1,4 @@
-from Exceptions.Exceptions import ViewClouded
+from Exceptions.Exceptions import ViewCloudedError
 from BoardPerception.board_cases_detection import get_board_cases
 from BoardPerception.case_to_realworld_coordinates import case_to_realworld_coordinates
 from BoardPerception.game_board_detection import game_board_detection
@@ -10,7 +10,7 @@ class BoardPerception:
     def get_board_corners(self, frame):
         board_coordinates = game_board_detection(frame, self.config)
         if len(board_coordinates) < 4:
-            raise ViewClouded("Board not recognized")
+            raise ViewCloudedError("Board not recognized")
         else:
             return board_coordinates
     
