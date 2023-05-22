@@ -55,12 +55,10 @@ def combovalue(k):
 # versuche zu gewinnen (2) oder einen Gewinn zu verhindern (-2)
 def make_combo_move(n, p):
     # Gewinn verhindern nur mit gewisser Wahrscheinlichkeit
-    if n == -2:
-        if p < (100 - preventing[level]):
+    if n == -2 and p < (100 - preventing[level]):
             return False
     # Gewinnen nur mit gewisser Wahrscheinlichkeit
-    if n == 2:
-        if p < (100 - winning[level]):
+    if n == 2 and p < (100 - winning[level]):
             return False
     print("trying to make combo move")
     # prüfe, ob eine Kombination passt
