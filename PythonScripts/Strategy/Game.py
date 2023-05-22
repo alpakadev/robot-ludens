@@ -107,14 +107,10 @@ def play():
 #berechnet nächstes Level, evtl dann auf max Level anpassen
 def nextLevel(win_state):
     global level
-    if win_state == -1:
+    if win_state == -1 and level > 0:
         level -= 1
-        if level == -1:
-            level = 0
-    elif win_state == 1:
+    elif win_state == 1 and level < 2:
         level += 1
-        if level == 3:
-            level = 2
 
 
 def arcadeModus():
