@@ -74,9 +74,8 @@ def make_combo_move(n, p):
     return False
 
 def setup_trap():
-
     print("trying to setup trap")
-    
+
     # Problem: -1 + 1 + 1 == 1
     # board[]: [[x,x,x],
     #           [x,x,x],
