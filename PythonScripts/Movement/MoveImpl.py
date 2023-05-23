@@ -205,8 +205,12 @@ if __name__ == "__main__":
     reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
 
     robot = MoveImpl(reachy_sdk)
+    reachy_sdk.turn_on("reachy")
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
     robot.arm_to_init_pos()
+    import time
+    time.sleep(5)
+    reachy_sdk.turn_off_smoothly("reachy")
     #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
