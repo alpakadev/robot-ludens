@@ -23,7 +23,7 @@ class MoveImpl:
         self._move_arm(constants.POS_BASE_COORDINATES)
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
-        self.basePosition = (0.36, -0.20, 0)
+        self.basePosition = [0.36, -0.20, 0]
 
     def getBasePos(self):
         return self.basePosition
