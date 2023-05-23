@@ -7,6 +7,7 @@ from Helper.KinematicModelHelper import RotationAxis
 import numpy as np
 import time
 from Enums.Board import Board
+from Enums.Outside import Outside
 from Helper.HandRotationMapper import HandRotationMapper
 
 
@@ -34,14 +35,14 @@ class MoveImpl:
     def setBasePos(self, coordinate):
         self.basePosition = coordinate
         
-    def addlists(a,b):
+    def addlists(self,a,b):
         c = a
         for i in range(len(c)):
             c[i] += b[i]
             return c
             
 
-    def move_object(self, pos_from, pos_to: Board):
+    def move_object(self, pos_from: Outside, pos_to: Board):
         """
         Moves Object from A (pos_from) to B (pos_to)
 
@@ -55,6 +56,10 @@ class MoveImpl:
         self.reachy.turn_on("head")
 
         pos_to_value = pos_to.value
+        pos_from = pos_from.value
+
+        pos_from = self.addlists(self.basePosition, pos_from)
+        pos_to = self.addlists(self.basePosition, pos_to_value)
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
@@ -66,21 +71,21 @@ class MoveImpl:
         self.move_head()
         # 1. Moves arm in front of the Object
         pos_from[0] -= constants.DELTA_GRIP_OBJ
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
+        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': 0})
         pos_from[0] += constants.DELTA_GRIP_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
         self.move_head()
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
+        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': 0})
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above current position
         pos_from[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
+        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': 0})
         pos_from[2] -= constants.DELTA_ABOVE_OBJ
-        self.move_head(pos_goal)
+        #self.move_head(pos_goal)
         # 6. Moves arm above pos_to
         pos_to_value[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})  ##TODO: How to Handle POS_ABOVE_BOARD?
@@ -196,7 +201,5 @@ if __name__ == "__main__":
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
-    pos_cylinder = [0.4, -0.3, -0.38]
-    pos_goal = [0.4, 0, -0.38]
 
-    robot.move_object(pos_cylinder, pos_goal)
+    robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
