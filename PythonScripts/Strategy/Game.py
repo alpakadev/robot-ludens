@@ -6,7 +6,7 @@ reachy_score = 0
 player_score = 0
 reachy_moveCounter = 0
 player_moveCounter = 0
-level = 1
+level = 2
 
 game_closed = False
 
