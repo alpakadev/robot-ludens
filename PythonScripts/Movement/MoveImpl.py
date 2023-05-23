@@ -9,12 +9,15 @@ import time
 from Enums.Board import Board
 from Helper.HandRotationMapper import HandRotationMapper
 
+
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
 # Older Docs (Content may be depricated):
 # https://pollen-robotics.github.io/reachy-2019-docs/docs/program-your-robot/control-the-arm/#forward-kinematics
 
 class MoveImpl:
+    
+    
 
     def __init__(self, reachy):
         self.reachy = reachy
@@ -23,6 +26,20 @@ class MoveImpl:
         self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
+        self.basePosition = [0.36, -0.20, 0]
+
+    def getBasePos(self):
+        return self.basePosition
+
+    def setBasePos(self, coordinate):
+        self.basePosition = coordinate
+        
+    def addlists(a,b):
+        c = a
+        for i in range(len(c)):
+            c[i] += b[i]
+            return c
+            
 
     def move_object(self, pos_from, pos_to: Board):
         """
