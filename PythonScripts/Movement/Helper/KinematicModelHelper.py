@@ -3,6 +3,8 @@ import numpy as np
 from enum import Enum
 from scipy.spatial.transform import Rotation as R
 from numpy import ndarray
+from PythonScripts.Movement.Enums.Board import Board
+from PythonScripts.Movement.Helper.HandRotationMapper import HandRotationMapper
 
 
 class RotationAxis(Enum):

@@ -7,6 +7,7 @@ from Helper.KinematicModelHelper import RotationAxis
 import numpy as np
 import time
 from Enums.Board import Board
+from Helper.HandRotationMapper import HandRotationMapper
 
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
@@ -30,6 +31,7 @@ class MoveImpl:
         :param pos_from: Coordinates where the Object to move is
         :param pos_to: Coordinates on where to move the object
         """
+        mapper = HandRotationMapper()
         # Setting arm joints to Stiff-mode for starting movement
         self.reachy.turn_on("r_arm")
         # Setting head joints to stiff mode
@@ -64,16 +66,16 @@ class MoveImpl:
         self.move_head(pos_goal)
         # 6. Moves arm above pos_to
         pos_to_value[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': Board.HAND_ROTATIONS[pos_to]})  ##TODO: How to Handle POS_ABOVE_BOARD?
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})  ##TODO: How to Handle POS_ABOVE_BOARD?
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 7. moves arm to pos_to
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': Board.HAND_ROTATIONS[pos_to]})
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
         pos_to_value[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': Board.HAND_ROTATIONS[pos_to]})
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 10. Moves arm back to Base Position
@@ -86,7 +88,6 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.reachy.turn_off("head")
         pass
-
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
