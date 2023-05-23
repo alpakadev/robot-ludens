@@ -27,7 +27,7 @@ class MoveImpl:
         self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
-        self.basePosition = [0.17, -0.20, -0.2]
+        self.basePosition = [0.2, -0.20, -0.38]
 
     def getBasePos(self):
         return self.basePosition
@@ -42,7 +42,7 @@ class MoveImpl:
             return c
             
 
-    def move_object(self, pos_from: Outside, pos_to: Board):
+    def move_object(self, pos_from_enum: Outside, pos_to_enum: Board):
         """
         Moves Object from A (pos_from) to B (pos_to)
 
@@ -55,14 +55,14 @@ class MoveImpl:
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
 
-        pos_to_value = pos_to.value
-        pos_from = pos_from.value
+        pos_to_value = pos_to_enum.value
+        pos_from_value = pos_from_enum.value
 
-        pos_from = self.addlists(self.basePosition, pos_from)
-        pos_to = self.addlists(self.basePosition, pos_to_value)
+        pos_from_value = self.addlists(self.basePosition, pos_from_value)
+        pos_to_value = self.addlists(self.basePosition, pos_to_value)
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
+        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
         # starting movement of reachy's head
         self.move_head(constants.HEAD_LOOK_DOWN)
@@ -70,34 +70,34 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.move_head()
         # 1. Moves arm in front of the Object
-        pos_from[0] -= constants.DELTA_GRIP_OBJ
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': 0})
-        pos_from[0] += constants.DELTA_GRIP_OBJ
+        pos_from_value[0] -= constants.DELTA_GRIP_OBJ
+        self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
+        pos_from_value[0] += constants.DELTA_GRIP_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
         self.move_head()
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above current position
-        pos_from[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': 0})
-        pos_from[2] -= constants.DELTA_ABOVE_OBJ
+        pos_from_value[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
+        pos_from_value[2] -= constants.DELTA_ABOVE_OBJ
         #self.move_head(pos_goal)
         # 6. Moves arm above pos_to
         pos_to_value[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})  ##TODO: How to Handle POS_ABOVE_BOARD?
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})  ##TODO: How to Handle POS_ABOVE_BOARD?
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 7. moves arm to pos_to
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
         pos_to_value[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to)})
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 10. Moves arm back to Base Position
