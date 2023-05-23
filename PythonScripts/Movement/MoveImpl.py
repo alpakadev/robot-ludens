@@ -4,6 +4,7 @@ from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 from Helper.KinematicModelHelper import KinematicModelHelper
 import numpy as np
+import time
 
 
 # Docs:
@@ -17,7 +18,7 @@ class MoveImpl:
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
         # Starting movement to Base Position
-        self._move_arm(constants.POS_BASE_COORDINATES)
+        # self._move_arm(constants.POS_BASE_COORDINATES)
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
@@ -145,7 +146,9 @@ class MoveImpl:
         :param degree: The angle to rotate
         """
         self._prepare_body_movement()
+        time.sleep(2)
         self.reachy.mobile_base.goto(x=0.0, y=0.0, theta=degree)
+        time.sleep(2)
         self._finish_body_movement()
 
     def get_position(self):
@@ -160,13 +163,16 @@ class MoveImpl:
 
 if __name__ == "__main__":
     # Instantiate reachy instance
-    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
+    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True)
 
     robot = MoveImpl(reachy_sdk)
+    reachy_sdk.turn_on("reachy")
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
     pos_cylinder = [0.4, -0.3, -0.38]
     pos_goal = [0.4, 0, -0.38]
 
-    robot.turn_body(90)
+    robot.turn_body(180)
+    reachy_sdk.turn_off_smoothly("reachy")
+
