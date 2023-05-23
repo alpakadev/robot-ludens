@@ -23,11 +23,17 @@ class MoveImpl:
     def __init__(self, reachy):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
+        self.basePosition = [0.07, -0.21, -0.35]
         # Starting movement to Base Position
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
+        #self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
-        self.basePosition = [0.2, -0.20, -0.38]
+
+    def arm_to_init_pos(self):
+        self.reachy.turn_on("r_arm")
+        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
+
+        pass
 
     def getBasePos(self):
         return self.basePosition
@@ -40,7 +46,8 @@ class MoveImpl:
         for i in range(len(c)):
             c[i] += b[i]
             return c
-            
+    
+
 
     def move_object(self, pos_from_enum: Outside, pos_to_enum: Board):
         """
@@ -201,5 +208,5 @@ if __name__ == "__main__":
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
-
-    robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
+    robot.arm_to_init_pos()
+    #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)

@@ -1,5 +1,5 @@
-
 HOSTADDRESS = 'localhost'
+#HOSTADDRESS = '192.168.1.94'
 GRIP_FORCE_HOLDING = 50
 GRIP_FORCE_HOLDING_THRESHOLD = 100
 DELTA_GRIP_OBJ = 0.10 # the Distance to position Hand infront of object
