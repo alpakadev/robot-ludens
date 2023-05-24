@@ -61,7 +61,9 @@ def check_board(input):
 
 # prüft, ob jemand gewonnen hat oder es unentschieden ist
 def check_state():
-    global game_closed, reachy_score, player_score
+    global game_closed
+    global reachy_score
+    global player_score
 
     for combo in range(len(wincombinations)):
         if combovalue(combo) == 3:
@@ -75,17 +77,16 @@ def check_state():
             nextLevel(1)
             game_closed = True
 
-    #found_space = False
-    #for row in board:
-    #    for cell in row:
-    #        if cell == 0:
-    #            found_space = True
-    #if not found_space:
-    #    print("No more moves possible...")
-    #    # nextLevel(0)
-    #    game_closed = True
-    if player_moveCounter + reachy_moveCounter == 9:
+    found_space = False
+    for row in board:
+        for cell in row:
+            if cell == 0:
+                found_space = True
+    if not found_space:
+        print("No more moves possible...")
+        # nextLevel(0)
         game_closed = True
+
 
 def play():
     global reachy_moveCounter, board
@@ -106,14 +107,22 @@ def play():
 #berechnet nächstes Level, evtl dann auf max Level anpassen
 def nextLevel(win_state):
     global level
-    if win_state == -1 and level > 0:
+    if win_state == -1:
         level -= 1
-    elif win_state == 1 and level < 2:
+        if level == -1:
+            level = 0
+    elif win_state == 1:
         level += 1
+        if level == 3:
+            level = 2
 
 
 def arcadeModus():
-    global game_closed, board, reachy_moveCounter, player_moveCounter
+    global level
+    global game_closed
+    global board
+    global reachy_moveCounter
+    global player_moveCounter
     h = True
     exit_game = "1"
     while exit_game == "1":
