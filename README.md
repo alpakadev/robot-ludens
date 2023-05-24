@@ -61,7 +61,7 @@ to switch to newest version enter:
 ## Perception Guide
 
 Downloadlink für die aktuelle Unity-Szene mit Reachy, TicTacToe Feld, und roten/grünen Spielfiguren:
-    https://gigamove.rwth-aachen.de/en/download/813dc3dff83f48f2163327a79cddf5d7
+    https://gigamove.rwth-aachen.de/en/download/713c60aa41e63cf6e643ce11135e3d34
 
 ### Look-At-Fix
 
