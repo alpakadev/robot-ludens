@@ -24,7 +24,7 @@ class MoveImpl:
     def __init__(self, reachy):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
-        self.basePosition = [0.155, -0.3, -0.37]
+        self.basePosition = [0.191, -0.34, -0.37]
         # Starting movement to Base Position
         #self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
@@ -214,6 +214,13 @@ if __name__ == "__main__":
     reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
 
     robot = MoveImpl(reachy_sdk)
+    
+    robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
+    robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
+    robot.move_object(Outside.BLOCK_3, Board.BOTTOM_LEFT)
+    robot.move_object(Outside.BLOCK_4, Board.CENTER)
+    robot.move_object(Outside.BLOCK_5, Board.TOP_RIGHT)
+    
     #reachy_sdk.turn_on("reachy")
 
     # [depth, width, height]
