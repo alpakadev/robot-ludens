@@ -136,20 +136,14 @@ class MoveImpl:
 
         :param pos_to (array): Coordinates on where to move the object
         """
-        self._prepare_body_movement()
         self.reachy.mobile_base.goto(x,y, theta=0)
-        self._finish_body_movement()
 
     def turn_body(self, degree):
         """
         Rotates the mobile base by a given angle (counterclockwise)
         :param degree: The angle to rotate
         """
-        self._prepare_body_movement()
-        time.sleep(2)
         self.reachy.mobile_base.goto(x=0.0, y=0.0, theta=degree)
-        time.sleep(2)
-        self._finish_body_movement()
 
     def get_position(self):
         """
@@ -173,6 +167,5 @@ if __name__ == "__main__":
     pos_cylinder = [0.4, -0.3, -0.38]
     pos_goal = [0.4, 0, -0.38]
 
-    robot.turn_body(180)
     reachy_sdk.turn_off_smoothly("reachy")
 
