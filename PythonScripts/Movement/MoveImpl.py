@@ -10,6 +10,7 @@ from Enums.Board import Board
 from Enums.Outside import Outside
 from Helper.HandRotationMapper import HandRotationMapper
 
+#get the current arm position (Matrix): reachy_sdk.r_arm.forward_kinematics()
 
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
@@ -23,7 +24,7 @@ class MoveImpl:
     def __init__(self, reachy: ReachySDK):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
-        self.basePosition = [0.07, -0.21, -0.35]
+        self.basePosition = [0.1, -0.296, -0.37]
         # Starting movement to Base Position
 
         
@@ -44,10 +45,10 @@ class MoveImpl:
         self.basePosition = coordinate
         
     def addlists(self,a,b):
-        c = a
+        c = a[::]
         for i in range(len(c)):
             c[i] += b[i]
-            return c
+        return c
     
 
 
@@ -58,9 +59,13 @@ class MoveImpl:
         :param pos_from: Coordinates where the Object to move is
         :param pos_to: Coordinates on where to move the object
         """
+        
+        
+        self.arm_to_init_pos()
+        
         mapper = HandRotationMapper()
         # Setting arm joints to Stiff-mode for starting movement
-        self.reachy.turn_on("r_arm")
+        #self.reachy.turn_on("r_arm")
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
 
@@ -69,6 +74,10 @@ class MoveImpl:
 
         pos_from_value = self.addlists(self.basePosition, pos_from_value)
         pos_to_value = self.addlists(self.basePosition, pos_to_value)
+        
+        print("Basepos: ", self.basePosition)
+        print("pos_from_value: ", pos_from_value)
+        print("pos_to_value: ", pos_to_value)
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
@@ -117,7 +126,7 @@ class MoveImpl:
         self.reachy.turn_off_smoothly("r_arm")
         # head back to default and setting head to compliant mode
         self.move_head(constants.HEAD_LOOK_AHEAD)
-        self.reachy.turn_off("head")
+        self.reachy.turn_off_smoothly("head")
         pass
 
     def _move_arm(self, pos_to: list, rotation: dict):
@@ -223,12 +232,22 @@ if __name__ == "__main__":
     reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True)
 
     robot = MoveImpl(reachy_sdk)
-    reachy_sdk.turn_on("reachy")
+    
+    robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
+    robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
+    #robot.move_object(Outside.BLOCK_3, Board.BOTTOM_LEFT)
+    #robot.move_object(Outside.BLOCK_4, Board.CENTER)
+    #robot.move_object(Outside.BLOCK_5, Board.TOP_RIGHT)
+    
+    #reachy_sdk.turn_on("reachy")
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
-    robot.arm_to_init_pos()
-    import time
-    time.sleep(5)
-    reachy_sdk.turn_off_smoothly("reachy")
+    #robot.arm_to_init_pos()
+    #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
+    #robot.move_object(Outside.BLOCK_2, Board.CENTER)
+    
+    #import time
+    #time.sleep(5)
+    #reachy_sdk.turn_off_smoothly("reachy")
     #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
