@@ -6,6 +6,10 @@ from Helper.KinematicModelHelper import KinematicModelHelper
 from Helper.KinematicModelHelper import RotationAxis
 import numpy as np
 import time
+from Enums.Board import Board
+from Enums.Outside import Outside
+from Helper.HandRotationMapper import HandRotationMapper
+
 
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
@@ -13,30 +17,61 @@ import time
 # https://pollen-robotics.github.io/reachy-2019-docs/docs/program-your-robot/control-the-arm/#forward-kinematics
 
 class MoveImpl:
+    
+    
 
     def __init__(self, reachy: ReachySDK):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
+        self.basePosition = [0.07, -0.21, -0.35]
         # Starting movement to Base Position
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
-        # self._move_arm(constants.POS_BASE_COORDINATES)
+
+        
+        #self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
-    def move_object(self, pos_from, pos_to):
+    def arm_to_init_pos(self):
+        self.reachy.turn_on("r_arm")
+        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
+
+        pass
+
+    def getBasePos(self):
+        return self.basePosition
+
+    def setBasePos(self, coordinate):
+        self.basePosition = coordinate
+        
+    def addlists(self,a,b):
+        c = a
+        for i in range(len(c)):
+            c[i] += b[i]
+            return c
+    
+
+
+    def move_object(self, pos_from_enum: Outside, pos_to_enum: Board):
         """
         Moves Object from A (pos_from) to B (pos_to)
 
         :param pos_from: Coordinates where the Object to move is
         :param pos_to: Coordinates on where to move the object
         """
+        mapper = HandRotationMapper()
         # Setting arm joints to Stiff-mode for starting movement
         self.reachy.turn_on("r_arm")
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
 
+        pos_to_value = pos_to_enum.value
+        pos_from_value = pos_from_enum.value
+
+        pos_from_value = self.addlists(self.basePosition, pos_from_value)
+        pos_to_value = self.addlists(self.basePosition, pos_to_value)
+
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
+        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
         # starting movement of reachy's head
         self.move_head(constants.HEAD_LOOK_DOWN)
@@ -44,35 +79,35 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.move_head()
         # 1. Moves arm in front of the Object
-        pos_from[0] -= constants.DELTA_GRIP_OBJ
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
-        pos_from[0] += constants.DELTA_GRIP_OBJ
+        pos_from_value[0] -= constants.DELTA_GRIP_OBJ
+        self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
+        pos_from_value[0] += constants.DELTA_GRIP_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
         self.move_head()
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
+        self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above current position
-        pos_from[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_from, rotation={'y': -90, 'x': 0, 'z': -90})
-        pos_from[2] -= constants.DELTA_ABOVE_OBJ
-        self.move_head(pos_goal)
+        pos_from_value[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
+        pos_from_value[2] -= constants.DELTA_ABOVE_OBJ
+        #self.move_head(pos_goal)
         # 6. Moves arm above pos_to
-        pos_to[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})  ##TODO: How to Handle POS_ABOVE_BOARD?
-        pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})  ##TODO: How to Handle POS_ABOVE_BOARD?
+        pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 7. moves arm to pos_to
-        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
-        pos_to[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to, rotation={'y': -90, 'x': 0, 'z': 90})
-        pos_to[2] -= constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] += constants.DELTA_ABOVE_OBJ
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
+        pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 10. Moves arm back to Base Position
         self._grip_close()
@@ -188,10 +223,12 @@ if __name__ == "__main__":
     reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True)
 
     robot = MoveImpl(reachy_sdk)
+    reachy_sdk.turn_on("reachy")
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
-    pos_cylinder = [0.4, -0.3, -0.38]
-    pos_goal = [0.4, 0, -0.38]
-
-    robot.move_object(pos_cylinder, pos_goal)
+    robot.arm_to_init_pos()
+    import time
+    time.sleep(5)
+    reachy_sdk.turn_off_smoothly("reachy")
+    #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)

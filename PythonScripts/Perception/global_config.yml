@@ -1,0 +1,14 @@
+stage: "simulation"
+color_bounds:
+  red_lower: [0, 70, 50]
+  red_upper: [10, 255, 255]
+  green_lower: [35, 50, 50]
+  green_upper: [90, 255, 255]
+  violet_lower: [140,50,50]
+  violet_upper: [160,255,255]
+thresholds:
+  red: 0.08
+  green: 0.08
+line_distance_factors:
+  first: 0.33
+  second: 0.66
