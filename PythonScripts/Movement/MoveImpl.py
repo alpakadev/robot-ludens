@@ -20,11 +20,13 @@ class MoveImpl:
     
     
 
-    def __init__(self, reachy):
+    def __init__(self, reachy: ReachySDK):
         self.reachy = reachy
         self.kinematic_model_helper = KinematicModelHelper()
         self.basePosition = [0.07, -0.21, -0.35]
         # Starting movement to Base Position
+
+        
         #self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
         # Defines Dictionary for modifying the gripping force
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
@@ -165,14 +167,30 @@ class MoveImpl:
         else:
             return False
 
-    def move_body(self, pos_to):
+    def _prepare_body_movement(self):
+        # bring arms in safe position
+        self._move_arm(constants.POS_SAVE_COORDINATES)
+        pass
+
+    def _finish_body_movement(self):
+        self._move_arm(constants.POS_BASE_COORDINATES)
+        pass
+
+    def move_body(self, x, y):
         """
         Moves the Reachy/Robot Body to given Coordinates
         !Obstacles are ignored/Undefined
 
         :param pos_to (array): Coordinates on where to move the object
         """
-        pass
+        self.reachy.mobile_base.goto(x,y, theta=0)
+
+    def turn_body(self, degree):
+        """
+        Rotates the mobile base by a given angle (counterclockwise)
+        :param degree: The angle to rotate
+        """
+        self.reachy.mobile_base.goto(x=0.0, y=0.0, theta=degree)
 
     def get_position(self):
         """
@@ -182,27 +200,27 @@ class MoveImpl:
         :return: array
         """
         pass
-    
+
     def move_head(self, look_at = None):
         """
         Moves reachy's head either by the given coordinates defined by look_at or
-        follows the right arm's coordinates 
-        
+        follows the right arm's coordinates
+
         """
         # head follows arm
         if look_at is None:
-            x, y, z = self.reachy.r_arm.forward_kinematics()[:3,-1] 
+            x, y, z = self.reachy.r_arm.forward_kinematics()[:3,-1]
             self.reachy.head.look_at(x=x, y=y, z=z-0.05, duration=1.0)
-            
+
         # head looks at given x,y,z
         else:
             x,y,z = look_at
-            self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0) 
+            self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
 
 
 if __name__ == "__main__":
     # Instantiate reachy instance
-    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
+    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True)
 
     robot = MoveImpl(reachy_sdk)
     reachy_sdk.turn_on("reachy")
