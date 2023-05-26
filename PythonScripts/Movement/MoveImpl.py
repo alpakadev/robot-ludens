@@ -21,22 +21,21 @@ class MoveImpl:
     
     
 
-    def __init__(self, reachy: ReachySDK):
-        self.reachy = reachy
+    def __init__(self):
         self.kinematic_model_helper = KinematicModelHelper()
+        # Its the Origin point, from which all other coordinates of the Board and the Blocks are related from
         self.basePosition = [0.1, -0.296, -0.37]
-        # Starting movement to Base Position
-
-        
-        #self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
-        # Defines Dictionary for modifying the gripping force
+    
+    def set_dependencies(self, reachy: ReachySDK, perc, strat):
+        self.reachy = reachy
+        self.perc = perc
+        self.strat = strat
+        # Defines Dictionary for modifying the gripping force - Needs reachy defined first
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
     def arm_to_init_pos(self):
         self.reachy.turn_on("r_arm")
         self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
-
-        pass
 
     def getBasePos(self):
         return self.basePosition
@@ -72,12 +71,10 @@ class MoveImpl:
         pos_to_value = pos_to_enum.value
         pos_from_value = pos_from_enum.value
 
+        # Adds the position values to base position - Since the Enums are dependent of the Base Position
         pos_from_value = self.addlists(self.basePosition, pos_from_value)
         pos_to_value = self.addlists(self.basePosition, pos_to_value)
         
-        print("Basepos: ", self.basePosition)
-        print("pos_from_value: ", pos_from_value)
-        print("pos_to_value: ", pos_to_value)
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
@@ -144,7 +141,7 @@ class MoveImpl:
 
     def _change_grip_force(self, force):
         self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
-        print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
+        #print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
         pass
 
     def _grip_open(self):
@@ -229,9 +226,11 @@ class MoveImpl:
 
 if __name__ == "__main__":
     # Instantiate reachy instance
-    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True)
+    #reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True) # Mobile base problems with Simulations
+    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
 
-    robot = MoveImpl(reachy_sdk)
+    robot = MoveImpl()
+    robot.set_dependencies(reachy_sdk, None, None)
     
     robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
     robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
