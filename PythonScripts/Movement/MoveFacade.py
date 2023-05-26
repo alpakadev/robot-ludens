@@ -5,10 +5,13 @@ from Enums.Board import Board
 
 
 class MoveFacade:
-    def __init__(self, reachy):
+    def __init__(self):
         self.block_manager = OutsideBlockFacade()
-        self.move = MoveImpl(reachy)
+        self.move = MoveImpl()
         self.interrupt = InterruptImpl()
+
+    def set_dependencies(self, reachy, perc, strat):
+        self.move.set_dependencies(reachy, perc, strat)
 
     def do_move_block(self, to: Board):
         return self.move.move_object(pos_from=self.block_manager.take_block(), pos_to=to)
