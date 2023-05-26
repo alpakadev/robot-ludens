@@ -3,7 +3,7 @@ from Movement import MoveFacade
 
 reachy = ReachySDK("localhost")
 
-move = MoveFacade(reachy)
+move = MoveFacade()
 """
 perc = CPerception()
 strat = CStrategie()
