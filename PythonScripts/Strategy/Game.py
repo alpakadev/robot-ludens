@@ -100,6 +100,9 @@ def play():
                 print("reachy moved {} times".format(reachy_moveCounter))
                 check_state()
             HI.print_board(board)
+        else:
+            # communicate error and wait until board is as expected?
+            print(check_board(input))
     print("current score: Reachy ({}) : Player ({})".format(reachy_score, player_score))
     print("You are level", level)
 
@@ -113,8 +116,8 @@ def nextLevel(win_state):
             level = 0
     elif win_state == 1:
         level += 1
-        if level == 3:
-            level = 2
+        if level == 4:
+            level = 3
 
 
 def arcadeModus():

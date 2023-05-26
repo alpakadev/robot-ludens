@@ -3,21 +3,31 @@ import random
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
-    0: 10,
+    0: 25,
     1: 50,
-    2: 100
+    2: 90,
+    3: 100
 }
 
 preventing = {
     0: 10,
     1: 50,
-    2: 100
+    2: 75,
+    3: 100
+}
+
+trap = {
+    0: 00,
+    1: 40,
+    2: 60,
+    3: 100
 }
 
 good = {
     0: 20,
     1: 50,
-    2: 100
+    2: 75,
+    3: 100
 }
 
 board = []
@@ -75,7 +85,10 @@ def make_combo_move(n, p):
                     return True
     return False
 
-def setup_trap():
+def setup_trap(p):
+    # Fallen stellen nur mit gewisser Wahrscheinlichkeit
+    if p < (100 - trap[level]):
+        return False
     print("trying to setup trap")
 
     # Problem: -1 + 1 + 1 == 0 + 0 + 1 == 1 
@@ -200,9 +213,10 @@ def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves):
     player_moveCounter = player_moves
     # welcher Zug gemacht wird abh. von p
     p = random.randint(0, 100)
+    print('p: ', p)
     if not make_combo_move(2, p):
         if not make_combo_move(-2, p):
-            if not setup_trap():
+            if not setup_trap(p):
                 if not make_good_move(p):
                     make_random_move()
     reachy_moveCounter = reachy_moveCounter + 1
