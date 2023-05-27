@@ -27,7 +27,6 @@ class Game:
             [[0,2], [1,1], [2,0]],
             [[0,0], [1,1], [2,2]]
         ]
-        self.arcadeModus()
 
 
 #berechnet die Summe der Einträge einer Gewinnkombination

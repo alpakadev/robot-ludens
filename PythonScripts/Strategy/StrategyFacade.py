@@ -9,6 +9,8 @@ class StrategyFacade:
         self.perc = perc
         self.move = move
 
+    def start_game(self):
+        return self.game.arcadeModus()
 
 #if __name__ == "__main__":
 #    game = StrategyFacade()
