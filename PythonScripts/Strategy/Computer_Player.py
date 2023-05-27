@@ -1,5 +1,8 @@
 import copy
 import random
+import Movement.Enums.Board as Board_enum  
+import Movement.Enums.Outside as Outside_enum 
+import Movement.MoveFacade as move
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
@@ -30,10 +33,32 @@ good = {
     3: 100
 }
 
+
+board_positions = {
+    (0,1): Board_enum.Board.TOP_CENTER, 
+    (0,0): Board_enum.Board.TOP_LEFT, 
+    (0,2): Board_enum.Board.TOP_RIGHT, 
+    (1,0): Board_enum.Board.CENTER_LEFT, 
+    (1,1): Board_enum.Board.CENTER, 
+    (1,2): Board_enum.Board.CENTER_RIGHT, 
+    (2,0): Board_enum.Board.BOTTOM_LEFT ,
+    (2,1): Board_enum.Board.BOTTOM_CENTER, 
+    (2,2): Board_enum.Board.BOTTOM_RIGHT
+}
+
+block_positions = {
+    1 : Outside_enum.Outside.BLOCK_1,
+    2 : Outside_enum.Outside.BLOCK_2,
+    3 : Outside_enum.Outside.BLOCK_3,
+    4 : Outside_enum.Outside.BLOCK_4,
+    5 : Outside_enum.Outside.BLOCK_5
+}
+
 board = []
 level = 1
 reachy_moveCounter = 0
 player_moveCounter = 0
+chosen = tuple()
 
 # hier können die Zielkoordinaten für die Bewegung abgelegt werden
 coordinates = []
@@ -64,8 +89,10 @@ def combovalue(k, b=board):
     return wert
 
 
+
 # versuche zu gewinnen (2) oder einen Gewinn zu verhindern (-2)
 def make_combo_move(n, p):
+    global chosen
     # Gewinn verhindern nur mit gewisser Wahrscheinlichkeit
     if n == -2:
         if p < (100 - preventing[level]):
@@ -74,7 +101,7 @@ def make_combo_move(n, p):
     if n == 2:
         if p < (100 - winning[level]):
             return False
-    print("trying to make combo move")
+    #print("trying to make combo move")
     # prüfe, ob eine Kombination passt
     for combo in range(len(wincombinations)):
         if combovalue(combo) == n:
@@ -82,10 +109,12 @@ def make_combo_move(n, p):
             for i in range(3):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
                     board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] = 1
+                    chosen = (wincombinations[combo][i][0],wincombinations[combo][i][1])
                     return True
     return False
 
 def setup_trap(p):
+    global chosen
     # Fallen stellen nur mit gewisser Wahrscheinlichkeit
     if p < (100 - trap[level]):
         return False
@@ -121,11 +150,14 @@ def setup_trap(p):
             if GKv1.count(feld) > 1 and board[feld[0]][feld[1]] == 0:
                 print("freies gemeinsames Feld: ", feld)
                 board[feld[0]][feld[1]] = 1
+                chosen = (feld[0],feld[1])
                 return True
     return False
+          
 
 def corner_move():
-    print("trying to make corner_move")
+    global chosen
+    #print("trying to make corner_move")
     free_corner = False
     for k in range(4):
         if board[corners[k][0]][corners[k][1]] == 0:
@@ -134,34 +166,37 @@ def corner_move():
         i = random.randint(0, 3)
         if board[corners[i][0]][corners[i][1]] == 0:
             board[corners[i][0]][corners[i][1]] = 1
+            chosen = (corners[i][0],corners[i][1])
             return True
     return False
 
 
 def make_good_move(p):
+    global chosen
     # nur mit bestimmter Wahrscheinlichkeit guten Zug machen
     if p < (100 - good[level]):
         return False
-    print("trying to make good move")
+    #print("trying to make good move")
 
     if reachy_moveCounter == 0 and player_moveCounter == 1:
         # try the middle cell and make move if possible
-        print("Zug 1.1")
+        #print("Zug 1.1")
         if board[1][1] == 0:
             board[1][1] = 1
+            chosen = (1,1)
             return True
         else:
             if corner_move():
                 return True
 
     elif reachy_moveCounter == 1 and player_moveCounter == 1:
-        print("Zug 2.0")
+        #print("Zug 2.0")
         if corner_move():
             return True
 
     elif reachy_moveCounter == 1 and player_moveCounter == 2:
         # FALLE VERHINDERN
-        print("Zug 2.1")
+        #print("Zug 2.1")
         if combovalue(6) == -1 or combovalue(7) == -1:
             while 1:
                 x = 1
@@ -169,8 +204,9 @@ def make_good_move(p):
                 randfeld = [x, y]
                 a = random.sample(randfeld, 2)
                 if a != [1,1]:
-                    print(a)
+                    
                     board[a[0]][a[1]] = 1
+                    chosen = (a[0],a[1])
                     return True
     # TODO: Zug == 2.1: bei 4+1+4:Rand Feld, sonst Gewinnkombination mit Summe = 1 = 1+0+0
 
@@ -178,7 +214,8 @@ def make_good_move(p):
 
 
 def make_random_move():
-    print("trying to make random move")
+    global chosen
+    #print("trying to make random move")
     # generate new coordinates until a free spot is found and place the mark
     target = "start"
     while target != 0:
@@ -189,35 +226,52 @@ def make_random_move():
         target = board[x][y]
     else:
         board[x][y] = 1
+        chosen = (x,y)
 
 
-def make_first_move(currentboard):
-    print("trying to make first move")
+def make_first_move(currentboard,reachy_moves):
+    global  reachy_moveCounter, chosen
+    reachy_moveCounter = reachy_moves
+    #print("trying to make first move")
     tmp_board = copy.deepcopy(currentboard)
 
     x = random.randint(0, 2)
     if x == 1:
         tmp_board[1][1] = 1
+        chosen = (1,1)
     else:
         y = random.randint(0, 1)
         tmp_board[x][y * 2] = 1
+        chosen = (x,y * 2)
+
+    # Parameters to pass to team bewegung
+    reachy_moveCounter = reachy_moveCounter + 1
+    chosenmove =  board_positions[chosen]
+    currentblock = block_positions[reachy_moveCounter]
+    print(chosenmove , currentblock)
+    move.MoveFacade.do_move_block(currentblock,chosenmove)
     return tmp_board
 
 
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
 def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves):
-    global board, level, reachy_moveCounter, player_moveCounter
+    global board, level, reachy_moveCounter, player_moveCounter, chosen
     board = copy.deepcopy(currentboard)
     level = currentlevel
     reachy_moveCounter = reachy_moves
     player_moveCounter = player_moves
     # welcher Zug gemacht wird abh. von p
     p = random.randint(0, 100)
-    print('p: ', p)
     if not make_combo_move(2, p):
         if not make_combo_move(-2, p):
             if not setup_trap(p):
                 if not make_good_move(p):
                     make_random_move()
+
+    # Parameters to pass to team bewegung
     reachy_moveCounter = reachy_moveCounter + 1
+    chosenmove =  board_positions[chosen]
+    currentblock = block_positions[reachy_moveCounter]
+    print(chosenmove , currentblock)
+    move.MoveFacade.do_move_block(currentblock,chosenmove)
     return board
