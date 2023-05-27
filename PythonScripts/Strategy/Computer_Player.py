@@ -1,25 +1,38 @@
 import copy
 import random
 import Movement.Enums.Board as Board_enum  
+import Movement.Enums.Outside as Outside_enum 
+import Movement.MoveFacade as move
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
-    0: 10,
+    0: 25,
     1: 50,
-    2: 100
+    2: 90,
+    3: 100
 }
 
 preventing = {
     0: 10,
     1: 50,
-    2: 100
+    2: 75,
+    3: 100
+}
+
+trap = {
+    0: 00,
+    1: 40,
+    2: 60,
+    3: 100
 }
 
 good = {
     0: 20,
     1: 50,
-    2: 100
+    2: 75,
+    3: 100
 }
+
 
 board_positions = {
     (0,1): Board_enum.Board.TOP_CENTER, 
@@ -31,6 +44,14 @@ board_positions = {
     (2,0): Board_enum.Board.BOTTOM_LEFT ,
     (2,1): Board_enum.Board.BOTTOM_CENTER, 
     (2,2): Board_enum.Board.BOTTOM_RIGHT
+}
+
+block_positions = {
+    1 : Outside_enum.Outside.BLOCK_1,
+    2 : Outside_enum.Outside.BLOCK_2,
+    3 : Outside_enum.Outside.BLOCK_3,
+    4 : Outside_enum.Outside.BLOCK_4,
+    5 : Outside_enum.Outside.BLOCK_5
 }
 
 board = []
@@ -61,9 +82,12 @@ corners = [
 
 
 # berechnet die Summe der Einträge einer Gewinnkombination
-def combovalue(k):
-    wert = board[wincombinations[k][0][0]][wincombinations[k][0][1]] + board[wincombinations[k][1][0]][wincombinations[k][1][1]] + board[wincombinations[k][2][0]][wincombinations[k][2][1]];
+def combovalue(k, b=board):
+    if not b:
+        b=board
+    wert = b[wincombinations[k][0][0]][wincombinations[k][0][1]] + b[wincombinations[k][1][0]][wincombinations[k][1][1]] + b[wincombinations[k][2][0]][wincombinations[k][2][1]];
     return wert
+
 
 
 # versuche zu gewinnen (2) oder einen Gewinn zu verhindern (-2)
@@ -89,52 +113,47 @@ def make_combo_move(n, p):
                     return True
     return False
 
-def setup_trap():
+def setup_trap(p):
     global chosen
-    #print("trying to setup trap")
-    # 2 GK die frei sind bis auf 1Feld(was mit 1 belegt ist(Reacy))  und  1 gemeinsames Feld haben
-    #gesuchte GK: SUM==1 (combovalue)
+    # Fallen stellen nur mit gewisser Wahrscheinlichkeit
+    if p < (100 - trap[level]):
+        return False
+    print("trying to setup trap")
 
-    # Problem: -1 + 1 + 1 == 1
-    # board[]: [[x,x,x],
-    #           [x,x,x],
-    #           [x,x,x]]
-
-    einDboard = []
-
-    #Transformation des Boards (eindimensional mit 4 statt -1)
+    # Problem: -1 + 1 + 1 == 0 + 0 + 1 == 1 
+    vierboard = []
+    #Transformation des Boards (mit 4 statt -1)
     for k in range(3):
+        teil = []
         for j in range(3):
             if board[k][j] == -1:
-                einDboard.append(4)
+                teil.append(4)
             else:
-                einDboard.append(board[k][j])
-
-        # einDboard = [x,x,x,x,x,x,x,x]
-        #Problem solved
+                teil.append(board[k][j])
+        vierboard.append(teil)
+    #Problem solved
+    print(vierboard)
 
     GKv1 = []
 
     #Finden der GK mit Summe 1 (Belegung: 0 + 0 + 1) (Gkv1)
     for combo in range(len(wincombinations)):
-        if combovalue(combo) == 1:
-            GKv1.append(wincombinations[combo])
+        if combovalue(combo, vierboard) == 1:
+            GKv1 += (wincombinations[combo])
 
-    #print(GKv1)
-        #GKv1 = [ [[x,x],[x,x],[x,x]], [[x,x],[x,x],[x,x]], [[x,x],[x,x],[x,x]] ]
+    print(GKv1)
+        #GKv1 = [ [x,x],[x,x],[x,x], [x,x],[x,x],[x,x], [x,x],[x,x],[x,x] ]
 
-    if len(GKv1) > 1: #and reachy_moveCounter > 1
+    if len(GKv1) > 1: #and reachy_moveCounter > 1: weiter oben
         #Gemeinsames Feld zweier GKv1 finden
-        for k in range(len(GKv1) - 1):
-            for j in range(3):
-                for i in range(k+1, len(GKv1)):
-                    for h in range(3):
-                        if GKv1[k][j] == GKv1[i][h] and board[GKv1[k][j][0]][GKv1[k][j][1]] == 0:
-                            print("k=",k, "j=",j)
-                            board[k][j] == 1
-                            chosen = (k,j)
-                            return True,chosen
-    return False            
+        for feld in GKv1:
+            if GKv1.count(feld) > 1 and board[feld[0]][feld[1]] == 0:
+                print("freies gemeinsames Feld: ", feld)
+                board[feld[0]][feld[1]] = 1
+                chosen = (feld[0],feld[1])
+                return True
+    return False
+          
 
 def corner_move():
     global chosen
@@ -210,8 +229,9 @@ def make_random_move():
         chosen = (x,y)
 
 
-def make_first_move(currentboard):
-    global chosen
+def make_first_move(currentboard,reachy_moves):
+    global  reachy_moveCounter, chosen
+    reachy_moveCounter = reachy_moves
     #print("trying to make first move")
     tmp_board = copy.deepcopy(currentboard)
 
@@ -223,6 +243,13 @@ def make_first_move(currentboard):
         y = random.randint(0, 1)
         tmp_board[x][y * 2] = 1
         chosen = (x,y * 2)
+
+    # Parameters to pass to team bewegung
+    reachy_moveCounter = reachy_moveCounter + 1
+    chosenmove =  board_positions[chosen]
+    currentblock = block_positions[reachy_moveCounter]
+    print(chosenmove , currentblock)
+    move.MoveFacade.do_move_block(currentblock,chosenmove)
     return tmp_board
 
 
@@ -237,10 +264,14 @@ def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves):
     p = random.randint(0, 100)
     if not make_combo_move(2, p):
         if not make_combo_move(-2, p):
-            if not setup_trap():
+            if not setup_trap(p):
                 if not make_good_move(p):
                     make_random_move()
-    print("CHOSEN MOVE: ", board_positions[chosen])
+
+    # Parameters to pass to team bewegung
     reachy_moveCounter = reachy_moveCounter + 1
-    # TODO: Give chosen_move and reachy_moveCounter to Bewegung
+    chosenmove =  board_positions[chosen]
+    currentblock = block_positions[reachy_moveCounter]
+    print(chosenmove , currentblock)
+    move.MoveFacade.do_move_block(currentblock,chosenmove)
     return board
