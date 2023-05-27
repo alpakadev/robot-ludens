@@ -400,3 +400,8 @@ cython_debug/
 reachy_sdk_look_at/
 __pycache__/
 output.mp4
+
+.idea/
+# Default ignored files
+/shelf/
+/workspace.xml

@@ -4,7 +4,7 @@ from Perception import PerceptionFacade
 
 reachy = ReachySDK("localhost")
 
-move = MoveFacade(reachy)
+move = MoveFacade()
 perc = PerceptionFacade(reachy)
 
 """

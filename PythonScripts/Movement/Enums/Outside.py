@@ -7,8 +7,10 @@ class Outside(Enum):
     """
     Enum class representing the positions of the Tic Tac Toe blocks that Reachy can take and place.
     """
-    BLOCK_1 = (0.0, 0.5, 0.0)
-    BLOCK_2 = (0.2, 0.5, 0.0)
-    BLOCK_3 = (0.4, 0.5, 0.0)
-    BLOCK_4 = (0.6, 0.5, 0.0)
-    BLOCK_5 = (0.8, 0.5, 0.0)
+    BLOCK_1 = [0.125, -0.085, 0.0]
+    BLOCK_2 = [0.125, -0.185, 0.0]
+    BLOCK_3 = [0.195, -0.085, 0.0]
+    BLOCK_4 = [0.195, -0.185, 0.0]
+    BLOCK_5 = [0.265, -0.085, 0.0]
+    
+
