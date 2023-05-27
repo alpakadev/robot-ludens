@@ -1,31 +1,25 @@
 import cv2
 import numpy as np
-import yaml
 
-config = yaml.safe_load(open("global_config.yml"))
+def get_board_state(frame, cases_coords, config):
+    game_state = []
 
-red_figure_coords = []
-green_figure_coords = []
-
-game_state = []
-
-# Define the lower and upper bounds for red color
-lower_green = np.array(config["color_bounds"]["green_lower"])
-upper_green = np.array(config["color_bounds"]["green_upper"])
-
-# Define the lower and upper bounds for red color
-lower_red = np.array(config["color_bounds"]["red_lower"])
-upper_red = np.array(config["color_bounds"]["red_upper"])
-
-def get_board_state(frame, cases_coords):
     imageFrame = frame.copy()
     hsv = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2HSV)
-    game_state = [[_get_case_value(cases_coords["downR"], hsv), _get_case_value(cases_coords["downMid"], hsv), _get_case_value(cases_coords["downL"], hsv)], 
-                  [_get_case_value(cases_coords["midR"], hsv), _get_case_value(cases_coords["midMid"], hsv), _get_case_value(cases_coords["midL"], hsv)], 
-                  [_get_case_value(cases_coords["upR"], hsv), _get_case_value(cases_coords["upMid"], hsv), _get_case_value(cases_coords["upL"], hsv)]]
+    game_state = [[_get_case_value(cases_coords["TOP_LEFT_CORNER"], hsv, config), _get_case_value(cases_coords["TOP_MIDDLE"], hsv, config), _get_case_value(cases_coords["TOP_RIGHT_CORNER"], hsv, config)], 
+                  [_get_case_value(cases_coords["LEFT_MIDDLE"], hsv, config), _get_case_value(cases_coords["CENTER"], hsv, config), _get_case_value(cases_coords["RIGHT_MIDDLE"], hsv, config)], 
+                  [_get_case_value(cases_coords["BOTTOM_LEFT_CORNER"], hsv, config), _get_case_value(cases_coords["BOTTOM_MIDDLE"], hsv, config), _get_case_value(cases_coords["BOTTOM_RIGHT_CORNER"], hsv, config)]]
+
     return game_state
 
-def _get_case_value(case, frame):
+def _get_case_value(case, frame, config):
+    lower_green = np.array(config["color_bounds"]["green_lower"])
+    upper_green = np.array(config["color_bounds"]["green_upper"])
+
+    # Define the lower and upper bounds for red color
+    lower_red = np.array(config["color_bounds"]["red_lower"])
+    upper_red = np.array(config["color_bounds"]["red_upper"])
+
     # Example Case: "upL": {"upLeft": {"x": 0, "y": 0}, "upRight": {"x": 0, "y": 0}, "downLeft": {"x": 0, "y": 0}, "downRight": {"x": 0, "y": 0}}
     # Crop the image to get only the current rectangle
     mask = np.zeros(frame.shape[:2], dtype="uint8")
@@ -60,7 +54,7 @@ def _get_case_value(case, frame):
 
     # Return 1 when piece is red, return -1 when piece is green, return 0 when square is empty
     if red_percent > config["thresholds"]['red'] > green_percent:
-            return 1
+        return 1
     elif green_percent > config["thresholds"]['green'] > red_percent:
         return -1
     else:

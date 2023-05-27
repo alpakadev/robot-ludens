@@ -1,10 +1,8 @@
 import cv2
 import numpy as np
-import yaml
 
-def game_board_detection(frame):
+def game_board_detection(frame, config):
     imageFrame = frame.copy()
-    config = yaml.safe_load(open("global_config.yml"))
 
     # Convert frame from BGR to HSV color space
     hsv = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2HSV)

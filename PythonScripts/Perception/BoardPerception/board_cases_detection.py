@@ -1,13 +1,3 @@
-import yaml
-config = yaml.safe_load(open("global_config.yml"))
-
-# README: Bei der Bearbeitung daran denken, dass das Koordinaten System verkehrt herum ist
-# Statt:        Ist es:
-# x              __x
-# |__y          |y
-# 
-# X-Werte werden vom Ursprung gesehen nach Links größer, Y-Werte vom Ursprung gesehen nach Oben. Daher ergibt sich die UpDown-LeftRight Notation
-
 def _sort(array, index):
     # Bubblesort aufsteigend für 2D Array. Index bestimmt welche Stelle der Subarrays als Kriterium genutzt wird
     n = len(array)
@@ -22,20 +12,18 @@ def _sort(array, index):
         if not swapped:
             return
 
-def _addBetweenAnchors(corners):
+def _addBetweenAnchors(corners, config):
     # Berechnet die Punkte (O) zwischen zwei Ecken (X) und updatet das Corner Dictionary um die entsprechenden Koordinaten
     # Der Weg ziwschne zwei Punkten wird gedrittelt. Der erste Punkt (firstAnchor) befindet sich auf 33% der Strecke und der zweite bei 66%
     # (0,0)
         # x -- O -- O -- X
         # |              |
-        # O              O -> LEFT
+        # O              O
         # |              |
         # O              O
         # |              |
         # X -- O -- O -- X
-        #        |
-        #        v
-        #       UP
+
 
     borderlines = {"upperBorder": {"start": corners["upRightCorner"], "end": corners["upLeftCorner"]}, 
                     "lowerBorder": {"start": corners["downRightCorner"], "end": corners["downLeftCorner"]}, 
@@ -101,18 +89,18 @@ def _addLineintersectionAnchors(anchors):
 
 def _squares(anchors):
     # Definiert die Eckpunkte der einzelnen Bildquadrate. Die Richtungsangaben sind vom Ursprung ausgesehen
-    squares = {"upL": {"upLeft": anchors["upLeftCorner"], "upRight": anchors["upperBorderBetween2"], "downLeft": anchors["leftBorderBetween2"], "downRight": anchors["upLeftIntersect"]}, 
-            "upMid": {"upLeft": anchors["upperBorderBetween2"], "upRight": anchors["upperBorderBetween1"], "downLeft": anchors["upLeftIntersect"], "downRight": anchors["upRightIntersect"]}, 
-            "upR": {"upLeft": anchors["upperBorderBetween1"], "upRight": anchors["upRightCorner"], "downLeft": anchors["upRightIntersect"], "downRight": anchors["rightBorderBetween2"]}, 
-            "midL": {"upLeft": anchors["leftBorderBetween2"], "upRight": anchors["upLeftIntersect"], "downLeft": anchors["leftBorderBetween1"], "downRight": anchors["downLeftIntersect"]}, 
-            "midMid": {"upLeft": anchors["upLeftIntersect"], "upRight": anchors["upRightIntersect"], "downLeft": anchors["downLeftIntersect"], "downRight": anchors["downRightIntersect"]}, 
-            "midR": {"upLeft": anchors["upRightIntersect"], "upRight": anchors["rightBorderBetween2"], "downLeft": anchors["downRightIntersect"], "downRight": anchors["rightBorderBetween1"]}, 
-            "downL": {"upLeft": anchors["leftBorderBetween1"], "upRight": anchors["downLeftIntersect"], "downLeft": anchors["downLeftCorner"], "downRight": anchors["lowerBorderBetween2"]}, 
-            "downMid": {"upLeft": anchors["downLeftIntersect"], "upRight": anchors["downRightIntersect"], "downLeft": anchors["lowerBorderBetween2"], "downRight": anchors["lowerBorderBetween1"]},
-            "downR": {"upLeft": anchors["downRightIntersect"], "upRight": anchors["rightBorderBetween1"], "downLeft": anchors["lowerBorderBetween1"], "downRight": anchors["downRightCorner"]}}
+    squares = {"TOP_LEFT_CORNER": {"upLeft": anchors["downRightIntersect"], "upRight": anchors["rightBorderBetween1"], "downLeft": anchors["lowerBorderBetween1"], "downRight": anchors["downRightCorner"]}, 
+            "TOP_MIDDLE": {"upLeft": anchors["downLeftIntersect"], "upRight": anchors["downRightIntersect"], "downLeft": anchors["lowerBorderBetween2"], "downRight": anchors["lowerBorderBetween1"]}, 
+            "TOP_RIGHT_CORNER": {"upLeft": anchors["leftBorderBetween1"], "upRight": anchors["downLeftIntersect"], "downLeft": anchors["downLeftCorner"], "downRight": anchors["lowerBorderBetween2"]}, 
+            "LEFT_MIDDLE": {"upLeft": anchors["upRightIntersect"], "upRight": anchors["rightBorderBetween2"], "downLeft": anchors["downRightIntersect"], "downRight": anchors["rightBorderBetween1"]} , 
+            "CENTER": {"upLeft": anchors["upLeftIntersect"], "upRight": anchors["upRightIntersect"], "downLeft": anchors["downLeftIntersect"], "downRight": anchors["downRightIntersect"]}, 
+            "RIGHT_MIDDLE": {"upLeft": anchors["leftBorderBetween2"], "upRight": anchors["upLeftIntersect"], "downLeft": anchors["leftBorderBetween1"], "downRight": anchors["downLeftIntersect"]}, 
+            "BOTTOM_LEFT_CORNER": {"upLeft": anchors["upperBorderBetween1"], "upRight": anchors["upRightCorner"], "downLeft": anchors["upRightIntersect"], "downRight": anchors["rightBorderBetween2"]}, 
+            "BOTTOM_MIDDLE": {"upLeft": anchors["upperBorderBetween2"], "upRight": anchors["upperBorderBetween1"], "downLeft": anchors["upLeftIntersect"], "downRight": anchors["upRightIntersect"]},
+            "BOTTOM_RIGHT_CORNER": {"upLeft": anchors["upLeftCorner"], "upRight": anchors["upperBorderBetween2"], "downLeft": anchors["leftBorderBetween2"], "downRight": anchors["upLeftIntersect"]}}
     return squares
 
-def get_board_cases(board_coordinates):
+def get_board_cases(board_coordinates, config):
     _sort(board_coordinates, 0)
     corner_dict = {"upLeftCorner": {"x": 0, "y": 0}, "upRightCorner": {"x": 0, "y": 0}, "downLeftCorner": {"x": 0, "y": 0}, "downRightCorner": {"x": 0, "y": 0}}
     if board_coordinates[0][1] < board_coordinates[1][1]:
@@ -138,10 +126,9 @@ def get_board_cases(board_coordinates):
         corner_dict["upLeftCorner"]["y"] = board_coordinates[2][1]
     
     # Eckpunkte um Punkte zwischen den Ecken ergänzen
-    anchors  = _addBetweenAnchors(corner_dict)
+    anchors  = _addBetweenAnchors(corner_dict, config)
     # Ankerpunkte um die Punkte in der Mitte des Boards ergänzen
     allAnchors = _addLineintersectionAnchors(anchors)
     # Koordinaten der Board Quadrate bestimmen
     sqrs = _squares(allAnchors)
-
     return sqrs
