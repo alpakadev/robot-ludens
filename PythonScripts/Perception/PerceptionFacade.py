@@ -1,4 +1,4 @@
-from PerceptionImpl import PerceptionImplementation
+from .PerceptionImpl import PerceptionImplementation
 
 class PerceptionFacade:
     def __init__(self, reachy):

@@ -1,5 +1,5 @@
-from PiecePerception.unused_pieces_detection import unused_pieces_detection
-from PiecePerception.nearest_unused_piece import get_nearest_unused_piece
+from .unused_pieces_detection import unused_pieces_detection
+from .nearest_unused_piece import get_nearest_unused_piece
 
 class PiecePerception:
     def __init__(self, config):

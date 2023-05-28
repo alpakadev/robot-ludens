@@ -1,9 +1,9 @@
 import yaml
-from BoardPerception.BoardPerception import BoardPerception
-from GameState.GameState import GameState
-from Helpers.Helpers import Helpers
-from Exceptions.Exceptions import ViewClouded
-from PiecePerception.PiecePerception import PiecePerception
+from .BoardPerception.BoardPerception import BoardPerception
+from .GameState.GameState import GameState
+from .Helpers.Helpers import Helpers
+from .Exceptions.Exceptions import ViewCloudedError
+from .PiecePerception.PiecePerception import PiecePerception
 import cv2
 
 class PerceptionImplementation:
@@ -28,7 +28,7 @@ class PerceptionImplementation:
             game_state = self.game_state.get_game_state(frame, board_cases_coordinates, self.config)
             self.helpers.move_head_to_base_position()
             return game_state
-        except ViewClouded:
+        except ViewCloudedError:
             self.helpers.move_head_to_base_position()
             return "Faulty Image, please try again"
 

@@ -1,6 +1,6 @@
-from Helpers.movement import goal_position
-from Helpers.movement import base_position
-from Helpers.image_stability import get_stable_image
+from .movement import goal_position
+from .movement import base_position
+from .image_stability import get_stable_image
 
 class Helpers:
     def __init__(self, reachy, config):
