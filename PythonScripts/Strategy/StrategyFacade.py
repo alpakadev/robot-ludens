@@ -1,4 +1,4 @@
-from Game import Game
+from .Game import Game
 
 class StrategyFacade:
     def __init__(self):
@@ -6,8 +6,7 @@ class StrategyFacade:
 
 
     def set_dependencies(self,  move, perc):
-        self.perc = perc
-        self.move = move
+        self.game.set_dependency(move,perc)
 
     def start_game(self):
         return self.game.arcadeModus()
