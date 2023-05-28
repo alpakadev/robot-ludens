@@ -1,4 +1,4 @@
-from Game import Game
+from .Game import Game
 
 class StrategyFacade:
     def __init__(self):
