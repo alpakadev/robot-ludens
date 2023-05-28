@@ -1,6 +1,7 @@
-import sys
-sys.path.append('..') #For importing from Neighbour Folder
-from Enums.Board import Board
+#import sys
+#sys.path.append('..') #For importing from Neighbour Folder 
+# Uncomment above if its not working
+from ..Enums.Board import Board
 
 class HandRotationMapper:
     def __init__(self):
