@@ -1,4 +1,6 @@
 import copy
+from Movement.MoveFacade import MoveFacade 
+from Perception.PerceptionFacade import PerceptionFacade
 
 # übersetzt user-spalten-input in index der Zelle
 column = {
@@ -30,3 +32,13 @@ def make_user_move(board):
             return new_board
         except:
             print("Please provide one digit between 1 and 3 followed by one character between A and C.")
+
+def make_user_move_unity(board, perc = PerceptionFacade):
+    invalid = True
+    new_board = copy.deepcopy(board)
+    while invalid:
+        try:
+            new_board = perc.get_game_state()
+            return new_board
+        except:
+            continue

@@ -119,7 +119,7 @@ def setup_trap(p):
     # Fallen stellen nur mit gewisser Wahrscheinlichkeit
     if p < (100 - trap[level]):
         return False
-    print("trying to setup trap")
+    #print("trying to setup trap")
 
     # Problem: -1 + 1 + 1 == 0 + 0 + 1 == 1 
     vierboard = []
@@ -133,7 +133,7 @@ def setup_trap(p):
                 teil.append(board[k][j])
         vierboard.append(teil)
     #Problem solved
-    print(vierboard)
+    #print(vierboard)
 
     GKv1 = []
 
@@ -142,14 +142,14 @@ def setup_trap(p):
         if combovalue(combo, vierboard) == 1:
             GKv1 += (wincombinations[combo])
 
-    print(GKv1)
+    #print(GKv1)
         #GKv1 = [ [x,x],[x,x],[x,x], [x,x],[x,x],[x,x], [x,x],[x,x],[x,x] ]
 
     if len(GKv1) > 1: #and reachy_moveCounter > 1: weiter oben
         #Gemeinsames Feld zweier GKv1 finden
         for feld in GKv1:
             if GKv1.count(feld) > 1 and board[feld[0]][feld[1]] == 0:
-                print("freies gemeinsames Feld: ", feld)
+                #print("freies gemeinsames Feld: ", feld)
                 board[feld[0]][feld[1]] = 1
                 chosen = (feld[0],feld[1])
                 return True

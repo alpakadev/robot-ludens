@@ -44,7 +44,6 @@ class Game:
     def check_board(self, input):
         #global board, player_moveCounter
         # max ein neuer Stein
-        print(self)
         new_piece = 0
         # alte Steine bleiben unverändert und kein Reachy-stein auf ein leeres Feld
         illegal_change = False
@@ -100,7 +99,8 @@ class Game:
     def play(self):
         #global reachy_moveCounter, board
         while not self.game_closed:
-            input = HI.make_user_move(self.board)
+            #input = HI.make_user_move(self.board)
+            input = HI.make_user_move_unity(self.board, self.perc)
             if self.check_board(input) == True:
                 self.check_state()
                 if not self.game_closed:
