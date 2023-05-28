@@ -1,6 +1,7 @@
 from . import Human_Interaction as HI
 from . import Computer_Player as Reachy
-
+from Movement.MoveFacade import MoveFacade 
+from Perception.PerceptionFacade import PerceptionFacade
 
 class Game:
     def __init__(self):
@@ -28,9 +29,9 @@ class Game:
             [[0,0], [1,1], [2,2]]
         ]
     
-    def set_dependency(self,perc,move):
-        self.perc = perc
+    def set_dependency(self, move : MoveFacade, perc : PerceptionFacade):
         self.move = move
+        self.perc = perc
 
 
 #berechnet die Summe der Einträge einer Gewinnkombination
@@ -103,7 +104,7 @@ class Game:
             if self.check_board(input) == True:
                 self.check_state()
                 if not self.game_closed:
-                    self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter)
+                    self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
                     self.reachy_moveCounter += 1
                     print("reachy moved {} times".format(self.reachy_moveCounter))
                     self.check_state()
@@ -141,7 +142,7 @@ class Game:
             first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
             if first == "1":
                 # reachy's first move
-                self.board = Reachy.make_first_move(self.board,self.reachy_moveCounter)
+                self.board = Reachy.make_first_move(self.board,self.reachy_moveCounter, self.move)
                 self.reachy_moveCounter = self.reachy_moveCounter + 1
                 HI.print_board(self.board)
                 self.play()

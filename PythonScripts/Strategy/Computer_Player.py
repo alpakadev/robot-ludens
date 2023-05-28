@@ -2,7 +2,8 @@ import copy
 import random
 import Movement.Enums.Board as Board_enum  
 import Movement.Enums.Outside as Outside_enum 
-import Movement.MoveFacade as move
+from Movement.MoveFacade import MoveFacade 
+
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
@@ -229,7 +230,7 @@ def make_random_move():
         chosen = (x,y)
 
 
-def make_first_move(currentboard,reachy_moves):
+def make_first_move(currentboard,reachy_moves, move: MoveFacade):
     global  reachy_moveCounter, chosen
     reachy_moveCounter = reachy_moves
     #print("trying to make first move")
@@ -249,12 +250,12 @@ def make_first_move(currentboard,reachy_moves):
     chosenmove =  board_positions[chosen]
     currentblock = block_positions[reachy_moveCounter]
     print(chosenmove , currentblock)
-    move.MoveFacade.do_move_block(currentblock,chosenmove)
+    move.do_move_block(from_enum=currentblock,to_enum=chosenmove)
     return tmp_board
 
 
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
-def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves):
+def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves, move : MoveFacade):
     global board, level, reachy_moveCounter, player_moveCounter, chosen
     board = copy.deepcopy(currentboard)
     level = currentlevel
@@ -273,5 +274,5 @@ def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves):
     chosenmove =  board_positions[chosen]
     currentblock = block_positions[reachy_moveCounter]
     print(chosenmove , currentblock)
-    move.MoveFacade.do_move_block(currentblock,chosenmove)
+    move.do_move_block(currentblock,chosenmove)
     return board
