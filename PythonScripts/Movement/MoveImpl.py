@@ -1,14 +1,14 @@
-import constants
+from . import constants
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
-from Helper.KinematicModelHelper import KinematicModelHelper
-from Helper.KinematicModelHelper import RotationAxis
+from .Helper.KinematicModelHelper import KinematicModelHelper
+from .Helper.KinematicModelHelper import RotationAxis
 import numpy as np
 import time
-from Enums.Board import Board
-from Enums.Outside import Outside
-from Helper.HandRotationMapper import HandRotationMapper
+from .Enums.Board import Board
+from .Enums.Outside import Outside
+from .Helper.HandRotationMapper import HandRotationMapper
 
 #get the current arm position (Matrix): reachy_sdk.r_arm.forward_kinematics()
 

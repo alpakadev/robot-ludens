@@ -1,5 +1,5 @@
 import random
-from Enums.Outside import Outside
+from .Enums.Outside import Outside
 
 
 class OutsideBlockManager:

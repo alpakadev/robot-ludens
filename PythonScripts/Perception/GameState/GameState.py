@@ -1,4 +1,4 @@
-from GameState.game_state_detection import get_board_state
+from .game_state_detection import get_board_state
 
 class GameState:
     pass

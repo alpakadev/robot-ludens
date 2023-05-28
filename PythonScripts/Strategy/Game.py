@@ -1,5 +1,5 @@
-import Human_Interaction as HI
-import Computer_Player as Reachy
+from . import Human_Interaction as HI
+from . import Computer_Player as Reachy
 
 
 class Game:

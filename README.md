@@ -27,6 +27,14 @@ Auf keinen Fall Dateien mit sensiblen Daten (z. B. Passwörter oder Keys) in das
 - reachy-simulator-Version: `1.1` (Has to be changed for head Movement etc.!)
 - grpc-Unity-package: the most recent one will work
 
+### Other Dependencies
+
+For the perception Module:
+
+```python
+pip install pyyaml
+```
+
 ### Reachy-SDK
 
 ReachySDK for the connection to the robot, goto to generate trajectories, and InterpolationMode to choose the pattern of these trajectories. Time to monitor the temporality of our movements. Numpty creates coordinate systems for inverse kinematics.

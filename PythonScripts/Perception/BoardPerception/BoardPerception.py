@@ -1,7 +1,7 @@
-from Exceptions.Exceptions import ViewCloudedError
-from BoardPerception.board_cases_detection import get_board_cases
-from BoardPerception.case_to_realworld_coordinates import case_to_realworld_coordinates
-from BoardPerception.game_board_detection import game_board_detection
+from ..Exceptions.Exceptions import ViewCloudedError
+from .board_cases_detection import get_board_cases
+from .case_to_realworld_coordinates import case_to_realworld_coordinates
+from .game_board_detection import game_board_detection
 
 class BoardPerception:
     def __init__(self, config):

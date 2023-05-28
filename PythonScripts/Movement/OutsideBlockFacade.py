@@ -1,4 +1,4 @@
-from OutsideBlockManager import OutsideBlockManager
+from .OutsideBlockManager import OutsideBlockManager
 
 
 class OutsideBlockFacade:
