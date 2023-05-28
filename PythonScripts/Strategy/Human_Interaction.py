@@ -39,6 +39,7 @@ def make_user_move_unity(board, perc = PerceptionFacade):
     while invalid:
         try:
             new_board = perc.get_game_state()
+            print(new_board)
             return new_board
         except:
-            continue
+            print("waiting for input")
