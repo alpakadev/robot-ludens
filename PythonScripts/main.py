@@ -1,7 +1,7 @@
 from reachy_sdk import ReachySDK
-from Movement import MoveFacade
-from Perception import PerceptionFacade
-from Strategy import StrategyFacade
+from Movement.MoveFacade import MoveFacade
+from Perception.PerceptionFacade import PerceptionFacade
+from Strategy.StrategyFacade import StrategyFacade
 
 reachy = ReachySDK("localhost")
 
@@ -11,7 +11,7 @@ strat = StrategyFacade()
 
 perc.set_dependencies(move, strat)
 move.set_dependencies(reachy, perc, strat)
-strat.set_dependencies(reachy, move, perc)
+strat.set_dependencies(move, perc)
 
 
 strat.start_game()
