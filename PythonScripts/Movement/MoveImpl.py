@@ -23,8 +23,8 @@ class MoveImpl:
 
     def __init__(self):
         self.kinematic_model_helper = KinematicModelHelper()
-        # Its the Origin point, from which all other coordinates of the Board and the Blocks are related from
-        self.basePosition = [0.1, -0.296, -0.37]
+        # Its the origin/reference point, to which all other coordinates of the Board and the Blocks are relative.
+        self.origin_coordinate = [0.1, -0.296, -0.37] # Previous name: basePosition
     
     def set_dependencies(self, reachy: ReachySDK, perc, strat):
         self.reachy = reachy
@@ -35,12 +35,17 @@ class MoveImpl:
 
     def set_arm_to_right_angle_position(self):
         self._move_arm(constants.POS_ARM_AT_RIGHT_ANGLE, rotation={'y': -90, 'x': 0, 'z': 0})
+    
+    def set_arm_to_origin(self):
+        self._move_arm(self.origin_coordinate, rotation={'y': -90, 'x': 0, 'z': 0})
 
-    def getBasePos(self):
-        return self.basePosition
+    def get_origin(self):
+        # Returns the origin point to which all other coordinates are relative from
+        return self.origin_coordinate
 
-    def setBasePos(self, coordinate):
-        self.basePosition = coordinate
+    def set_origin(self, coordinate):
+        # Returns the origin point to which all other coordinates are relative from
+        self.origin_coordinate = coordinate
         
     def addlists(self,a,b):
         c = a[::]
@@ -74,8 +79,8 @@ class MoveImpl:
         pos_from_value = pos_from_enum.value
 
         # Adds the position values to base position - Since the Enums are dependent of the Base Position
-        pos_from_value = self.addlists(self.basePosition, pos_from_value)
-        pos_to_value = self.addlists(self.basePosition, pos_to_value)
+        pos_from_value = self.addlists(self.origin_coordinate, pos_from_value)
+        pos_to_value = self.addlists(self.origin_coordinate, pos_to_value)
         
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from_value[1] += constants.DELTA_HAND_WIDTH  # Non Moving Part of Hand would knock Items over
@@ -115,7 +120,7 @@ class MoveImpl:
         self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
-        # 10. Moves arm back to Base Position
+        # 10. Moves arm back to a save position
         self._grip_close()
         self.set_arm_to_right_angle_position()
 
