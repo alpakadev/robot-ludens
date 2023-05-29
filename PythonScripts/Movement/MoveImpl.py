@@ -33,9 +33,8 @@ class MoveImpl:
         # Defines Dictionary for modifying the gripping force - Needs reachy defined first
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
-    def arm_to_init_pos(self):
-        self.reachy.turn_on("r_arm")
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
+    def set_arm_to_right_angle_position(self):
+        self._move_arm(constants.POS_ARM_AT_RIGHT_ANGLE, rotation={'y': -90, 'x': 0, 'z': 0})
 
     def getBasePos(self):
         return self.basePosition
@@ -49,7 +48,11 @@ class MoveImpl:
             c[i] += b[i]
         return c
     
+    def activate_right_arm(self):
+        self.reachy.turn_on("r_arm")
 
+    def deactivate_right_arm(self):
+        self.reachy.turn_off_smoothly("r_arm")
 
     def move_object(self, pos_from_enum: Outside, pos_to_enum: Board):
         """
@@ -58,13 +61,12 @@ class MoveImpl:
         :param pos_from: Coordinates where the Object to move is
         :param pos_to: Coordinates on where to move the object
         """
-        
-        
-        self.arm_to_init_pos()
+        self.activate_right_arm()
+        self.set_arm_to_right_angle_position()
         
         mapper = HandRotationMapper()
         # Setting arm joints to Stiff-mode for starting movement
-        #self.reachy.turn_on("r_arm")
+        
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
 
@@ -75,10 +77,8 @@ class MoveImpl:
         pos_from_value = self.addlists(self.basePosition, pos_from_value)
         pos_to_value = self.addlists(self.basePosition, pos_to_value)
         
-
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
-        # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
+        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # Non Moving Part of Hand would knock Items over
         # starting movement of reachy's head
         self.move_head(constants.HEAD_LOOK_DOWN)
         time.sleep(1.0)
@@ -117,10 +117,10 @@ class MoveImpl:
         self.move_head()
         # 10. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
+        self.set_arm_to_right_angle_position()
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
-        self.reachy.turn_off_smoothly("r_arm")
+        self.deactivate_right_arm()
         # head back to default and setting head to compliant mode
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.reachy.turn_off_smoothly("head")
@@ -172,15 +172,6 @@ class MoveImpl:
             return True
         else:
             return False
-
-    def _prepare_body_movement(self):
-        # bring arms in safe position
-        self._move_arm(constants.POS_SAVE_COORDINATES)
-        pass
-
-    def _finish_body_movement(self):
-        self._move_arm(constants.POS_BASE_COORDINATES)
-        pass
 
     def move_body(self, x, y):
         """
