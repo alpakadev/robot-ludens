@@ -123,6 +123,8 @@ class MoveImpl:
         # 10. Moves arm back to a save position
         self._grip_close()
         self.set_arm_to_right_angle_position()
+        # 11. Moving arm to the origin coordinate, so that it does not block the view
+        self._move_arm(self.origin_coordinate, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
         self.deactivate_right_arm()
