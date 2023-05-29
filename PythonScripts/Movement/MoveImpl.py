@@ -222,6 +222,193 @@ class MoveImpl:
         else:
             x,y,z = look_at
             self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
+     
+    #---Interaction Animation---
+    
+    def happy(self):
+        """
+        l and r antennas swinging fastly in excitment
+        """
+        self.reachy.head.l_antenna.speed_limit = 0.0
+        self.reachy.head.r_antenna.speed_limit = 0.0
+    
+        for _ in range(9):
+            self.reachy.head.l_antenna.goal_position = 10.0
+            self.reachy.head.r_antenna.goal_position = -10.0
+
+            time.sleep(0.1)
+
+            self.reachy.head.l_antenna.goal_position = -10.0
+            self.reachy.head.r_antenna.goal_position = 10.0
+
+        time.sleep(0.1)
+    
+        self.reachy.head.l_antenna.goal_position = 0.0
+        self.reachy.head.r_antenna.goal_position = 0.0
+
+    def sad(self):
+        """
+        l and r antennas going down slowly 
+        """
+        self.reachy.head.l_antenna.speed_limit = 90.0
+        self.reachy.head.r_antenna.speed_limit = 90.0
+    
+        self.reachy.head.l_antenna.goal_position = 140.0
+        self.reachy.head.r_antenna.goal_position = -140.0
+    
+        time.sleep(5.0)
+    
+        self.reachy.head.l_antenna.goal_position = 0.0
+        self.reachy.head.r_antenna.goal_position = 0.0
+        self.reachy.head.look_at(0.5, 0, -0.0, 1.0)
+
+    def disapproval(self):
+        """
+        looking confusedly at board and back at opponent while shaking head
+        """
+        self.reachy.head.look_at(0.5, 0, -0.4, 1.0) #at board
+
+        time.sleep(0.5)
+
+        self.reachy.head.l_antenna.speed_limit = 20.0
+        self.reachy.head.r_antenna.speed_limit = 20.0
+        self.reachy.head.l_antenna.goal_position = 50.0
+        self.reachy.head.r_antenna.goal_position = -90.0
+        self.reachy.head.look_at(0.05, 0, 0, duration=0.5) #default
+
+        for i in range(3):          #shakes head
+            self.reachy.head.look_at(0.5, 0.3, 0, duration=0.5)
+            self.reachy.head.look_at(0.5, -0.3, 0, duration=0.5)
+            
+        self.reachy.head.l_antenna.goal_position = 0.0  #default antennas
+        self.reachy.head.r_antenna.goal_position = 0.0
+        self.reachy.head.look_at(0.05, 0, 0, duration=0.5) #goes back to default position
+
+    def anm_win(self):
+        """
+        doing a lil celebration dance; swinging arms up side to side w/ open+closing grippers followed by happily swinging antennas
+        """
+        self.reachy.turn_on("l_arm") #stiff mode for l_arm
+        self.reachy.head.look_at(0.5, 0, -0.4, duration = 1.0)
+        time.sleep(0.5)
+        self.reachy.head.l_antenna.goal_position = 50.0 #-50 and 50
+        self.reachy.head.r_antenna.goal_position = -50.0
+        self.reachy.head.look_at(0.05, 0, 0, duration=0.5)
+        time.sleep(1.0)
+        self.happy()
+
+        for i in range(3):
+            right_up_position = {
+                self.reachy.r_arm.r_shoulder_pitch: -60,
+                self.reachy.r_arm.r_shoulder_roll: -10,
+                self.reachy.r_arm.r_arm_yaw: 25,
+                self.reachy.r_arm.r_elbow_pitch: -125,
+                self.reachy.r_arm.r_forearm_yaw: 15,
+                self.reachy.r_arm.r_wrist_pitch: 25,
+                self.reachy.r_arm.r_wrist_roll: 20,
+                self.reachy.r_arm.r_gripper: 40,
+                }
+            left_up_position = {
+                self.reachy.l_arm.l_shoulder_pitch: -60,
+                self.reachy.l_arm.l_shoulder_roll: -10,
+                self.reachy.l_arm.l_arm_yaw: 25,
+                self.reachy.l_arm.l_elbow_pitch: -125,
+                self.reachy.l_arm.l_forearm_yaw: 15,
+                self.reachy.l_arm.l_wrist_pitch: 25,
+                self.reachy.l_arm.l_wrist_roll: 20,
+                self.reachy.l_arm.l_gripper: 40,
+                }
+            self.happy()
+
+            goto(
+                goal_positions=left_up_position,
+                duration=0.30,
+                interpolation_mode=InterpolationMode.MINIMUM_JERK
+                )
+            goto(
+                goal_positions=right_up_position,
+                duration=0.30,
+                interpolation_mode=InterpolationMode.MINIMUM_JERK
+                )
+
+            right_up2_position = {
+                self.reachy.r_arm.r_shoulder_pitch: -50,
+                self.reachy.r_arm.r_shoulder_roll: -15,
+                self.reachy.r_arm.r_arm_yaw: -10,
+                self.reachy.r_arm.r_elbow_pitch: -120,
+                self.reachy.r_arm.r_forearm_yaw: -15,
+                self.reachy.r_arm.r_wrist_pitch: -5,
+                self.reachy.r_arm.r_wrist_roll: -20,
+                self.reachy.r_arm.r_gripper: -30,
+                }
+            left_up2_position = {
+                self.reachy.l_arm.l_shoulder_pitch: -50,
+                self.reachy.l_arm.l_shoulder_roll: -15,
+                self.reachy.l_arm.l_arm_yaw: -10,
+                self.reachy.l_arm.l_elbow_pitch: -120,
+                self.reachy.l_arm.l_forearm_yaw: -15,
+                self.reachy.l_arm.l_wrist_pitch: -5,
+                self.reachy.l_arm.l_wrist_roll: -20,
+                self.reachy.l_arm.l_gripper: -30,
+                }
+            self.happy()
+            goto(
+                goal_positions=left_up2_position,
+                duration=0.30,
+                interpolation_mode=InterpolationMode.MINIMUM_JERK
+                )
+            goto(
+                goal_positions=right_up2_position,
+                duration=0.30,
+                interpolation_mode=InterpolationMode.MINIMUM_JERK
+                )
+        self.reachy.turn_off_smoothly("l_arm")
+            
+
+    def anm_lost(self):
+        """
+        looking at opponent briefly, at board w/ sad antennas and looking away 
+        """
+        #L: Spieler anschauen, Runterschauen auf das Brett, Antennen hängen lassen (Enttäuschung)
+        self.reachy.head.look_at(0.05, 0, 0, duration=0.5) #at opponent
+        time.sleep(1.0)
+        self.reachy.head.look_at(0.5, 0, -0.4, 0.5) #at board
+        time.sleep(1.5)
+        self.reachy.head.l_antenna.speed_limit = 150.0
+        self.reachy.head.r_antenna.speed_limit = 150.0
+        self.reachy.head.l_antenna.goal_position = 140.0
+        self.reachy.head.r_antenna.goal_position = -140.0
+        time.sleep(2.0)
+        self.reachy.head.look_at(0.05, -0.02, -0.04, duration=0.5)
+        #self.turn_body(10.0) #possible addition turn body away from opponent to left side
+        
+        self.sad() #additional time being sad
+        
+
+    def angry(self): #TODO: pushing movement
+        """
+        pushes cylinders and cubes of the board, antennas  at 45°
+        """
+        
+        self.reachy.head.l_antenna.speed_limit = 90.0
+        self.reachy.head.r_antenna.speed_limit = 90.0
+        
+        for _ in range(3):
+            
+            self.reachy.head.l_antenna.goal_position = -70.0 
+            self.reachy.head.r_antenna.goal_position = 70.0
+
+            time.sleep(0.50)
+
+            self.reachy.head.l_antenna.goal_position = -80.0 
+            self.reachy.head.r_antenna.goal_position = 80.0
+        
+
+        time.sleep(0.1)
+    
+        self.reachy.head.l_antenna.goal_position = 0.0
+        self.reachy.head.r_antenna.goal_position = 0.0
+            
 
 
 if __name__ == "__main__":
@@ -250,3 +437,10 @@ if __name__ == "__main__":
     #time.sleep(5)
     #reachy_sdk.turn_off_smoothly("reachy")
     #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
+    
+    #robot.happy()
+    #robot.sad()
+    #robot.anm_lost()
+    #robot.anm_win()
+    #robot.disapproval()
+    
