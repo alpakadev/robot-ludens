@@ -23,8 +23,8 @@ class MoveImpl:
 
     def __init__(self):
         self.kinematic_model_helper = KinematicModelHelper()
-        # Its the Origin point, from which all other coordinates of the Board and the Blocks are related from
-        self.basePosition = [0.1, -0.296, -0.37]
+        # Its the origin/reference point, to which all other coordinates of the Board and the Blocks are relative.
+        self.origin_coordinate = [0.1, -0.296, -0.37] # Previous name: basePosition
     
     def set_dependencies(self, reachy: ReachySDK, perc, strat):
         self.reachy = reachy
@@ -33,15 +33,19 @@ class MoveImpl:
         # Defines Dictionary for modifying the gripping force - Needs reachy defined first
         self.POS_GRIPPER = {self.reachy.r_arm.r_gripper: 0}
 
-    def arm_to_init_pos(self):
-        self.reachy.turn_on("r_arm")
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
+    def set_arm_to_right_angle_position(self):
+        self._move_arm(constants.POS_ARM_AT_RIGHT_ANGLE, rotation={'y': -90, 'x': 0, 'z': 0})
+    
+    def set_arm_to_origin(self):
+        self._move_arm(self.origin_coordinate, rotation={'y': -90, 'x': 0, 'z': 0})
 
-    def getBasePos(self):
-        return self.basePosition
+    def get_origin(self):
+        # Returns the origin point to which all other coordinates are relative from
+        return self.origin_coordinate
 
-    def setBasePos(self, coordinate):
-        self.basePosition = coordinate
+    def set_origin(self, coordinate):
+        # Returns the origin point to which all other coordinates are relative from
+        self.origin_coordinate = coordinate
         
     def addlists(self,a,b):
         c = a[::]
@@ -49,7 +53,11 @@ class MoveImpl:
             c[i] += b[i]
         return c
     
+    def activate_right_arm(self):
+        self.reachy.turn_on("r_arm")
 
+    def deactivate_right_arm(self):
+        self.reachy.turn_off_smoothly("r_arm")
 
     def move_object(self, pos_from_enum: Outside, pos_to_enum: Board):
         """
@@ -58,13 +66,12 @@ class MoveImpl:
         :param pos_from: Coordinates where the Object to move is
         :param pos_to: Coordinates on where to move the object
         """
-        
-        
-        self.arm_to_init_pos()
+        self.activate_right_arm()
+        self.set_arm_to_right_angle_position()
         
         mapper = HandRotationMapper()
         # Setting arm joints to Stiff-mode for starting movement
-        #self.reachy.turn_on("r_arm")
+        
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
 
@@ -72,27 +79,25 @@ class MoveImpl:
         pos_from_value = pos_from_enum.value
 
         # Adds the position values to base position - Since the Enums are dependent of the Base Position
-        pos_from_value = self.addlists(self.basePosition, pos_from_value)
-        pos_to_value = self.addlists(self.basePosition, pos_to_value)
+        pos_from_value = self.addlists(self.origin_coordinate, pos_from_value)
+        pos_to_value = self.addlists(self.origin_coordinate, pos_to_value)
         
-
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
-        # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
+        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # Non Moving Part of Hand would knock Items over
         # starting movement of reachy's head
         self.move_head(constants.HEAD_LOOK_DOWN)
         time.sleep(1.0)
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.move_head()
         # 1. Moves arm in front of the Object
-        pos_from_value[0] -= constants.DELTA_GRIP_OBJ
+        pos_from_value[0] -= constants.DELTA_INFRONT_OBJ
         self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
-        pos_from_value[0] += constants.DELTA_GRIP_OBJ
-        # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
+        pos_from_value[0] += constants.DELTA_INFRONT_OBJ
         self.move_head()
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
+        #pos_from_value[0] += constants.DELTA_HAND_TIP # or else its just the Tip around the cylinder
         self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
         # 4. closes Hand
         self._grip_close()
@@ -115,12 +120,14 @@ class MoveImpl:
         self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
-        # 10. Moves arm back to Base Position
+        # 10. Moves arm back to a save position
         self._grip_close()
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
+        self.set_arm_to_right_angle_position()
+        # 11. Moving arm to the origin coordinate, so that it does not block the view
+        self._move_arm(self.origin_coordinate, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
-        self.reachy.turn_off_smoothly("r_arm")
+        self.deactivate_right_arm()
         # head back to default and setting head to compliant mode
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.reachy.turn_off_smoothly("head")
@@ -172,15 +179,6 @@ class MoveImpl:
             return True
         else:
             return False
-
-    def _prepare_body_movement(self):
-        # bring arms in safe position
-        self._move_arm(constants.POS_SAVE_COORDINATES)
-        pass
-
-    def _finish_body_movement(self):
-        self._move_arm(constants.POS_BASE_COORDINATES)
-        pass
 
     def move_body(self, x, y):
         """
