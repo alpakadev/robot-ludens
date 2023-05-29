@@ -385,9 +385,9 @@ class MoveImpl:
         self.sad() #additional time being sad
         
 
-    def angry(self): #TODO: pushing movement
+    def angry(self): #TODO: pushing movement, angry emot is perhaps not needed
         """
-        pushes cylinders and cubes of the board, antennas  at 45°
+        pushes cylinders and cubes of the board, antennas 
         """
         
         self.reachy.head.l_antenna.speed_limit = 90.0
