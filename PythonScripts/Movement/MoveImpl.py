@@ -1,9 +1,10 @@
+import time
+
 from . import constants
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 from .Helper.KinematicModelHelper import KinematicModelHelper
-import time
 from .Enums.Board import Board
 from .Enums.Outside import Outside
 from .Helper.HandRotationMapper import HandRotationMapper
