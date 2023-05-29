@@ -3,14 +3,17 @@ from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 from .Helper.KinematicModelHelper import KinematicModelHelper
-from .Helper.KinematicModelHelper import RotationAxis
-import numpy as np
 import time
 from .Enums.Board import Board
 from .Enums.Outside import Outside
 from .Helper.HandRotationMapper import HandRotationMapper
+from Enums.Animation import Animation
 
-#get the current arm position (Matrix): reachy_sdk.r_arm.forward_kinematics()
+from Animations.Win import animation_win
+from Animations.Loose import animation_loose
+
+
+# get the current arm position (Matrix): reachy_sdk.r_arm.forward_kinematics()
 
 # Docs:
 # https://docs.pollen-robotics.com/sdk/first-moves/kinematics/#forward-kinematics
@@ -18,14 +21,12 @@ from .Helper.HandRotationMapper import HandRotationMapper
 # https://pollen-robotics.github.io/reachy-2019-docs/docs/program-your-robot/control-the-arm/#forward-kinematics
 
 class MoveImpl:
-    
-    
 
     def __init__(self):
         self.kinematic_model_helper = KinematicModelHelper()
         # Its the Origin point, from which all other coordinates of the Board and the Blocks are related from
         self.basePosition = [0.1, -0.296, -0.37]
-    
+
     def set_dependencies(self, reachy: ReachySDK, perc, strat):
         self.reachy = reachy
         self.perc = perc
@@ -42,14 +43,12 @@ class MoveImpl:
 
     def setBasePos(self, coordinate):
         self.basePosition = coordinate
-        
-    def addlists(self,a,b):
+
+    def addlists(self, a, b):
         c = a[::]
         for i in range(len(c)):
             c[i] += b[i]
         return c
-    
-
 
     def move_object(self, pos_from_enum: Outside, pos_to_enum: Board):
         """
@@ -58,13 +57,12 @@ class MoveImpl:
         :param pos_from: Coordinates where the Object to move is
         :param pos_to: Coordinates on where to move the object
         """
-        
-        
+
         self.arm_to_init_pos()
-        
+
         mapper = HandRotationMapper()
         # Setting arm joints to Stiff-mode for starting movement
-        #self.reachy.turn_on("r_arm")
+        # self.reachy.turn_on("r_arm")
         # Setting head joints to stiff mode
         self.reachy.turn_on("head")
 
@@ -74,7 +72,6 @@ class MoveImpl:
         # Adds the position values to base position - Since the Enums are dependent of the Base Position
         pos_from_value = self.addlists(self.basePosition, pos_from_value)
         pos_to_value = self.addlists(self.basePosition, pos_to_value)
-        
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
         pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
@@ -100,10 +97,11 @@ class MoveImpl:
         pos_from_value[2] += constants.DELTA_ABOVE_OBJ
         self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
         pos_from_value[2] -= constants.DELTA_ABOVE_OBJ
-        #self.move_head(pos_goal)
+        # self.move_head(pos_goal)
         # 6. Moves arm above pos_to
         pos_to_value[2] += constants.DELTA_ABOVE_OBJ
-        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})  ##TODO: How to Handle POS_ABOVE_BOARD?
+        self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+            pos_to_enum)})  ##TODO: How to Handle POS_ABOVE_BOARD?
         pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
         self.move_head()
         # 7. moves arm to pos_to
@@ -117,14 +115,14 @@ class MoveImpl:
         self.move_head()
         # 10. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
+        self._move_arm(constants.POS_BASE_COORDINATES,
+                       rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
         self.reachy.turn_off_smoothly("r_arm")
         # head back to default and setting head to compliant mode
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.reachy.turn_off_smoothly("head")
-        pass
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
@@ -137,12 +135,10 @@ class MoveImpl:
 
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
         goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
-        pass
 
     def _change_grip_force(self, force):
         self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
-        #print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
-        pass
+        # print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
 
     def _grip_open(self):
         """
@@ -151,7 +147,6 @@ class MoveImpl:
         # Open grip completly
         self._change_grip_force(-60)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        pass
 
     def _grip_close(self):
         """
@@ -161,7 +156,6 @@ class MoveImpl:
         # TODO: CLOSE until _is_holding
         self._change_grip_force(5)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        pass
 
     def _is_holding(self):
         """
@@ -176,11 +170,9 @@ class MoveImpl:
     def _prepare_body_movement(self):
         # bring arms in safe position
         self._move_arm(constants.POS_SAVE_COORDINATES)
-        pass
 
     def _finish_body_movement(self):
         self._move_arm(constants.POS_BASE_COORDINATES)
-        pass
 
     def move_body(self, x, y):
         """
@@ -189,7 +181,7 @@ class MoveImpl:
 
         :param pos_to (array): Coordinates on where to move the object
         """
-        self.reachy.mobile_base.goto(x,y, theta=0)
+        self.reachy.mobile_base.goto(x, y, theta=0)
 
     def turn_body(self, degree):
         """
@@ -198,16 +190,7 @@ class MoveImpl:
         """
         self.reachy.mobile_base.goto(x=0.0, y=0.0, theta=degree)
 
-    def get_position(self):
-        """
-        Returns current Cartesian coordinitas Position
-
-        :param pos_current array: Coordinates - based on origin Point.
-        :return: array
-        """
-        pass
-
-    def move_head(self, look_at = None):
+    def move_head(self, look_at=None):
         """
         Moves reachy's head either by the given coordinates defined by look_at or
         follows the right arm's coordinates
@@ -215,232 +198,51 @@ class MoveImpl:
         """
         # head follows arm
         if look_at is None:
-            x, y, z = self.reachy.r_arm.forward_kinematics()[:3,-1]
-            self.reachy.head.look_at(x=x, y=y, z=z-0.05, duration=1.0)
+            x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
+            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=1.0)
 
         # head looks at given x,y,z
         else:
-            x,y,z = look_at
+            x, y, z = look_at
             self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
-     
-    #---Interaction Animation---
-    
-    def happy(self):
-        """
-        l and r antennas swinging fastly in excitment
-        """
-        self.reachy.head.l_antenna.speed_limit = 0.0
-        self.reachy.head.r_antenna.speed_limit = 0.0
-    
-        for _ in range(9):
-            self.reachy.head.l_antenna.goal_position = 10.0
-            self.reachy.head.r_antenna.goal_position = -10.0
 
-            time.sleep(0.1)
-
-            self.reachy.head.l_antenna.goal_position = -10.0
-            self.reachy.head.r_antenna.goal_position = 10.0
-
-        time.sleep(0.1)
-    
-        self.reachy.head.l_antenna.goal_position = 0.0
-        self.reachy.head.r_antenna.goal_position = 0.0
-
-    def sad(self):
-        """
-        l and r antennas going down slowly 
-        """
-        self.reachy.head.l_antenna.speed_limit = 90.0
-        self.reachy.head.r_antenna.speed_limit = 90.0
-    
-        self.reachy.head.l_antenna.goal_position = 140.0
-        self.reachy.head.r_antenna.goal_position = -140.0
-    
-        time.sleep(5.0)
-    
-        self.reachy.head.l_antenna.goal_position = 0.0
-        self.reachy.head.r_antenna.goal_position = 0.0
-        self.reachy.head.look_at(0.5, 0, -0.0, 1.0)
-
-    def disapproval(self):
-        """
-        looking confusedly at board and back at opponent while shaking head
-        """
-        self.reachy.head.look_at(0.5, 0, -0.4, 1.0) #at board
-
-        time.sleep(0.5)
-
-        self.reachy.head.l_antenna.speed_limit = 20.0
-        self.reachy.head.r_antenna.speed_limit = 20.0
-        self.reachy.head.l_antenna.goal_position = 50.0
-        self.reachy.head.r_antenna.goal_position = -90.0
-        self.reachy.head.look_at(0.05, 0, 0, duration=0.5) #default
-
-        for i in range(3):          #shakes head
-            self.reachy.head.look_at(0.5, 0.3, 0, duration=0.5)
-            self.reachy.head.look_at(0.5, -0.3, 0, duration=0.5)
-            
-        self.reachy.head.l_antenna.goal_position = 0.0  #default antennas
-        self.reachy.head.r_antenna.goal_position = 0.0
-        self.reachy.head.look_at(0.05, 0, 0, duration=0.5) #goes back to default position
-
-    def anm_win(self):
-        """
-        doing a lil celebration dance; swinging arms up side to side w/ open+closing grippers followed by happily swinging antennas
-        """
-        self.reachy.turn_on("l_arm") #stiff mode for l_arm
-        self.reachy.head.look_at(0.5, 0, -0.4, duration = 1.0)
-        time.sleep(0.5)
-        self.reachy.head.l_antenna.goal_position = 50.0 #-50 and 50
-        self.reachy.head.r_antenna.goal_position = -50.0
-        self.reachy.head.look_at(0.05, 0, 0, duration=0.5)
-        time.sleep(1.0)
-        self.happy()
-
-        for i in range(3):
-            right_up_position = {
-                self.reachy.r_arm.r_shoulder_pitch: -60,
-                self.reachy.r_arm.r_shoulder_roll: -10,
-                self.reachy.r_arm.r_arm_yaw: 25,
-                self.reachy.r_arm.r_elbow_pitch: -125,
-                self.reachy.r_arm.r_forearm_yaw: 15,
-                self.reachy.r_arm.r_wrist_pitch: 25,
-                self.reachy.r_arm.r_wrist_roll: 20,
-                self.reachy.r_arm.r_gripper: 40,
-                }
-            left_up_position = {
-                self.reachy.l_arm.l_shoulder_pitch: -60,
-                self.reachy.l_arm.l_shoulder_roll: -10,
-                self.reachy.l_arm.l_arm_yaw: 25,
-                self.reachy.l_arm.l_elbow_pitch: -125,
-                self.reachy.l_arm.l_forearm_yaw: 15,
-                self.reachy.l_arm.l_wrist_pitch: 25,
-                self.reachy.l_arm.l_wrist_roll: 20,
-                self.reachy.l_arm.l_gripper: 40,
-                }
-            self.happy()
-
-            goto(
-                goal_positions=left_up_position,
-                duration=0.30,
-                interpolation_mode=InterpolationMode.MINIMUM_JERK
-                )
-            goto(
-                goal_positions=right_up_position,
-                duration=0.30,
-                interpolation_mode=InterpolationMode.MINIMUM_JERK
-                )
-
-            right_up2_position = {
-                self.reachy.r_arm.r_shoulder_pitch: -50,
-                self.reachy.r_arm.r_shoulder_roll: -15,
-                self.reachy.r_arm.r_arm_yaw: -10,
-                self.reachy.r_arm.r_elbow_pitch: -120,
-                self.reachy.r_arm.r_forearm_yaw: -15,
-                self.reachy.r_arm.r_wrist_pitch: -5,
-                self.reachy.r_arm.r_wrist_roll: -20,
-                self.reachy.r_arm.r_gripper: -30,
-                }
-            left_up2_position = {
-                self.reachy.l_arm.l_shoulder_pitch: -50,
-                self.reachy.l_arm.l_shoulder_roll: -15,
-                self.reachy.l_arm.l_arm_yaw: -10,
-                self.reachy.l_arm.l_elbow_pitch: -120,
-                self.reachy.l_arm.l_forearm_yaw: -15,
-                self.reachy.l_arm.l_wrist_pitch: -5,
-                self.reachy.l_arm.l_wrist_roll: -20,
-                self.reachy.l_arm.l_gripper: -30,
-                }
-            self.happy()
-            goto(
-                goal_positions=left_up2_position,
-                duration=0.30,
-                interpolation_mode=InterpolationMode.MINIMUM_JERK
-                )
-            goto(
-                goal_positions=right_up2_position,
-                duration=0.30,
-                interpolation_mode=InterpolationMode.MINIMUM_JERK
-                )
-        self.reachy.turn_off_smoothly("l_arm")
-            
-
-    def anm_lost(self):
-        """
-        looking at opponent briefly, at board w/ sad antennas and looking away 
-        """
-        #L: Spieler anschauen, Runterschauen auf das Brett, Antennen hängen lassen (Enttäuschung)
-        self.reachy.head.look_at(0.05, 0, 0, duration=0.5) #at opponent
-        time.sleep(1.0)
-        self.reachy.head.look_at(0.5, 0, -0.4, 0.5) #at board
-        time.sleep(1.5)
-        self.reachy.head.l_antenna.speed_limit = 150.0
-        self.reachy.head.r_antenna.speed_limit = 150.0
-        self.reachy.head.l_antenna.goal_position = 140.0
-        self.reachy.head.r_antenna.goal_position = -140.0
-        time.sleep(2.0)
-        self.reachy.head.look_at(0.05, -0.02, -0.04, duration=0.5)
-        #self.turn_body(10.0) #possible addition turn body away from opponent to left side
-        
-        self.sad() #additional time being sad
-        
-
-    def angry(self): #TODO: pushing movement
-        """
-        pushes cylinders and cubes of the board, antennas  at 45°
-        """
-        
-        self.reachy.head.l_antenna.speed_limit = 90.0
-        self.reachy.head.r_antenna.speed_limit = 90.0
-        
-        for _ in range(3):
-            
-            self.reachy.head.l_antenna.goal_position = -70.0 
-            self.reachy.head.r_antenna.goal_position = 70.0
-
-            time.sleep(0.50)
-
-            self.reachy.head.l_antenna.goal_position = -80.0 
-            self.reachy.head.r_antenna.goal_position = 80.0
-        
-
-        time.sleep(0.1)
-    
-        self.reachy.head.l_antenna.goal_position = 0.0
-        self.reachy.head.r_antenna.goal_position = 0.0
-            
+    def perform_animation(self, animation_type: Animation):
+        match animation_type:
+            case Animation.WIN:
+                animation_win(self.reachy)
+            case Animation.LOOSE:
+                animation_loose(self.reachy)
 
 
 if __name__ == "__main__":
     # Instantiate reachy instance
-    #reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True) # Mobile base problems with Simulations
+    # reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True) # Mobile base problems with Simulations
     reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
 
     robot = MoveImpl()
     robot.set_dependencies(reachy_sdk, None, None)
-    
-    robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
-    robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
-    #robot.move_object(Outside.BLOCK_3, Board.BOTTOM_LEFT)
-    #robot.move_object(Outside.BLOCK_4, Board.CENTER)
-    #robot.move_object(Outside.BLOCK_5, Board.TOP_RIGHT)
-    
-    #reachy_sdk.turn_on("reachy")
+
+    # robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
+    # robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
+    # robot.move_object(Outside.BLOCK_3, Board.BOTTOM_LEFT)
+    # robot.move_object(Outside.BLOCK_4, Board.CENTER)
+    # robot.move_object(Outside.BLOCK_5, Board.TOP_RIGHT)
+
+    # reachy_sdk.turn_on("reachy")
 
     # [depth, width, height]
     # Unity: depth(front) == -x , width(side) == -z , height() == y
-    #robot.arm_to_init_pos()
-    #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
-    #robot.move_object(Outside.BLOCK_2, Board.CENTER)
-    
-    #import time
-    #time.sleep(5)
-    #reachy_sdk.turn_off_smoothly("reachy")
-    #robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
-    
-    #robot.happy()
-    #robot.sad()
-    #robot.anm_lost()
-    #robot.anm_win()
-    #robot.disapproval()
-    
+    # robot.arm_to_init_pos()
+    # robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
+    # robot.move_object(Outside.BLOCK_2, Board.CENTER)
+
+    # import time
+    # time.sleep(5)
+    # reachy_sdk.turn_off_smoothly("reachy")
+    # robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
+
+    # robot.be_happy()
+    # robot.be_sad()
+    # robot.do_animation_loose()
+    # robot.do_animation_win()
+    # robot.be_0disapproval()
