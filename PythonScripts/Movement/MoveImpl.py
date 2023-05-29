@@ -85,9 +85,9 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_AHEAD)
         self.move_head()
         # 1. Moves arm in front of the Object
-        pos_from_value[0] -= constants.DELTA_GRIP_OBJ
+        pos_from_value[0] -= constants.DELTA_INFRONT_OBJ
         self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
-        pos_from_value[0] += constants.DELTA_GRIP_OBJ
+        pos_from_value[0] += constants.DELTA_INFRONT_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
         self.move_head()
         # 2. Opens Hand
