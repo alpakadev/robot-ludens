@@ -8,7 +8,7 @@ class PerceptionFacade:
     
     def get_game_state(self):
         # Gibt den Spielstand als 2D Array zurück
-        return self.perception_implentation.get_game_state()
+        return self.perception_implentation.get_game_state(self.move)
     
     def check_game_state_validity(self, state):
         # Gibt zurück, ob der angebene state valide ist. Bei nicht Übereinstimmung werden Zeile und Spalte des Fehlers zurückgegeben
