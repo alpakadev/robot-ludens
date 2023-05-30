@@ -54,8 +54,8 @@ def _get_case_value(case, frame, config):
 
     # Return 1 when piece is red, return -1 when piece is green, return 0 when square is empty
     if red_percent > config["thresholds"]['red'] > green_percent:
-        return 1
-    elif green_percent > config["thresholds"]['green'] > red_percent:
         return -1
+    elif green_percent > config["thresholds"]['green'] > red_percent:
+        return 1
     else:
         return 0
