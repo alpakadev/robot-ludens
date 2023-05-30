@@ -176,7 +176,7 @@ class MoveImpl:
         """
         :returns: 'True' if Reachys right arm is holding something
         """
-        if abs(self.reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
+        if self.reachy.force_sensors.r_force_gripper.force > constants.GRIP_FORCE_HOLDING:
             # TODO: Warning when to much Force is applied
             return True
         return False
