@@ -49,26 +49,26 @@ def animation_angry(reachy):
         reachy.r_arm.r_wrist_roll: 0,
         reachy.r_arm.r_gripper: 20,
         }
-   goto(
-       goal_positions=r2_position,
-       duration=0.70,
-       interpolation_mode=InterpolationMode.MINIMUM_JERK
-       )
-        
-  rbase_position = {
-      reachy.r_arm.r_shoulder_pitch: -15,
-      reachy.r_arm.r_shoulder_roll: -45,    # moves left to right
-      reachy.r_arm.r_arm_yaw: 35,    # forward/back
-      reachy.r_arm.r_elbow_pitch: -75,
-      reachy.r_arm.r_forearm_yaw: 0,
-      reachy.r_arm.r_wrist_pitch: -25,
-      reachy.r_arm.r_wrist_roll: 0,
-      reachy.r_arm.r_gripper: 20,
-      }
-  goto(
-      goal_positions=rbase_position,
-      duration=0.70,
-      interpolation_mode=InterpolationMode.MINIMUM_JERK
-      )
- reachy.head.look_at(0.5, -0.1, -0.2, duration=0.4)
- reachy.turn_off_smoothly("r_arm")
+    goto(
+        goal_positions=r2_position,
+        duration=0.70,
+        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        )
+
+    rbase_position = {
+        reachy.r_arm.r_shoulder_pitch: -15,
+        reachy.r_arm.r_shoulder_roll: -45,    # moves left to right
+        reachy.r_arm.r_arm_yaw: 35,    # forward/back
+        reachy.r_arm.r_elbow_pitch: -75,
+        reachy.r_arm.r_forearm_yaw: 0,
+        reachy.r_arm.r_wrist_pitch: -25,
+        reachy.r_arm.r_wrist_roll: 0,
+        reachy.r_arm.r_gripper: 20,
+        }
+    goto(
+        goal_positions=rbase_position,
+        duration=0.70,
+        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        )
+    reachy.head.look_at(0.5, -0.1, -0.2, duration=0.4)
+    reachy.turn_off_smoothly("r_arm")
