@@ -86,14 +86,18 @@ class Game:
                 self.nextLevel(1)
                 self.game_closed = True
 
-        found_space = False
-        for row in self.board:
-            for cell in row:
-                if cell == 0:
-                    found_space = True
-        if not found_space:
+        #found_space = False
+        #for row in self.board:
+        #    for cell in row:
+        #        if cell == 0:
+        #            found_space = True
+        #if not found_space:
+        #    print("No more moves possible...")
+        #    # nextLevel(0)
+        #    self.game_closed = True
+
+        if self.player_moveCounter + self.reachy_moveCounter == 9 and not self.game_closed:
             print("No more moves possible...")
-            # nextLevel(0)
             self.game_closed = True
 
 
