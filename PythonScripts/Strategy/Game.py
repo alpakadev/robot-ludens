@@ -2,6 +2,7 @@ from . import Human_Interaction as HI
 from . import Computer_Player as Reachy
 from Movement.MoveFacade import MoveFacade 
 from Perception.PerceptionFacade import PerceptionFacade
+import time
 
 class Game:
     def __init__(self):
@@ -100,15 +101,23 @@ class Game:
         #global reachy_moveCounter, board
         while not self.game_closed:
             #input = HI.make_user_move(self.board)
-            input = HI.make_user_move_unity(self.board, self.perc)
-            if self.check_board(input) == True:
-                self.check_state()
-                if not self.game_closed:
-                    self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
-                    self.reachy_moveCounter += 1
-                    print("reachy moved {} times".format(self.reachy_moveCounter))
+            counter = 0
+            while counter <= 4:
+                time.sleep(5)
+                input = HI.make_user_move_unity(self.board, self.perc)
+                counter = counter + 1
+                if self.check_board(input) == True:
                     self.check_state()
-                HI.print_board(self.board)
+                    if not self.game_closed:
+                        self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
+                        self.reachy_moveCounter += 1
+                        print("reachy moved {} times".format(self.reachy_moveCounter))
+                        self.check_state()
+                    HI.print_board(self.board)
+            if self.check_board(input) == False:
+                # shakes head
+                print("reachy shakes head")
+                continue
         print("current score: Reachy ({}) : Player ({})".format(self.reachy_score, self.player_score))
         print("You are level", self.level)
 
