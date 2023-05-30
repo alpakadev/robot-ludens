@@ -22,8 +22,8 @@ class MoveFacade:
         # look_at: [x, y, z]
         self.move.move_head(look_at)
 
-    def do_interrupt_move(self):
-        return self.interrupt.do_interrupt_move()
+    def do_deactivate_right_arm(self):
+        self.move.deactivate_right_arm()
     
     def do_calibration(self):
         self.move.calibrate()
