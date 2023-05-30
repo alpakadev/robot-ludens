@@ -5,6 +5,7 @@ from .Helpers.Helpers import Helpers
 from .Exceptions.Exceptions import ViewCloudedError
 from .PiecePerception.PiecePerception import PiecePerception
 import cv2
+from Movement.MoveFacade import MoveFacade 
 
 class PerceptionImplementation:
     def __init__(self, reachy):
@@ -14,22 +15,22 @@ class PerceptionImplementation:
         self.piece_perception = PiecePerception(self.config)
         self.helpers = Helpers(reachy, self.config)
 
-    def get_non_moving_image(self):
-        self.helpers.move_head_to_goal_position()
+    def get_non_moving_image(self, move:MoveFacade):
+        self.helpers.move_head_to_goal_position(move)
         frame = self.helpers.get_stable_image()
         return frame
             
-    def get_game_state(self):
+    def get_game_state(self, move:MoveFacade):
         # Returns current state of the board
-        frame = self.get_non_moving_image()
+        frame = self.get_non_moving_image(move)
         try:
             board_corners = self.board_perception.get_board_corners(frame)
             board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
             game_state = self.game_state.get_game_state(frame, board_cases_coordinates, self.config)
-            self.helpers.move_head_to_base_position()
+            self.helpers.move_head_to_base_position(move)
             return game_state
         except ViewCloudedError:
-            self.helpers.move_head_to_base_position()
+            self.helpers.move_head_to_base_position(move)
             return "Faulty Image, please try again"
 
     def check_state_validity(self, state):
