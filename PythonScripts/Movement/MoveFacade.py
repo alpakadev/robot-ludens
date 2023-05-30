@@ -24,3 +24,6 @@ class MoveFacade:
 
     def do_interrupt_move(self):
         return self.interrupt.do_interrupt_move()
+    
+    def do_calibration(self):
+        self.move.calibrate()

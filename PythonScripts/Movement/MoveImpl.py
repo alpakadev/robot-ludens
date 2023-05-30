@@ -196,6 +196,17 @@ class MoveImpl:
         """
         self.reachy.mobile_base.goto(x=0.0, y=0.0, theta=degree)
 
+    def calibrate(self):
+        matrix = self.reachy.r_arm.forward_kinematics()
+        x = round(matrix[0][3],2)
+        y = round(matrix[1][3],2)
+        z = -0.37
+        res = [x,y,z]
+        self.set_origin(res)
+        print(self.get_origin())
+        #print(matrix)
+        #print(matrix[0][3])
+    
     def get_position(self):
         """
         Returns current Cartesian coordinitas Position
@@ -230,8 +241,8 @@ if __name__ == "__main__":
     robot = MoveImpl()
     robot.set_dependencies(reachy_sdk, None, None)
     
-    robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
-    robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
+    #robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
+    #robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
     #robot.move_object(Outside.BLOCK_3, Board.BOTTOM_LEFT)
     #robot.move_object(Outside.BLOCK_4, Board.CENTER)
     #robot.move_object(Outside.BLOCK_5, Board.TOP_RIGHT)
