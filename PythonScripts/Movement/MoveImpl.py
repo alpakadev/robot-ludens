@@ -167,7 +167,11 @@ class MoveImpl:
         # Closes grip
         # TODO: CLOSE until _is_holding
         starting_force = 1
+        start = time.time()
         while not self._is_holding():
+            # exit loop when time passed is greater than 5 seconds
+            if (time.time() - start) > 5.0:
+                break
             self._change_grip_force(starting_force)
             starting_force += 1
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
