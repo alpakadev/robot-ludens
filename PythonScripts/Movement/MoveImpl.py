@@ -1,17 +1,19 @@
 import time
 
-from . import constants
+from constants import *
+
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+
 from .Helper.KinematicModelHelper import KinematicModelHelper
 from .Enums.Board import Board
 from .Enums.Outside import Outside
 from .Helper.HandRotationMapper import HandRotationMapper
-from Enums.Animation import Animation
+from .Enums.Animation import Animation
 
-from Animations.Win import animation_win
-from Animations.Loose import animation_loose
+from .Animations.Win import animation_win
+from .Animations.Loose import animation_loose
 
 
 # get the current arm position (Matrix): reachy_sdk.r_arm.forward_kinematics()
@@ -37,7 +39,7 @@ class MoveImpl:
 
     def arm_to_init_pos(self):
         self.reachy.turn_on("r_arm")
-        self._move_arm(constants.POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(POS_BASE_COORDINATES, rotation={'y': -90, 'x': 0, 'z': 0})
 
     def getBasePos(self):
         return self.basePosition
@@ -75,17 +77,17 @@ class MoveImpl:
         pos_to_value = self.addlists(self.basePosition, pos_to_value)
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        pos_from_value[1] += constants.DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
+        pos_from_value[1] += DELTA_HAND_WIDTH  # To prevent knocking cylinder on 3.
         # pos_to[1] += constants.DELTA_HAND_WIDTH # To better place into position on 6-8.
         # starting movement of reachy's head
-        self.move_head(constants.HEAD_LOOK_DOWN)
+        self.move_head(HEAD_LOOK_DOWN)
         time.sleep(1.0)
-        self.move_head(constants.HEAD_LOOK_AHEAD)
+        self.move_head(HEAD_LOOK_AHEAD)
         self.move_head()
         # 1. Moves arm in front of the Object
-        pos_from_value[0] -= constants.DELTA_GRIP_OBJ
+        pos_from_value[0] -= DELTA_GRIP_OBJ
         self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
-        pos_from_value[0] += constants.DELTA_GRIP_OBJ
+        pos_from_value[0] += DELTA_GRIP_OBJ
         # pos_from[0] += constants.DELTA_HAND_TIP # or Else its just the Tip around the cylinder
         self.move_head()
         # 2. Opens Hand
@@ -95,34 +97,34 @@ class MoveImpl:
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above current position
-        pos_from_value[2] += constants.DELTA_ABOVE_OBJ
+        pos_from_value[2] += DELTA_ABOVE_OBJ
         self._move_arm(pos_from_value, rotation={'y': -90, 'x': 0, 'z': 0})
-        pos_from_value[2] -= constants.DELTA_ABOVE_OBJ
+        pos_from_value[2] -= DELTA_ABOVE_OBJ
         # self.move_head(pos_goal)
         # 6. Moves arm above pos_to
-        pos_to_value[2] += constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] += DELTA_ABOVE_OBJ
         self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             pos_to_enum)})  ##TODO: How to Handle POS_ABOVE_BOARD?
-        pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] -= DELTA_ABOVE_OBJ
         self.move_head()
         # 7. moves arm to pos_to
         self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
-        pos_to_value[2] += constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] += DELTA_ABOVE_OBJ
         self._move_arm(pos_to_value, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(pos_to_enum)})
-        pos_to_value[2] -= constants.DELTA_ABOVE_OBJ
+        pos_to_value[2] -= DELTA_ABOVE_OBJ
         self.move_head()
         # 10. Moves arm back to Base Position
         self._grip_close()
-        self._move_arm(constants.POS_BASE_COORDINATES,
+        self._move_arm(POS_BASE_COORDINATES,
                        rotation={'y': -90, 'x': 0, 'z': 0})  ##TODO: How to Handle POS_BASE?
 
         # Setting arm to compliant mode and lowering smoothly for preventing damaging
         self.reachy.turn_off_smoothly("r_arm")
         # head back to default and setting head to compliant mode
-        self.move_head(constants.HEAD_LOOK_AHEAD)
+        self.move_head(HEAD_LOOK_AHEAD)
         self.reachy.turn_off_smoothly("head")
 
     def _move_arm(self, pos_to: list, rotation: dict):
@@ -162,7 +164,7 @@ class MoveImpl:
         """
         :returns: 'True' if Reachys right arm is holding something
         """
-        if abs(self.reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
+        if abs(self.reachy.force_sensors.r_force_gripper.force) > GRIP_FORCE_HOLDING:
             # TODO: Warning when to much Force is applied
             return True
         else:
@@ -170,10 +172,10 @@ class MoveImpl:
 
     def _prepare_body_movement(self):
         # bring arms in safe position
-        self._move_arm(constants.POS_SAVE_COORDINATES)
+        self._move_arm(POS_SAVE_COORDINATES)
 
     def _finish_body_movement(self):
-        self._move_arm(constants.POS_BASE_COORDINATES)
+        self._move_arm(POS_BASE_COORDINATES)
 
     def move_body(self, x, y):
         """
@@ -218,10 +220,12 @@ class MoveImpl:
 if __name__ == "__main__":
     # Instantiate reachy instance
     # reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True) # Mobile base problems with Simulations
-    reachy_sdk = ReachySDK(host=constants.HOSTADDRESS)
+    reachy_sdk = ReachySDK(host='localhost')
 
     robot = MoveImpl()
     robot.set_dependencies(reachy_sdk, None, None)
+
+    # robot.perform_animation(Animation.WIN)
 
     # robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
     # robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)

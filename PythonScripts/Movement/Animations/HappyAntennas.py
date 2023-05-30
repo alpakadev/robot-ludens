@@ -1,7 +1,7 @@
 import time
 
 
-def animation_happy(reachy):
+def animation_happy_antennas(reachy):
     reachy.head.l_antenna.speed_limit = 0.0
     reachy.head.r_antenna.speed_limit = 0.0
 

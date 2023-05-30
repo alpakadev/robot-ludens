@@ -1,7 +1,7 @@
 import time
 
 
-def animation_sad(reachy):
+def animation_sad_antennas(reachy):
     reachy.head.l_antenna.speed_limit = 90.0
     reachy.head.r_antenna.speed_limit = 90.0
 
@@ -12,4 +12,3 @@ def animation_sad(reachy):
 
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    reachy.head.look_at(0.5, 0, -0.0, 1.0)

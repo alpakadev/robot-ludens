@@ -1,7 +1,9 @@
 import time
+
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
-from Happy import animation_happy
+
+from .HappyAntennas import animation_happy_antennas
 
 
 def animation_win(reachy):
@@ -13,7 +15,7 @@ def animation_win(reachy):
     reachy.head.look_at(0.05, 0, 0, duration=0.5)
     time.sleep(1.0)
 
-    animation_happy(reachy)
+    animation_happy_antennas(reachy)
 
     for i in range(3):
         right_up_position = {
@@ -37,7 +39,7 @@ def animation_win(reachy):
             reachy.l_arm.l_gripper: 40,
         }
 
-        animation_happy(reachy)
+        animation_happy_antennas(reachy)
 
         goto(
             goal_positions=left_up_position,
@@ -70,7 +72,9 @@ def animation_win(reachy):
             reachy.l_arm.l_wrist_roll: -20,
             reachy.l_arm.l_gripper: -30,
         }
-        animation_happy(reachy)
+
+        animation_happy_antennas(reachy)
+
         goto(
             goal_positions=left_up2_position,
             duration=0.30,
@@ -81,4 +85,5 @@ def animation_win(reachy):
             duration=0.30,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
+
     reachy.turn_off_smoothly("l_arm")
