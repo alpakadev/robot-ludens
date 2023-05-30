@@ -215,6 +215,14 @@ class MoveImpl:
                 animation_win(self.reachy)
             case Animation.LOOSE:
                 animation_loose(self.reachy)
+            case Animation.ANGRY:
+                animation_angry(self.reachy)
+            case Animation.THINKING:
+                animation_thinking(self.reachy)
+            case Animation.DISAPPROVAL:
+                animation_disapproval(self.reachy)
+           
+            
 
 
 if __name__ == "__main__":
