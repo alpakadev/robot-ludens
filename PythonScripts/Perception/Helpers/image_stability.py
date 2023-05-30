@@ -13,8 +13,8 @@ def get_stable_image(reachy, config):
 
         if prev_frame is not None:
             # Define region of interest
-            roi = frame[290:700, 70:700]
-            prev_roi = prev_frame[290:700, 70:700]
+            roi = frame[0:479, 240:580]
+            prev_roi = prev_frame[0:479, 240:580]
 
             # Perform motion detection on ROI
             if prev_roi is not None:
