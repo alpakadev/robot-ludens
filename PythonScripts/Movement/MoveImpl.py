@@ -153,10 +153,10 @@ class MoveImpl:
 
     def _grip_open(self):
         """
-        opens grip completly
+        opens grip completely
         """
-        # Open grip completly
-        self._change_grip_force(-60)
+        OPEN_FULL = -60
+        self._change_grip_force(OPEN_FULL)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
@@ -164,14 +164,15 @@ class MoveImpl:
         """
         closes grip until is_holding is true
         """
-        starting_force = 1
+        MAX_TIME_PASSED = 5.0
+        force = 1
         start = time.time()
         while not self._is_holding():
             # exit loop when time passed is greater than 5 seconds
-            if (time.time() - start) > 5.0:
+            if (time.time() - start) > MAX_TIME_PASSED:
                 break
-            self._change_grip_force(starting_force)
-            starting_force += 1
+            self._change_grip_force(force)
+            force += 1
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
