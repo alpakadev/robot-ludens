@@ -164,8 +164,6 @@ class MoveImpl:
         """
         closes grip until is_holding is true
         """
-        # Closes grip
-        # TODO: CLOSE until _is_holding
         starting_force = 1
         start = time.time()
         while not self._is_holding():
