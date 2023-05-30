@@ -73,7 +73,7 @@ class MoveImpl:
         # Setting arm joints to Stiff-mode for starting movement
         
         # Setting head joints to stiff mode
-        self.reachy.turn_on("head")
+        
 
         pos_to_value = pos_to_enum.value
         pos_from_value = pos_from_enum.value
@@ -130,7 +130,7 @@ class MoveImpl:
         self.deactivate_right_arm()
         # head back to default and setting head to compliant mode
         self.move_head(constants.HEAD_LOOK_AHEAD)
-        self.reachy.turn_off_smoothly("head")
+        
         pass
 
     def _move_arm(self, pos_to: list, rotation: dict):
@@ -211,6 +211,9 @@ class MoveImpl:
         follows the right arm's coordinates
 
         """
+        #turn on head
+        self.reachy.turn_on("head")
+
         # head follows arm
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3,-1]
@@ -220,6 +223,8 @@ class MoveImpl:
         else:
             x,y,z = look_at
             self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
+
+        self.reachy.turn_off_smoothly("head")
 
 
 if __name__ == "__main__":
