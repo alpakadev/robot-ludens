@@ -114,6 +114,7 @@ class Game:
                         print("reachy moved {} times".format(self.reachy_moveCounter))
                         self.check_state()
                     HI.print_board(self.board)
+                    counter = 4
             if self.check_board(input) == False:
                 # shakes head
                 print("reachy shakes head")
