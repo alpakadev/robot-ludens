@@ -166,7 +166,10 @@ class MoveImpl:
         """
         # Closes grip
         # TODO: CLOSE until _is_holding
-        self._change_grip_force(5)
+        starting_force = 1
+        while not self._is_holding():
+            self._change_grip_force(starting_force)
+            starting_force += 1
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         pass
 
@@ -177,8 +180,7 @@ class MoveImpl:
         if abs(self.reachy.force_sensors.r_force_gripper.force) > constants.GRIP_FORCE_HOLDING:
             # TODO: Warning when to much Force is applied
             return True
-        else:
-            return False
+        return False
 
     def move_body(self, x, y):
         """
