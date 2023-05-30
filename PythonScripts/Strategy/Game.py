@@ -132,8 +132,8 @@ class Game:
                 self.level = 0
         elif win_state == 1:
             self.level += 1
-            if self.level == 4: #voher 3
-                self.level = 3 #vorher 2
+            if self.level == 4:
+                self.level = 3
 
 
     def arcadeModus(self):
