@@ -96,9 +96,9 @@ class Game:
         #    # nextLevel(0)
         #    self.game_closed = True
 
-        if player_moveCounter + reachy_moveCounter == 9:
+        if self.player_moveCounter + self.reachy_moveCounter == 9 and not self.game_closed:
             print("No more moves possible...")
-            game_closed = True
+            self.game_closed = True
 
 
     def play(self):
