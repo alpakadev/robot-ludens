@@ -6,8 +6,8 @@ def animation_disapproval(reachy):
 
     time.sleep(0.5)
 
-    reachy.head.l_antenna.speed_limit = 20.0
-    reachy.head.r_antenna.speed_limit = 20.0
+    reachy.head.l_antenna.speed_limit = 70.0
+    reachy.head.r_antenna.speed_limit = 70.0
     reachy.head.l_antenna.goal_position = 50.0
     reachy.head.r_antenna.goal_position = -90.0
     reachy.head.look_at(0.05, 0, 0, duration=0.5)  # default
