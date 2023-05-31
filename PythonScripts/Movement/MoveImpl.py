@@ -14,6 +14,9 @@ from .Enums.Animation import Animation
 
 from .Animations.Win import animation_win
 from .Animations.Loose import animation_loose
+from .Animations.Angry import animation_angry
+from .Animations.thinking import animation_thinking
+from .Animations.Disapproval import animation_disapproval
 
 
 # get the current arm position (Matrix): reachy_sdk.r_arm.forward_kinematics()
@@ -221,41 +224,3 @@ class MoveImpl:
                 animation_thinking(self.reachy)
             case Animation.DISAPPROVAL:
                 animation_disapproval(self.reachy)
-           
-            
-
-
-if __name__ == "__main__":
-    # Instantiate reachy instance
-    # reachy_sdk = ReachySDK(host=constants.HOSTADDRESS, with_mobile_base=True) # Mobile base problems with Simulations
-    reachy_sdk = ReachySDK(host='localhost')
-
-    robot = MoveImpl()
-    robot.set_dependencies(reachy_sdk, None, None)
-
-    # robot.perform_animation(Animation.WIN)
-
-    # robot.move_object(Outside.BLOCK_1, Board.TOP_LEFT)
-    # robot.move_object(Outside.BLOCK_2, Board.CENTER_LEFT)
-    # robot.move_object(Outside.BLOCK_3, Board.BOTTOM_LEFT)
-    # robot.move_object(Outside.BLOCK_4, Board.CENTER)
-    # robot.move_object(Outside.BLOCK_5, Board.TOP_RIGHT)
-
-    # reachy_sdk.turn_on("reachy")
-
-    # [depth, width, height]
-    # Unity: depth(front) == -x , width(side) == -z , height() == y
-    # robot.arm_to_init_pos()
-    # robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
-    # robot.move_object(Outside.BLOCK_2, Board.CENTER)
-
-    # import time
-    # time.sleep(5)
-    # reachy_sdk.turn_off_smoothly("reachy")
-    # robot.move_object(Outside.BLOCK_1, Board.TOP_RIGHT)
-
-    # robot.be_happy()
-    # robot.be_sad()
-    # robot.do_animation_loose()
-    # robot.do_animation_win()
-    # robot.be_0disapproval()
