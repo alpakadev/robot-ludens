@@ -1,13 +1,5 @@
-import numpy
-import numpy as np
-from enum import Enum
+from numpy import numpy, ndarray
 from scipy.spatial.transform import Rotation as R
-from numpy import ndarray
-
-class RotationAxis(Enum):
-    X = 'x',
-    Y = 'y',
-    Z = 'z'
 
 
 class KinematicModelHelper:
@@ -16,9 +8,6 @@ class KinematicModelHelper:
         return numpy.around(R.from_euler(direction, numpy.deg2rad(deg)).as_matrix(), 3)
 
     def _build_rot_mat(self, rotation: dict):
-        """
-
-        """
         Z = None
         Y = None
         X = None
@@ -32,7 +21,7 @@ class KinematicModelHelper:
             if key == 'z':
                 Z = rot
 
-        rotations_combined = np.matmul(Z, Y, X)
+        rotations_combined = numpy.matmul(Z, Y, X)
         return rotations_combined
 
     def _build_target_pos_mat(self, rot_mat: ndarray, pose: list):

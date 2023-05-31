@@ -13,6 +13,8 @@ perc.set_dependencies(move, strat)
 move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
+#move.do_deactivate_right_arm() # If the Arm is stuck call this function
+
 move.do_calibration()
 strat.start_game()
 
