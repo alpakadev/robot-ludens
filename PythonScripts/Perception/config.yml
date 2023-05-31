@@ -5,8 +5,8 @@ color_bounds:
   red_upper: [10, 255, 255]
   green_lower: [35, 50, 50]
   green_upper: [90, 255, 255]
-  violet_lower: [140,50,50]
-  violet_upper: [160,255,255]
+  violet_lower: [120,50,50]
+  violet_upper: [180,255,255]
 thresholds:
   red: 0.08
   green: 0.08

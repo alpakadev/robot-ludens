@@ -1,8 +1,10 @@
 import time
 
+from .. import constants
+
 
 def animation_disapproval(reachy):
-    reachy.head.look_at(0.5, 0, -0.4, 1.0)  # at board
+    reachy.head.look_at(constants.HEAD_LOOK_DOWN)
 
     time.sleep(0.5)
 
@@ -10,12 +12,14 @@ def animation_disapproval(reachy):
     reachy.head.r_antenna.speed_limit = 70.0
     reachy.head.l_antenna.goal_position = 50.0
     reachy.head.r_antenna.goal_position = -90.0
-    reachy.head.look_at(0.05, 0, 0, duration=0.5)  # default
 
-    for i in range(3):  # shakes head
+    reachy.head.look_at(constants.HEAD_LOOK_FRONT, duration=0.5)
+
+    # Head shaking
+    for i in range(3):
         reachy.head.look_at(0.5, 0.3, 0, duration=0.5)
         reachy.head.look_at(0.5, -0.3, 0, duration=0.5)
 
-    reachy.head.l_antenna.goal_position = 0.0  # default antennas
+    reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    reachy.head.look_at(0.05, 0, 0, duration=0.5)  # goes back to default position
+    reachy.head.look_at(constants.HEAD_LOOK_FRONT, duration=0.5)

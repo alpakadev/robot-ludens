@@ -33,7 +33,7 @@ def make_user_move(board):
         except:
             print("Please provide one digit between 1 and 3 followed by one character between A and C.")
 
-def make_user_move_unity(board, perc = PerceptionFacade):
+def make_user_move_unity(board, perc : PerceptionFacade):
     invalid = True
     new_board = copy.deepcopy(board)
     while invalid:
@@ -41,5 +41,6 @@ def make_user_move_unity(board, perc = PerceptionFacade):
             new_board = perc.get_game_state()
             print(new_board)
             return new_board
-        except:
+        except Exception as e:
+            print(e)
             print("waiting for input")

@@ -1,6 +1,3 @@
-# import sys
-# sys.path.append('..') #For importing from Neighbour Folder
-# Uncomment above if its not working
 from ..Enums.Board import Board
 
 

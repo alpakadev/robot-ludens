@@ -1,8 +1,10 @@
 import time
 
+from .. import constants
+
 
 def animation_loose(reachy):
-    reachy.head.look_at(0.05, 0, 0, duration=0.5)
+    reachy.head.look_at(constants.HEAD_LOOK_FRONT, duration=0.5)
 
     time.sleep(1.0)
 
