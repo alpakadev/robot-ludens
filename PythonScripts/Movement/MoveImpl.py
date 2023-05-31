@@ -185,6 +185,8 @@ class MoveImpl:
         """
         :returns: 'True' if reachy`s right arm is holding something
         """
+        # ERROR: force sensors gives too high values (> 10000); but code is equal to official
+        # reachy documentation
         if self.reachy.force_sensors.r_force_gripper.force > constants.GRIP_FORCE_HOLDING:
             # TODO: Warning when to much Force is applied
             return True
