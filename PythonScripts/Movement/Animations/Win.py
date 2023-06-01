@@ -7,15 +7,16 @@ from .. import constants
 from .HappyAntennas import animation_happy_antennas
 
 
+
 def animation_win(reachy):
     reachy.turn_on("head")
     reachy.turn_on("r_arm")
     reachy.turn_on("l_arm")  # stiff mode for l_arm
-    reachy.head.look_at(constants.HEAD_LOOK_DOWN, duration=1.0)
+    reachy.head.look_at(0.5, 0, -0.4, duration=1.0) #constants.HEAD_LOOK_DOWN
 
     time.sleep(0.7)
 
-    reachy.head.look_at(constants.HEAD_LOOK_FRONT, duration=0.5)
+    reachy.head.look_at(0.5, -0, 0, duration=0.5)
     reachy.head.l_antenna.goal_position = 40.0
     reachy.head.r_antenna.goal_position = -40.0
 

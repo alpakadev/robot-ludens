@@ -4,7 +4,7 @@ from .. import constants
 
 
 def animation_loose(reachy):
-    reachy.head.look_at(constants.HEAD_LOOK_FRONT, duration=0.5)
+    reachy.head.look_at(0.5, -0, 0, duration=0.5)
 
     time.sleep(1.0)
 
@@ -20,4 +20,4 @@ def animation_loose(reachy):
     time.sleep(1.0)
 
     reachy.head.look_at(0.05, -0.03, -0.04, duration=0.5)
-    reachy.head.look_at(0.5, 0, -0.0, 1.0)
+    reachy.head.look_at(0.5, 0, 0.0, 1.0)
