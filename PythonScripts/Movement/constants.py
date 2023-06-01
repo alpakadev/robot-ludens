@@ -8,7 +8,9 @@ GRIP_FORCE_HOLDING_THRESHOLD = 100
 # The distance to position hand in front of object
 DELTA_FRONT = 0.10
 # The distance above the object to move the arm back
-DELTA_HEIGHT = 0.10
+DELTA_HEIGHT = 0.15
+#Distance about all cylinders on the field
+DELTA_SAFE_HEIGHT = 0.03
 # The distance from the middle of the hand to non-moving part
 DELTA_HAND_WIDTH = 0.02
 # The distance form the middle to tip of the hand

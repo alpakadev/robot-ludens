@@ -72,6 +72,176 @@ class MoveImpl:
         self.reachy.turn_off_smoothly("r_arm")
 
     def move_object(self, position_from: Outside, position_to: Board):
+        self.activate_right_arm()
+
+        mapper = HandRotationMapper()
+
+        position_from_coordinates = position_from.value
+        position_to_coordinates = position_to.value
+        #Coordinate of Block 5 is added to origin Point
+        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
+        #First waiting point ist 15 cm above Block 5
+        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.15])
+        #Second waiting point is 20 cm closer to Reachy (Above Block 1)
+        point_above_Block_1 = add_lists(point_above_Block_5, [-0.2,0,0])
+
+        
+        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
+        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
+        #move to save point above origin point
+        print(point_above_Block_5)
+        print(point_above_Block_1)
+        #Go to Right angle, WP1 and then WP2
+        self.set_arm_to_right_angle_position()
+        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
+
+
+
+        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
+        #Higher to not touch the table
+        position_from_coordinates[2] += 0.1
+        position_from_coordinates[0] -= constants.DELTA_FRONT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Move Delta before cylinder to be taken
+        position_from_coordinates[2] -= 0.08
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Calculate next move
+        position_from_coordinates[0] += constants.DELTA_FRONT
+
+        self._grip_open()
+        #Moves Hand/arm to the cylinder
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #closes Hand
+        self._grip_close()
+        #Take cylinder up
+        position_from_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Calculate and move to position about the goal
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+            position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        #This is the lowest possible position for Reachy not to touch the other blocks
+        #position_to_coordinates[2] += constants.DELTA_SAFE_HEIGHT
+
+        # 7. moves arm to pos_to/Put Gripper down to get lower
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -60, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        self._grip_open()
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        self._grip_close()
+        # 10. Moves arm back to a save position
+        self._grip_close()
+        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+
+
+    def move_object_v3(self, position_from: Outside, position_to: Board):
+        
+        self.activate_right_arm()
+
+        mapper = HandRotationMapper()
+
+        position_from_coordinates = position_from.value
+        position_to_coordinates = position_to.value
+        waiting_point = add_lists(self.origin, [0.1,-0.1,0.1])
+
+        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
+        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
+        #move to save point above origin point
+        print(waiting_point)
+        #self.set_arm_to_right_angle_position()
+        self._move_arm(waiting_point, rotation={'y': -90, 'x': 0, 'z': 0})
+
+
+        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
+        #Higher to not touch the table
+        position_from_coordinates[2] += 0.1
+        position_from_coordinates[0] -= constants.DELTA_FRONT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Move Delta before cylinder to be taken
+        position_from_coordinates[2] -= 0.08
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Calculate next move
+        position_from_coordinates[0] += constants.DELTA_FRONT
+
+        self._grip_open()
+        #Moves Hand/arm to the cylinder
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #closes Hand
+        self._grip_close()
+        #Take cylinder up
+        position_from_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Calculate and move to position about the goal
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+            position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        #This is the lowest possible position for Reachy not to touch the other blocks
+        #position_to_coordinates[2] += constants.DELTA_SAFE_HEIGHT
+
+        # 7. moves arm to pos_to/Put Gripper down to get lower
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -60, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        self._grip_open()
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        self._grip_close()
+        # 10. Moves arm back to a save position
+        self._grip_close()
+        self._move_arm(waiting_point, rotation={'y': -90, 'x': 0, 'z': 0})
+
+        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
+        #Higher to not touch the table
+        position_from_coordinates[2] += 0.1
+        position_from_coordinates[0] -= constants.DELTA_FRONT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Move Delta before cylinder to be taken
+        position_from_coordinates[2] -= 0.08
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Calculate next move
+        position_from_coordinates[0] += constants.DELTA_FRONT
+
+        self._grip_open()
+        #Moves Hand/arm to the cylinder
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #closes Hand
+        self._grip_close()
+        #Take cylinder up
+        position_from_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        #Calculate and move to position about the goal
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+            position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        #This is the lowest possible position for Reachy not to touch the other blocks
+        #position_to_coordinates[2] += constants.DELTA_SAFE_HEIGHT
+
+        # 7. moves arm to pos_to/Put Gripper down to get lower
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -60, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        self._grip_open()
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        self._grip_close()
+        # 10. Moves arm back to a save position
+        self._grip_close()
+        self._move_arm(waiting_point, rotation={'y': -90, 'x': 0, 'z': 0})
+
+
+
+
+
+    def move_object_v2(self, position_from: Outside, position_to: Board):
         """
         Moves Object from A (pos_from) to B (pos_to)
 
@@ -80,6 +250,10 @@ class MoveImpl:
         """
         self.activate_right_arm()
         self.set_arm_to_right_angle_position()
+
+        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
+        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
+        
 
         mapper = HandRotationMapper()
 
@@ -202,6 +376,7 @@ class MoveImpl:
         z = -0.37
         res = [x, y, z]
         self.set_origin(res)
+        print(self.get_origin())
 
     def move_head(self, look_at=None):
         """
