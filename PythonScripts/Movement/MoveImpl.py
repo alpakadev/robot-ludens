@@ -79,11 +79,11 @@ class MoveImpl:
         position_from_coordinates = position_from.value
         position_to_coordinates = position_to.value
         #Coordinate of Block 5 is added to origin Point
-        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
+        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_3.value) #####WIEDER ZU 5 ÄNDERN!!!!
         #First waiting point ist 15 cm above Block 5
         point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.15])
         #Second waiting point is 20 cm closer to Reachy (Above Block 1)
-        point_above_Block_1 = add_lists(point_above_Block_5, [-0.2,0,0])
+        point_above_Block_1 = add_lists(point_above_Block_5, [-0.15,0,0])
 
         
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
