@@ -6,4 +6,4 @@ class Animation(Enum):
     LOOSE = 'loose',
     ANGRY = 'angry',
     DISAPPROVAL = 'disapproval',
-    THINKING = "thinking"
+   
