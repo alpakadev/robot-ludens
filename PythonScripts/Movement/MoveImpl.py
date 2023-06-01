@@ -65,12 +65,6 @@ class MoveImpl:
         # Returns the origin point to which all other coordinates are relative from
         self.origin_coordinate = coordinate
 
-    def addlists(self, a, b):
-        c = a[::]
-        for i in range(len(c)):
-            c[i] += b[i]
-        return c
-
     def activate_right_arm(self):
         self.reachy.turn_on("r_arm")
 
@@ -97,7 +91,7 @@ class MoveImpl:
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
 
         # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        position_to_coordinates[1] += constants.DELTA_HAND_WIDTH  # Non Moving Part of Hand would knock Items over
+        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH  # Non Moving Part of Hand would knock Items over
         # starting movement of reachy's head
         self.move_head(constants.HEAD_LOOK_DOWN)
         time.sleep(1.0)
@@ -171,15 +165,7 @@ class MoveImpl:
         """
         closes grip until is_holding is true
         """
-        MAX_TIME_PASSED = 3.0
-        force = 1
-        start = time.time()
-        while not self._is_holding():
-            # exit loop when time passed is greater than 5 seconds
-            if (time.time() - start) > MAX_TIME_PASSED:
-                break
-            self._change_grip_force(force)
-            force += 1
+        self._change_grip_force(constants.GRIPPER_CLOSED)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _is_holding(self):
