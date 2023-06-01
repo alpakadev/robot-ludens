@@ -64,13 +64,13 @@ class MoveImpl:
     def set_origin(self, coordinate):
         # Returns the origin point to which all other coordinates are relative from
         self.origin_coordinate = coordinate
-        
-    def addlists(self,a,b):
+
+    def addlists(self, a, b):
         c = a[::]
         for i in range(len(c)):
             c[i] += b[i]
         return c
-    
+
     def activate_right_arm(self):
         self.reachy.turn_on("r_arm")
 
@@ -89,8 +89,8 @@ class MoveImpl:
 
         mapper = HandRotationMapper()
 
-        position_from_coordinates = position_to.value
-        position_to_coordinates = position_from.value
+        position_from_coordinates = position_from.value
+        position_to_coordinates = position_to.value
 
         # Adds the position values to base position - Since the Enums are dependent of the Base Position
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
@@ -104,35 +104,37 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_FRONT)
         self.move_head()
         # 1. Moves arm in front of the Object
-        position_to_coordinates[0] -= constants.DELTA_FRONT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        position_to_coordinates[0] += constants.DELTA_FRONT
+        position_from_coordinates[0] -= constants.DELTA_FRONT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        position_from_coordinates[0] += constants.DELTA_FRONT
         self.move_head()
         # 2. Opens Hand
         self._grip_open()
         # 3. Moves Hand/arm to the object
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
         # 4. closes Hand
         self._grip_close()
         # 5. Moves arm above current position
-        position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        position_from_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        position_from_coordinates[2] -= constants.DELTA_HEIGHT
         # self.move_head(pos_goal)
         # 6. Moves arm above pos_to
-        position_from_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})  ##TODO: How to Handle POS_ABOVE_BOARD?
-        position_from_coordinates[2] -= constants.DELTA_HEIGHT
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
         self.move_head()
         # 7. moves arm to pos_to
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
         # 8. opens Hand
         self._grip_open()
         # 9. Moves arm up
-        position_from_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
-        position_from_coordinates[2] -= constants.DELTA_HEIGHT
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates,
+                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
         self.move_head()
         # 10. Moves arm back to a save position
         self._grip_close()
@@ -162,15 +164,14 @@ class MoveImpl:
         """
         opens grip completely
         """
-        OPEN_FULL = -60
-        self._change_grip_force(OPEN_FULL)
+        self._change_grip_force(constants.GRIPPER_OPEN_FULL)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _grip_close(self):
         """
         closes grip until is_holding is true
         """
-        MAX_TIME_PASSED = 5.0
+        MAX_TIME_PASSED = 3.0
         force = 1
         start = time.time()
         while not self._is_holding():

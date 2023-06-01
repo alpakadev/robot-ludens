@@ -1,4 +1,5 @@
-from numpy import numpy, ndarray
+import numpy
+from numpy import ndarray
 from scipy.spatial.transform import Rotation as R
 
 
