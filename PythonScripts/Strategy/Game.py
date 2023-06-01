@@ -70,18 +70,20 @@ class Game:
 
 
     # prüft, ob jemand gewonnen hat oder es unentschieden ist
-    def check_state(self):
+    def check_state(self, move: MoveFacade):
         #global game_closed
         #global reachy_score
         #global player_score
 
         for combo in range(len(self.wincombinations)):
             if self.combovalue(combo) == 3:
+                move.do_animation(Animation.WIN)
                 print("Reachy won!")
                 self.reachy_score = self.reachy_score + 1
                 self.nextLevel(-1)
                 self.game_closed = True
             elif self.combovalue(combo) == -3:
+                move.do_animation(Animation.LOOSE)
                 print("Human won!")
                 self.player_score = self.player_score + 1
                 self.nextLevel(1)
@@ -109,7 +111,7 @@ class Game:
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
                         self.reachy_moveCounter += 1
                         print("reachy moved {} times".format(self.reachy_moveCounter))
-                        self.check_state()
+                        self.check_state(self.move)
                     HI.print_board(self.board)
                     counter = 5
             if check_board_status == False:
