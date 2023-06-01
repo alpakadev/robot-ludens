@@ -3,6 +3,7 @@ from . import Computer_Player as Reachy
 from Movement.MoveFacade import MoveFacade 
 from Perception.PerceptionFacade import PerceptionFacade
 import time
+from Movement.Enums.Animation import Animation
 
 class Game:
     def __init__(self):
@@ -56,13 +57,13 @@ class Game:
                     illegal_change = True
         if new_piece != 1 and illegal_change:
             print("wrong amount of new pieces: " + str(new_piece) + " and illegal change detected")
-            return "wrong amount of new pieces: " + str(new_piece) + " and illegal change detected"
+            return False
         if new_piece != 1:
             print("wrong amount of new pieces: " + str(new_piece))
-            return "wrong amount of new pieces: " + str(new_piece)
+            return False
         if illegal_change:
             print("illegal change detected")
-            return "illegal change detected"
+            return False
         self.board = input
         self.player_moveCounter += 1
         return True
@@ -86,31 +87,23 @@ class Game:
                 self.nextLevel(1)
                 self.game_closed = True
 
-        #found_space = False
-        #for row in self.board:
-        #    for cell in row:
-        #        if cell == 0:
-        #            found_space = True
-        #if not found_space:
-        #    print("No more moves possible...")
-        #    # nextLevel(0)
-        #    self.game_closed = True
-
         if self.player_moveCounter + self.reachy_moveCounter == 9 and not self.game_closed:
             print("No more moves possible...")
             self.game_closed = True
 
 
-    def play(self):
+    def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
         while not self.game_closed:
             #input = HI.make_user_move(self.board)
             counter = 0
+            check_board_status = False
             while counter <= 4:
-                time.sleep(5)
+                time.sleep(3)
                 input = HI.make_user_move_unity(self.board, self.perc)
                 counter = counter + 1
-                if self.check_board(input) == True:
+                check_board_status = self.check_board(input)
+                if check_board_status == True:
                     self.check_state()
                     if not self.game_closed:
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
@@ -118,9 +111,9 @@ class Game:
                         print("reachy moved {} times".format(self.reachy_moveCounter))
                         self.check_state()
                     HI.print_board(self.board)
-                    counter = 4
-            if self.check_board(input) == False:
-                # shakes head
+                    counter = 5
+            if check_board_status == False:
+                # move.do_animation(Animation.ANGRY)
                 print("reachy shakes head")
                 continue
         print("current score: Reachy ({}) : Player ({})".format(self.reachy_score, self.player_score))
@@ -159,11 +152,11 @@ class Game:
                 self.board = Reachy.make_first_move(self.board,self.reachy_moveCounter, self.move)
                 self.reachy_moveCounter = self.reachy_moveCounter + 1
                 HI.print_board(self.board)
-                self.play()
+                self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
             elif first == "2":
                 HI.print_board(self.board)
-                self.play()
+                self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
             else:
                 print("input invalid")
