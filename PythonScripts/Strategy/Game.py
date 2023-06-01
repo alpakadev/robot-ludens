@@ -106,7 +106,7 @@ class Game:
                 counter = counter + 1
                 check_board_status = self.check_board(input)
                 if check_board_status == True:
-                    self.check_state()
+                    self.check_state(self.move)
                     if not self.game_closed:
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
                         self.reachy_moveCounter += 1
