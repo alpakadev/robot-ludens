@@ -6,8 +6,9 @@ from reachy_sdk.trajectory.interpolation import InterpolationMode
 
 def animation_thinking(reachy):
     # Scratch head with hand
-    time.sleep(1.5)
-    reachy.head.look_at(0.5, -0.2, -0.1, duration=0.5)
+    
+    reachy.head.look_at(0.5, -0.2, -0.1, duration=1.0)
+    time.sleep(0.50)
     reachy.turn_on("l_arm")
 
     for _ in range(2):
@@ -59,4 +60,6 @@ def animation_thinking(reachy):
         duration=1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
     )
-    reachy.turn_off_smoothly("l_arm")
+    
+    reachy.turn_off_smoothly("l_arm") 
+    reachy.head.look_at(0.5, 0, 0, duration=1.0)

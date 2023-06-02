@@ -7,3 +7,5 @@ class Animation(Enum):
     ANGRY = 'angry',
     DISAPPROVAL = 'disapproval',
     THINKING = "thinking"
+    SAD = "sad"
+    HAPPY = "happy"

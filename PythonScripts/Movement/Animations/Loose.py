@@ -1,14 +1,13 @@
 import time
 
-from .. import constants
 
 
 def animation_loose(reachy):
-    reachy.head.look_at(0.5, -0, 0, duration=0.5)
+    reachy.head.look_at(0.5, 0, 0, duration=0.5)
 
     time.sleep(1.0)
 
-    reachy.head.look_at(0.5, 0, -0.4, 0.5)
+    reachy.head.look_at(0.5, 0, -0.4, 1.0)
 
     time.sleep(0.5)
 
@@ -19,5 +18,8 @@ def animation_loose(reachy):
 
     time.sleep(1.0)
 
-    reachy.head.look_at(0.05, -0.03, -0.04, duration=0.5)
+    reachy.head.look_at(0.05, -0.03, -0.04, duration=1.5)
+    time.sleep(2.0)
     reachy.head.look_at(0.5, 0, 0.0, 1.0)
+    reachy.head.l_antenna.goal_position = 0.0
+    reachy.head.r_antenna.goal_position = -0.0
