@@ -10,6 +10,8 @@ from .Animations.Loose import animation_loose
 from .Animations.Angry import animation_angry
 from .Animations.Thinking import animation_thinking
 from .Animations.Disapproval import animation_disapproval
+from .Animations.SadAntennas import animation_sad_antennas
+from .Animations.HappyAntennas import animation_happy_antennas
 from .Enums.Animation import Animation
 from .Enums.Board import Board
 from .Enums.Outside import Outside
@@ -235,3 +237,7 @@ class MoveImpl:
                 animation_thinking(self.reachy)
             case Animation.DISAPPROVAL:
                 animation_disapproval(self.reachy)
+            case Animation.SAD:
+                animation_sad_antennas(self.reachy)
+            case Animation.HAPPY:
+                animation_happy_antennas(self.reachy)
