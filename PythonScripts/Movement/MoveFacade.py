@@ -19,11 +19,23 @@ class MoveFacade:
     def do_move_head(self, look_at: list):
         self.move.move_head(look_at)
 
+    def do_activate_right_arm(self):
+        self.move.activate_right_arm()
+
     def do_deactivate_right_arm(self):
         self.move.deactivate_right_arm()
 
     def do_calibration(self):
         self.move.calibrate()
+
+    def do_right_angled_position(self):
+        self.move.set_arm_to_right_angle_position()
+
+    def do_grip_open(self):
+        self.move._grip_open()
+
+    def do_grip_close(self):
+        self.move._grip_close()
 
     def do_animation(self, animation_type: Animation):
         self.move.perform_animation(animation_type)

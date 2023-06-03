@@ -73,8 +73,11 @@ class MoveImpl:
 
     def move_object(self, position_from: Outside, position_to: Board):
         self.activate_right_arm()
-
+        self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
+        
+        self._grip_open()
+        self._grip_close()
 
         position_from_coordinates = position_from.value
         position_to_coordinates = position_to.value
@@ -92,7 +95,7 @@ class MoveImpl:
         print(point_above_Block_5)
         print(point_above_Block_1)
         #Go to Right angle, WP1 and then WP2
-        self.set_arm_to_right_angle_position()
+        #self.set_arm_to_right_angle_position()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
@@ -127,7 +130,7 @@ class MoveImpl:
 
         # 7. moves arm to pos_to/Put Gripper down to get lower
         self._move_arm(position_to_coordinates,
-                       rotation={'y': -60, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
+                       rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
         self._grip_open()
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates,
@@ -135,7 +138,7 @@ class MoveImpl:
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         self._grip_close()
         # 10. Moves arm back to a save position
-        self._grip_close()
+        #self._grip_close()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
 
 

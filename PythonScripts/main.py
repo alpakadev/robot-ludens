@@ -5,7 +5,7 @@ from Strategy.StrategyFacade import StrategyFacade
 from Movement.Enums import Outside
 from Movement.Enums import Board
 
-reachy = ReachySDK("192.168.1.94")
+reachy = ReachySDK("localhost")
 
 move = MoveFacade()
 perc = PerceptionFacade(reachy)
@@ -18,7 +18,8 @@ strat.set_dependencies(move, perc)
  # If the Arm is stuck call this function
 
 #move.do_calibration()
+move.do_activate_right_arm()
+move.do_right_angled_position()
+strat.start_game()
 
-#strat.start_game()
-
-move.do_deactivate_right_arm()
+#move.do_deactivate_right_arm()
