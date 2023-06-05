@@ -76,8 +76,72 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
         
+        position_from_coordinates = position_from.value
+        position_to_coordinates = position_to.value
+
+        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
+        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
+
+        #calculate coordinate above block 5
+        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
+        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.15])
+        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
+
+        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
+
+        #Add hand width
+        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
+
+        position_from_coordinates[2] += 0.15
+        position_from_coordinates[0] -= constants.DELTA_FRONT
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        position_from_coordinates[2] -= 0.11
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+
+        
         self._grip_open()
+        
+        position_from_coordinates[0] += constants.DELTA_FRONT
+        position_from_coordinates[0] += 0.02
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+
         self._grip_close()
+
+        
+
+        position_from_coordinates[2] += 0.1
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+
+        #beginning of pos_to
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+            position_to)})
+        position_to_coordinates[2] -= constants.DELTA_HEIGHT
+        #Here neigung -70 
+        self._move_arm(position_to_coordinates, rotation={'y': -80, 'x': 0, 'z': mapper.get_hand_rotation(
+            position_to)})
+        
+        self._grip_open()
+
+        position_to_coordinates[2] += constants.DELTA_HEIGHT
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+            position_to)})
+        
+        self._grip_close()
+        
+        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+
+
+
+
+    def move_object_v3(self, position_from: Outside, position_to: Board):
+        self.activate_right_arm()
+        self.move_head(constants.HEAD_LOOK_DOWN)
+        mapper = HandRotationMapper()
+        
+        #self._grip_open()
+        #self._grip_close()
 
         position_from_coordinates = position_from.value
         position_to_coordinates = position_to.value
@@ -99,15 +163,17 @@ class MoveImpl:
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
+    
+
 
 
         position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
         #Higher to not touch the table
-        position_from_coordinates[2] += 0.1
+        ##position_from_coordinates[2] += 0.1
         position_from_coordinates[0] -= constants.DELTA_FRONT
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
         #Move Delta before cylinder to be taken
-        position_from_coordinates[2] -= 0.08
+        ##position_from_coordinates[2] -= 0.08
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
         #Calculate next move
         position_from_coordinates[0] += constants.DELTA_FRONT

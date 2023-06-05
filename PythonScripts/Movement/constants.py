@@ -1,12 +1,12 @@
 HOST_ADDRESS = '192.168.1.94'
 
-ORIGIN_COORDINATES = [0.1, -0.326, -0.37]
+ORIGIN_COORDINATES = [0.15, -0.31, -0.38]
 
 GRIP_FORCE_HOLDING = 50
 GRIP_FORCE_HOLDING_THRESHOLD = 100
 
 # The distance to position hand in front of object
-DELTA_FRONT = 0.15
+DELTA_FRONT = 0.07
 # The distance above the object to move the arm back
 DELTA_HEIGHT = 0.22
 #Distance about all cylinders on the field
@@ -22,5 +22,5 @@ POS_SAVE_COORDINATES = [0.36, -0.2, 0]
 HEAD_LOOK_FRONT = [0.5, 0, 0]
 HEAD_LOOK_DOWN = [0.05, 0, -0.05]
 
-GRIPPER_OPEN_FULL = -50
+GRIPPER_OPEN_FULL = -40
 GRIPPER_CLOSED = 5

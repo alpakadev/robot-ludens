@@ -22,4 +22,4 @@ move.do_activate_right_arm()
 move.do_right_angled_position()
 strat.start_game()
 
-#move.do_deactivate_right_arm()
+#move.do_deactivate_right_arm()1
