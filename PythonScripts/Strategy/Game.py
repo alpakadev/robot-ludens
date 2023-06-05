@@ -115,9 +115,8 @@ class Game:
                     HI.print_board(self.board)
                     counter = 5
             if check_board_status == False:
-                # move.do_animation(Animation.ANGRY)
-                print("reachy shakes head")
-                continue
+                 move.do_animation(Animation.DISAPPROVAL)
+
         print("current score: Reachy ({}) : Player ({})".format(self.reachy_score, self.player_score))
         print("You are level", self.level)
 
