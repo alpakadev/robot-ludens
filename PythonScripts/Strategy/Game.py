@@ -62,6 +62,12 @@ class Game:
         if new_piece != 1:
             print("wrong amount of new pieces: " + str(new_piece))
             return False
+        if new_piece == 3:
+            if random.random() < 0.4:
+                print("Damn, 3 game figures at once?!?")
+                self.move.do_animation(Animation.ANGRY)
+                self.game_closed = True
+            return False
         if illegal_change:
             print("illegal change detected")
             return False
