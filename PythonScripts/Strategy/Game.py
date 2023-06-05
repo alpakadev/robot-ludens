@@ -1,3 +1,4 @@
+import random
 from . import Human_Interaction as HI
 from . import Computer_Player as Reachy
 from Movement.MoveFacade import MoveFacade 
@@ -84,6 +85,8 @@ class Game:
                 self.game_closed = True
             elif self.combovalue(combo) == -3:
                 move.do_animation(Animation.LOOSE)
+                if random.random() < 0.275:
+                    move.do_animation(Animation.ANGRY)
                 print("Human won!")
                 self.player_score = self.player_score + 1
                 self.nextLevel(1)
