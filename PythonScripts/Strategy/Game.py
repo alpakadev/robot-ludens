@@ -124,14 +124,11 @@ class Game:
     #berechnet nächstes Level, evtl dann auf max Level anpassen
     def nextLevel(self, win_state):
         #global level
-        if win_state == -1:
+        if win_state == -1 and self.level > 0:
             self.level -= 1
-            if self.level == -1:
-                self.level = 0
-        elif win_state == 1:
+        elif win_state == 1 and self.level < 4:
             self.level += 1
-            if self.level == 4:
-                self.level = 3
+
 
 
     def arcadeModus(self):
