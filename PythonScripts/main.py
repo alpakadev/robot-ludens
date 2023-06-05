@@ -15,11 +15,15 @@ perc.set_dependencies(move, strat)
 move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
- # If the Arm is stuck call this function
+# If the Arm gets stuck, call this function
+#move.do_deactivate_right_arm()
 
-#move.do_calibration()
-move.do_activate_right_arm()
+# Calibrating real Reachy; Not needed in simulation
+#move.do_calibration() 
+
+# For Simulation: To ensure a safe arm position without collision with the blocks
+move.do_activate_right_arm() 
 move.do_right_angled_position()
-strat.start_game()
 
-#move.do_deactivate_right_arm()1
+# Starting the Game
+strat.start_game()
