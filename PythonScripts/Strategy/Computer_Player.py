@@ -115,6 +115,7 @@ def make_combo_move(n, p):
     return False
 
 def boardtransformation():
+    
     vierboard = []
     #Transformation des Boards (mit 4 statt -1)
     for k in range(3):
@@ -137,7 +138,7 @@ def GKv1finden(vierboard):
             GKv1gefunden += (wincombinations[combo])
     return GKv1gefunden
 
-def in001setzen():
+def in001setzen(p):
     print("in001setzten vielleicht")
     global chosen
     # nur mit bestimmter Wahrscheinlichkeit guten Zug machen
@@ -152,6 +153,7 @@ def in001setzen():
             #print("freies Feld: ", feld)
             board[feld[0]][feld[1]] = 1
             chosen = (feld[0],feld[1])
+            print("hat wirklich geklappt")
             return True
 
 def setup_trap(p):
