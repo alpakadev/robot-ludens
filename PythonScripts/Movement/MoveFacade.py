@@ -22,6 +22,9 @@ class MoveFacade:
     def do_activate_right_arm(self):
         self.move.activate_right_arm()
 
+    def do_pos_above_block_5(self):
+        self.move.gotoposabove5()
+
     def do_deactivate_right_arm(self):
         self.move.deactivate_right_arm()
 
