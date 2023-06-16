@@ -156,7 +156,7 @@ def in001setzen(p):
             print("hat wirklich geklappt")
             return True
 
-def setup_trap(p):
+def setup_trap(p, move: MoveFacade):
     global chosen
     # Fallen stellen nur mit gewisser Wahrscheinlichkeit
     if p < (100 - trap[level]):
