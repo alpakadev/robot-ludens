@@ -73,6 +73,13 @@ class MoveImpl:
     def deactivate_right_arm(self):
         self.reachy.turn_off_smoothly("r_arm")
 
+    def gotoposabove5(self):
+        self.activate_right_arm()
+        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
+        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
+        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+
+
     def move_object(self, position_from: Outside, position_to: Board):
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
@@ -86,7 +93,7 @@ class MoveImpl:
 
         #calculate coordinate above block 5
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
-        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.15])
+        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
 
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
@@ -121,7 +128,7 @@ class MoveImpl:
             position_to)})
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         #Here neigung -70 
-        self._move_arm(position_to_coordinates, rotation={'y': -80, 'x': 0, 'z': mapper.get_hand_rotation(
+        self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
         
         self._grip_open()
