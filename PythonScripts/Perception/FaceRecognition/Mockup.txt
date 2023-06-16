@@ -1,0 +1,18 @@
+Wenn das Spiel startet: (detect_human_player(reachy, move:MoveFacade))
+    Gesicht erkennen das am nähesten dran ist
+    Zwischenspeichern
+    Spieler angucken (move.move_head([0, 0, 0]))
+
+Spieler angucken: (look_at_human_player(reachy, move:MoveFacade))
+    Zwischengespeichertes Bild laden
+    Frame mit Bild vergleichen
+    Wenn gefunden:
+        Kopf bewegen bis Gesicht im Zentrum des Bilds:
+            Spieler angucken (move.move_head([0, 0, 0]))
+    Wenn nicht gefunden:
+        Nach links schauen: (move.move_head([0, 0, 0]))
+            Nochmal prüfen
+        Nach rechts schauen: (move.move_head([1, 1, 1]))
+            Nochmal prüfen
+        Schulter zucken Animation (move.do_animation("DRAW"))
+        Geradeaus schauen
