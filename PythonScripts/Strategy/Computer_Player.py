@@ -3,7 +3,7 @@ import random
 import Movement.Enums.Board as Board_enum  
 import Movement.Enums.Outside as Outside_enum 
 from Movement.MoveFacade import MoveFacade 
-
+from Movement.Enums.Animation import Animation
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
@@ -195,6 +195,7 @@ def setup_trap(p):
                 #print("freies gemeinsames Feld: ", feld)
                 board[feld[0]][feld[1]] = 1
                 chosen = (feld[0],feld[1])
+                move.do_animation(Animation.THINKING)
                 return True
     return False
           
@@ -306,7 +307,7 @@ def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves, m
     p = random.randint(0, 100)
     if not make_combo_move(2, p):
         if not make_combo_move(-2, p):
-            if not setup_trap(p):
+            if not setup_trap(p, move):
                 if not make_good_move(p):
                     if not in001setzen(p):
                         make_random_move()
