@@ -7,8 +7,8 @@ from Movement.Enums import Board
 from Movement.Enums.Animation import Animation
 import time
 
-
-reachy = ReachySDK("192.168.1.94")
+reachy = ReachySDK("localhost")
+# reachy = ReachySDK("192.168.1.94")
 
 move = MoveFacade()
 perc = PerceptionFacade(reachy)
@@ -26,11 +26,12 @@ strat.set_dependencies(move, perc)
 move.do_deactivate_right_arm()
 
 # Calibrating real Reachy; Not needed in simulation
-move.do_calibration() 
+move.do_calibration()
 
-time.sleep(5)
-# For Simulation: To ensure a safe arm position without collision with the blocks
-move.do_activate_right_arm() 
+# time.sleep(5)
+# To ensure a safe arm position without collision with the blocks
+# Outsource this as one command in MoveFacade
+move.do_activate_right_arm()
 move.do_right_angled_position()
 move.do_pos_above_block_5()
 
