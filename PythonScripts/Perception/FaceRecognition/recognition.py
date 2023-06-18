@@ -92,9 +92,9 @@ def center_vision_on_face(image, face_pos, reachy, move):
     top_right_corner = face_pos[1]
 
     # Abweichung der Oberen rechten Ecke von den Mittellinien des Bildes ausrechnen
-    percent_x_diff = 100 / (im_width / (face_pos[0] - (im_width / 2)))
-    percent_y_diff = 100 / (im_height / (face_pos[1] - (im_height / 2)))
-    
+    percent_x_diff = 100 / (im_width / (face_pos[0] - (im_width / 2))) * 0.01
+    percent_y_diff = 100 / (im_height / (face_pos[1] - (im_height / 2))) * 0.01
+
     # TODO: Kopf Position von Reachy bekommen. Geht das so? Muss getestet werden
     x,y,z,w = reachy.head.forward_kinematics()
     reachy.head.look_at(x*percent_x_diff, y*percent_y_diff, z)
