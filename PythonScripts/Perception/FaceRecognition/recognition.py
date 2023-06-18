@@ -35,8 +35,6 @@ def look_at_human_player(reachy, move):
         # Gespeichertes Gesicht laden
         player_image = fr.load_image_file("Player.png")
         player_face = fr.face_locations(player_image)[0]
-        # TODO: Check ob sich das gespeicherte Gesicht im aktuellen Frame befindet
-        # Wenn ja, dann speichere Position im Bild zwischen
         player_face_pos = compare_faces_for_pos(image)
 
         if player_face_pos is not None:
@@ -49,8 +47,8 @@ def look_at_human_player(reachy, move):
                 # TODO: Werte anpassen, damit Kopf nach rechts gedreht wird
                 move.move_head([1, 1, 1])
         
-    # TODO: Kopf solange drehen, bis das Player Gesicht im horizontalen und vertikaln Zentrum des Bilds ist        
-    center_vision_on_face()
+    # TODO: Kopf solange drehen, bis das Player Gesicht im horizontalen und vertikalen Zentrum des Bilds ist        
+    center_vision_on_face(image, player_face_pos, reachy, move)
 
 
 def compare_faces_for_pos(image):
@@ -86,6 +84,17 @@ def get_largest_face(face_locations):
             largest_face = face
     return largest_face
 
-def center_vision_on_face(move):
-    # TODO: implementieren
-    print("implement")
+def center_vision_on_face(image, face_pos, reachy, move):
+    # Dimensionen des aufgenommenen Bildes speichern
+    im_width, im_height = image.size
+
+    # Obere rechte Ecke der Bounding Box, da wir das rechte Auge als Kamera nutzen
+    top_right_corner = face_pos[1]
+
+    # Abweichung der Oberen rechten Ecke von den Mittellinien des Bildes ausrechnen
+    percent_x_diff = 100 / (im_width / (face_pos[0] - (im_width / 2)))
+    percent_y_diff = 100 / (im_height / (face_pos[1] - (im_height / 2)))
+    
+    # TODO: Kopf Position von Reachy bekommen. Geht das so? Muss getestet werden
+    x,y,z,w = reachy.head.forward_kinematics()
+    reachy.head.look_at(x*percent_x_diff, y*percent_y_diff, z)
