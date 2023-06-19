@@ -6,7 +6,8 @@ import numpy as np
 
 # Ober Funktion zum erstmaligen erkennen des Gegenspielers
 def detect_human_player(reachy, move):
-    # TODO: Reachys Kopf in Basis Position bringen
+    # Reachys Kopf in Basis Position bringen
+    move.move_head([0.5, 0, 0])
     
     # Bild aufnehmen
     image = take_picture(reachy)
@@ -41,11 +42,11 @@ def look_at_human_player(reachy, move):
             break
         else:
             if i == 0:
-                # TODO: Werte anpassen, damit Kopf nach links gedreht wird
-                move.move_head([0, 0, 0])
+                #Kopf wird nach links gedreht
+                move.move_head([0.5, 0.5, 0])
             else:
-                # TODO: Werte anpassen, damit Kopf nach rechts gedreht wird
-                move.move_head([1, 1, 1])
+                #Kopf wird nach rechts gedreht 
+                move.move_head([0.5,-0.5, 0])
         
     # TODO: Kopf solange drehen, bis das Player Gesicht im horizontalen und vertikalen Zentrum des Bilds ist        
     center_vision_on_face(image, player_face_pos, reachy, move)
@@ -69,7 +70,7 @@ def compare_faces_for_pos(image):
 
 def take_picture(reachy):
     camera = reachy.right_camera
-    image = camer.last_frame
+    image = camera.last_frame
     return image
 
 def get_largest_face(face_locations):
