@@ -12,11 +12,14 @@ from .Animations.Thinking import animation_thinking
 from .Animations.Disapproval import animation_disapproval
 from .Animations.SadAntennas import animation_sad_antennas
 from .Animations.HappyAntennas import animation_happy_antennas
+from .Animations.Inhale import animation_inhale
 from .Enums.Animation import Animation
 from .Enums.Board import Board
 from .Enums.Outside import Outside
 from .Helper.KinematicModelHelper import KinematicModelHelper
 from .Helper.HandRotationMapper import HandRotationMapper
+
+
 
 
 def add_lists(a, b):
@@ -390,3 +393,10 @@ class MoveImpl:
                 animation_sad_antennas(self.reachy)
             case Animation.HAPPY:
                 animation_happy_antennas(self.reachy)
+            case Animation.INHALE:
+                animation_inhale()
+            
+
+   
+
+    

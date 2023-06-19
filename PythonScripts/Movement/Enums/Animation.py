@@ -9,3 +9,5 @@ class Animation(Enum):
     THINKING = "thinking"
     SAD = "sad"
     HAPPY = "happy"
+    INHALE = "inhale"
+  
