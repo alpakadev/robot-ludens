@@ -7,10 +7,10 @@ import time
 
 # Ober Funktion zum erstmaligen erkennen des Gegenspielers
 def detect_human_player(reachy, move):
-    reachy.turn_on("head")
-    time.sleep(1.0)
     # Reachys Kopf in Basis Position bringen
-    move.move_head([0.5, 0, 0])
+    reachy.turn_on("head")
+    reachy.look_at(0.5, 0, 0, 1)
+    #move.do_move_head([0.5, 0, 0, 1])
     
     # Bild aufnehmen
     image = take_picture(reachy)
@@ -63,7 +63,7 @@ def compare_faces_for_pos(image):
 
     for face in face_positions:
         unknown_face_enc = fr.face_encodings(image, known_face_locations=[face])
-        results = fr.compare_faces([player_enc], test_enc[0])
+        results = fr.compare_faces([player_enc], unknown_face_enc[0])
         if results[0] == True:
             print("Yay")
             return face
@@ -90,7 +90,7 @@ def get_largest_face(face_locations):
 
 def center_vision_on_face(image, face_pos, reachy, move):
     # Dimensionen des aufgenommenen Bildes speichern
-    im_width, im_height = image.size
+    im_width, im_height, _ = image.shape
 
     # Obere rechte Ecke der Bounding Box, da wir das rechte Auge als Kamera nutzen
     top_right_corner = face_pos[1]
@@ -98,7 +98,8 @@ def center_vision_on_face(image, face_pos, reachy, move):
     # Abweichung der Oberen rechten Ecke von den Mittellinien des Bildes ausrechnen
     percent_x_diff = 100 / (im_width / (face_pos[0] - (im_width / 2))) * 0.01
     percent_y_diff = 100 / (im_height / (face_pos[1] - (im_height / 2))) * 0.01
+    reachy.turn_on("head")
 
     # TODO: Kopf Position von Reachy bekommen. Geht das so? Muss getestet werden
-    x,y,z,w = reachy.head.forward_kinematics()
-    reachy.head.look_at(x*percent_x_diff, y*percent_y_diff, z)
+    
+    reachy.head.look_at(0, 0.5 - 0.5 * percent_x_diff, 0.5 - 0.5 * percent_y_diff, 2)
