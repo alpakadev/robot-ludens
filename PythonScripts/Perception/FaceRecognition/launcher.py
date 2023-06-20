@@ -1,3 +1,9 @@
 import recognition
+import reachy_sdk
+import Movement.MoveFacade
 
-recognition.compare_faces_for_pos()
+reachy = ReachySDK("192.168.3.94")
+move = MoveFacade()
+
+
+recognition.detect_human_player(reachy, move)()

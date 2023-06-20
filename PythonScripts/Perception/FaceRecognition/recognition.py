@@ -3,9 +3,12 @@ import face_recognition as fr
 import cv2
 from PIL import Image
 import numpy as np
+import time
 
 # Ober Funktion zum erstmaligen erkennen des Gegenspielers
 def detect_human_player(reachy, move):
+    reachy.turn_on("head")
+    time.sleep(1.0)
     # Reachys Kopf in Basis Position bringen
     move.move_head([0.5, 0, 0])
     
