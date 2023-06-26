@@ -95,7 +95,7 @@ class MoveImpl:
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
-
+        self.move_head()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
@@ -105,10 +105,13 @@ class MoveImpl:
         position_from_coordinates[2] += 0.15
         position_from_coordinates[0] -= constants.DELTA_FRONT
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        position_from_coordinates[2] -= 0.11
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
+        position_from_coordinates[2] -= 0.11
         
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        
+        self.move_head()
+
         self._grip_open()
         
         position_from_coordinates[0] += constants.DELTA_FRONT
@@ -117,19 +120,19 @@ class MoveImpl:
 
         self._grip_close()
 
-        
-
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-
+        self.move_head()
         #beginning of pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
+        
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         #Here neigung -70 
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
+        self.move_head()
         
         self._grip_open()
 
@@ -140,7 +143,8 @@ class MoveImpl:
         self._grip_close()
         
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-
+        
+        self.move_head()
 
 
 
@@ -365,7 +369,8 @@ class MoveImpl:
         # Head follows arm
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
-            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=1.0)
+            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=0.5)
+
 
         # Head looks at given x,y,z
         else:
