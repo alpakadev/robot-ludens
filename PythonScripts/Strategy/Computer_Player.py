@@ -3,7 +3,7 @@ import random
 import Movement.Enums.Board as Board_enum  
 import Movement.Enums.Outside as Outside_enum 
 from Movement.MoveFacade import MoveFacade 
-
+from Movement.Enums.Animation import Animation
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
@@ -114,14 +114,8 @@ def make_combo_move(n, p):
                     return True
     return False
 
-def setup_trap(p):
-    global chosen
-    # Fallen stellen nur mit gewisser Wahrscheinlichkeit
-    if p < (100 - trap[level]):
-        return False
-    #print("trying to setup trap")
-
-    # Problem: -1 + 1 + 1 == 0 + 0 + 1 == 1 
+def boardtransformation():
+    
     vierboard = []
     #Transformation des Boards (mit 4 statt -1)
     for k in range(3):
@@ -132,18 +126,67 @@ def setup_trap(p):
             else:
                 teil.append(board[k][j])
         vierboard.append(teil)
-    #Problem solved
-    #print(vierboard)
+    return vierboard
 
-    GKv1 = []
+
+def GKv1finden(vierboard):
+    GKv1gefunden = []
 
     #Finden der GK mit Summe 1 (Belegung: 0 + 0 + 1) (Gkv1)
     for combo in range(len(wincombinations)):
         if combovalue(combo, vierboard) == 1:
-            GKv1 += (wincombinations[combo])
+            GKv1gefunden += (wincombinations[combo])
+    return GKv1gefunden
 
-    #print(GKv1)
-        #GKv1 = [ [x,x],[x,x],[x,x], [x,x],[x,x],[x,x], [x,x],[x,x],[x,x] ]
+def in001setzen(p):
+    print("in001setzten vielleicht")
+    global chosen
+    # nur mit bestimmter Wahrscheinlichkeit guten Zug machen
+    if p < (100 - good[level]):
+        return False
+    
+    print("in001setzten")
+    vierboard = boardtransformation()
+    GKv1 = GKv1finden(vierboard)
+    for feld in GKv1:
+        if  board[feld[0]][feld[1]] == 0:
+            #print("freies Feld: ", feld)
+            board[feld[0]][feld[1]] = 1
+            chosen = (feld[0],feld[1])
+            print("hat wirklich geklappt")
+            return True
+
+def setup_trap(p, move: MoveFacade):
+    global chosen
+    # Fallen stellen nur mit gewisser Wahrscheinlichkeit
+    if p < (100 - trap[level]):
+        return False
+    #print("trying to setup trap")
+
+    ## Problem: -1 + 1 + 1 == 0 + 0 + 1 == 1 
+    #vierboard = []
+    ##Transformation des Boards (mit 4 statt -1)
+    #for k in range(3):
+    #    teil = []
+    #    for j in range(3):
+    #        if board[k][j] == -1:
+    #            teil.append(4)
+    #        else:
+    #            teil.append(board[k][j])
+    #    vierboard.append(teil)
+    #Problem solved
+    #print(vierboard)
+    vierboard = boardtransformation()
+
+    ##Finden der GK mit Summe 1 (Belegung: 0 + 0 + 1) (Gkv1)
+    #for combo in range(len(wincombinations)):
+    #    if combovalue(combo, vierboard) == 1:
+    #        GKv1 += (wincombinations[combo])
+    #
+    ##print(GKv1)
+        ##GKv1 = [ [x,x],[x,x],[x,x], [x,x],[x,x],[x,x], [x,x],[x,x],[x,x] ]
+
+    GKv1 = GKv1finden(vierboard)
 
     if len(GKv1) > 1: #and reachy_moveCounter > 1: weiter oben
         #Gemeinsames Feld zweier GKv1 finden
@@ -152,6 +195,7 @@ def setup_trap(p):
                 #print("freies gemeinsames Feld: ", feld)
                 board[feld[0]][feld[1]] = 1
                 chosen = (feld[0],feld[1])
+                move.do_animation(Animation.THINKING)
                 return True
     return False
           
@@ -209,8 +253,6 @@ def make_good_move(p):
                     board[a[0]][a[1]] = 1
                     chosen = (a[0],a[1])
                     return True
-    # TODO: Zug == 2.1: bei 4+1+4:Rand Feld, sonst Gewinnkombination mit Summe = 1 = 1+0+0
-
     return False
 
 
@@ -265,9 +307,10 @@ def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves, m
     p = random.randint(0, 100)
     if not make_combo_move(2, p):
         if not make_combo_move(-2, p):
-            if not setup_trap(p):
+            if not setup_trap(p, move):
                 if not make_good_move(p):
-                    make_random_move()
+                    if not in001setzen(p):
+                        make_random_move()
 
     # Parameters to pass to team bewegung
     reachy_moveCounter = reachy_moveCounter + 1

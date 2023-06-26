@@ -22,6 +22,9 @@ class MoveFacade:
     def do_activate_right_arm(self):
         self.move.activate_right_arm()
 
+    def do_pos_above_block_5(self):
+        self.move.gotoposabove5()
+
     def do_deactivate_right_arm(self):
         self.move.deactivate_right_arm()
 
@@ -36,6 +39,11 @@ class MoveFacade:
 
     def do_grip_close(self):
         self.move._grip_close()
+
+    def do_safe_arm_pos(self):
+        self.do_activate_right_arm()
+        self.do_right_angled_position()
+        self.do_pos_above_block_5()
 
     def do_animation(self, animation_type: Animation):
         self.move.perform_animation(animation_type)

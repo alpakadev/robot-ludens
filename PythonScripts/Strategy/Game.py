@@ -1,9 +1,9 @@
+import random
 from . import Human_Interaction as HI
 from . import Computer_Player as Reachy
-from Movement.MoveFacade import MoveFacade
+from Movement.MoveFacade import MoveFacade 
 from Perception.PerceptionFacade import PerceptionFacade
 import time
-import random
 from Movement.Enums.Animation import Animation
 
 class Game:
@@ -64,6 +64,12 @@ class Game:
                     new_piece += 1
                 elif self.board[i][j] != input[i][j]:
                     illegal_change = True
+        if new_piece == 3:
+            if random.random() < 0.4:
+                print("Damn, 3 game figures at once?!?")
+                self.move.do_animation(Animation.ANGRY)
+                self.game_closed = True
+                return False
         if new_piece != 1 and illegal_change:
             print("wrong amount of new pieces: " + str(new_piece) + " and illegal change detected")
             return False
@@ -156,7 +162,7 @@ class Game:
                     counter = 5
             if check_board_status == False:
                 move.do_animation(Animation.DISAPPROVAL)
-                print("reachy shakes head")
+                # print("reachy shakes head")
                 continue
         print("current score: Reachy ({}) : Player ({})".format(self.reachy_score, self.player_score))
         print("You are level", self.level)
@@ -165,14 +171,11 @@ class Game:
     #berechnet nächstes Level, evtl dann auf max Level anpassen
     def nextLevel(self, win_state):
         #global level
-        if win_state == -1:
+        if win_state == -1 and self.level > 0:
             self.level -= 1
-            if self.level == -1:
-                self.level = 0
-        elif win_state == 1:
+        elif win_state == 1 and self.level < 4:
             self.level += 1
-            if self.level == 4:
-                self.level = 3
+
 
 
     def arcadeModus(self):
