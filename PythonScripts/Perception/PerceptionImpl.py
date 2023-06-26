@@ -4,8 +4,8 @@ from .GameState.GameState import GameState
 from .Helpers.Helpers import Helpers
 from .Exceptions.Exceptions import ViewCloudedError
 from .PiecePerception.PiecePerception import PiecePerception
-import cv2
-from Movement.MoveFacade import MoveFacade 
+from Movement.MoveFacade import MoveFacade
+from Strategy.StrategyFacade import StrategyFacade
 
 class PerceptionImplementation:
     def __init__(self, reachy):
@@ -54,12 +54,14 @@ class PerceptionImplementation:
         # Get Real World Coordinates of certain square
         return self.board_perception.get_coordinates_of_square(square)
 
-    def get_nearest_unused_piece(self, available_game_pieces):
+    def get_nearest_unused_piece(self, strat: StrategyFacade):
         # Gibt Position des nähesten freien Spielsteins 
         # in der Form (X, Y) zurück
         # @return: (float, float)
         frame = self.get_non_moving_image()
         board_corners = self.board_perception.get_board_corners(frame)
+        # get_available_game_pieces needs to be implemented by strategy
+        available_game_pieces = strat.get_available_game_pieces()
         nearest_piece = self.piece_perception.get_nearest_unused_piece(frame, 
                                                                        board_corners, 
                                                                        available_game_pieces)
