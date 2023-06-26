@@ -1,7 +1,10 @@
 import cv2
 import numpy as np
 
-def get_nearest_unused_piece(image, board_corners, available_game_pieces):
+def get_nearest_unused_piece(frame, board_corners, available_game_pieces):
+
+    image = frame.copy()
+
     # List conversion to bring list in correct form for further processing
     converted_list = [[x[0].tolist() for x in sublist] for sublist in board_corners]
     converted_list = converted_list[0]
