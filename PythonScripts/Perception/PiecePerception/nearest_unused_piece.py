@@ -89,7 +89,7 @@ def get_nearest_unused_piece(frame, board_corners, available_game_pieces):
             # Calculate the distance along the y-axis
             y_distance = transformed_unknown_point[0, 1] - transformed_points[1, 1]
 
-            return x_distance, y_distance
+            return tuple(float(x_distance), float(y_distance))
         else:
             print("No valid contour center found.")
     else:

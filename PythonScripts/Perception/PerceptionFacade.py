@@ -19,9 +19,9 @@ class PerceptionFacade:
         # Gibt die Echt-Welt Koordinaten eines gegbeen Squares zurück
         return self.perception_implentation.get_coordinates_of_square(square)
     
-    """def get_nearest_unused_piece(self):
+    def get_nearest_unused_piece(self):
         #Returns fixed position of the nearest available token not currently in the game
-        return self.perception_implentation.get_nearest_unused_piece()"""
+        return self.perception_implentation.get_nearest_unused_piece(self.strat)
 
     def set_dependencies(self, move, strat):
         # Übergibt die Singletons des Movement und Strategie Moduls an unsere Klasse

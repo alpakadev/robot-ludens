@@ -54,15 +54,17 @@ class PerceptionImplementation:
         # Get Real World Coordinates of certain square
         return self.board_perception.get_coordinates_of_square(square)
 
-    def get_nearest_unused_piece(self):
-        # Nur ein Dummy, genaue Implementation fehlt
-        # Soll die Position des nähesten freien Spielsteins bestimmen und in der Form (X, Y) zurückgeben
-        # @return: (flaot, float)
-        # Implementation in /PiecePerception/nearest_unused_piece.py
+    def get_nearest_unused_piece(self, available_game_pieces):
+        # Gibt Position des nähesten freien Spielsteins 
+        # in der Form (X, Y) zurück
+        # @return: (float, float)
         frame = self.get_non_moving_image()
-        piece_positions = self.check_for_unused_pieces(frame)
-        nearest_piece = self.piece_perception.get_nearest_unused_piece(piece_coordinates)
+        board_corners = self.board_perception.get_board_corners(frame)
+        nearest_piece = self.piece_perception.get_nearest_unused_piece(frame, 
+                                                                       board_corners, 
+                                                                       available_game_pieces)
         return nearest_piece
+
 
     def check_for_unused_pieces(self, frame):
         # Untersucht den aktuellen Frame nach ungenutzen Spielsteinen
