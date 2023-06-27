@@ -89,7 +89,7 @@ class Game:
                 print("Human won!")
                 self.player_score = self.player_score + 1
                 self.nextLevel(1)
-                self.game_closed = True
+                 
 
         if self.player_moveCounter + self.reachy_moveCounter == 9 and not self.game_closed:
             print("No more moves possible...")
@@ -183,10 +183,10 @@ class Game:
         h = True
         exit_game = "1"
         while exit_game == "1":
-            self.board = [[-1, 1, -1], [0, 0, 0], [1, -1, 1]]
+            self.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
             self.game_closed = False
-            self.reachy_moveCounter = 3
-            self.player_moveCounter = 3
+            self.reachy_moveCounter = 0
+            self.player_moveCounter = 0
             self.first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
             if self.first == "1":
                 # reachy's first move
