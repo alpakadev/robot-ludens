@@ -98,13 +98,27 @@ class Game:
         elif not self.game_closed and self.regtie():
             print("incoming Tie")
 
+
+    def check_combo_move(self, n):
+        print("check_combo_moves aufgerufen")
+        for combo in range(len(self.wincombinations)):
+            if self.board[self.wincombinations[combo][0][0]][self.wincombinations[combo][0][1]] + self.board[self.wincombinations[combo][1][0]][self.wincombinations[combo][1][1]] + self.board[self.wincombinations[combo][2][0]][self.wincombinations[combo][2][1]] == n:
+                
+                for i in range(3):
+                    if self.board[self.wincombinations[combo][i][0]][self.wincombinations[combo][i][1]] == 0:
+                        print("combomove für ",n, " gefunden")
+                        return True
+        print("kein combomove gefunden")
+        return False
+
     #Unentschieden frühzeitig erkennen
     def regtie(self):
+        print("regtie aufgerufen")
         moves = self.reachy_moveCounter + self.player_moveCounter
-        chanceReachy = self.make_combo_move(2,100)
-        chancePlayer = self.make_combo_move(-2,100)
+        chanceReachy = self.check_combo_move(2)
+        chancePlayer = self.check_combo_move(-2)
         chances = chanceReachy or chancePlayer
-
+        print("chances=",chances)
         if self.first == 1 and moves == 8:
             if not chanceReachy: return True
 
@@ -116,19 +130,22 @@ class Game:
                 #(oder da GKs max 1 gemeinsames Feld besitzen wenn es eine leere GK gibt)
                 for combo in range(len(self.wincombinations)):
                     if (combo == 1 or 4 or 6 or 7) and self.combovalue(combo) == 0:
+                        print("tie erkannt in regtie")
                         return True
+        print("kein tie erkannt in regtie")
         return False
 
 
     def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
         while not self.game_closed:
-            #input = HI.make_user_move(self.board)
+    
             counter = 0
             check_board_status = False
             while counter <= 4:
                 time.sleep(3)
-                input = HI.make_user_move_unity(self.board, self.perc)
+                #input = HI.make_user_move_unity(self.board, self.perc)
+                input = HI.make_user_move(self.board)
                 counter = counter + 1
                 check_board_status = self.check_board(input)
                 if check_board_status == True:
@@ -166,10 +183,10 @@ class Game:
         h = True
         exit_game = "1"
         while exit_game == "1":
-            self.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+            self.board = [[-1, 1, -1], [0, 0, 0], [1, -1, 1]]
             self.game_closed = False
-            self.reachy_moveCounter = 0
-            self.player_moveCounter = 0
+            self.reachy_moveCounter = 3
+            self.player_moveCounter = 3
             self.first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
             if self.first == "1":
                 # reachy's first move
