@@ -95,7 +95,7 @@ class Game:
             print("No more moves possible...")
             self.game_closed = True
 
-        elif not self.game_closed and self.regtie:
+        elif not self.game_closed and self.regtie():
             print("incoming Tie")
 
     #Unentschieden frühzeitig erkennen
