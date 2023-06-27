@@ -34,7 +34,6 @@ def animation_start_reachy(reachy):
     
     reachy.head.look_at(0.5, 0.1, -0.05, 1)
     time.sleep(0.2)
-    
 
     
     l_arm3 = {
@@ -54,6 +53,7 @@ def animation_start_reachy(reachy):
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
     reachy.head.look_at(0.5, 0, -0.15, 1)
+
     for _ in range(2):
         
         l_point = {
@@ -72,6 +72,7 @@ def animation_start_reachy(reachy):
             duration = 1.0,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
             )
+        
         l_point2 = {
         reachy.l_arm.l_shoulder_pitch: -27,
         reachy.l_arm.l_shoulder_roll: 10,   # moves left to right
@@ -82,7 +83,9 @@ def animation_start_reachy(reachy):
         reachy.l_arm.l_wrist_roll: -15,
         reachy.l_arm.l_gripper: -45,
         }
+
         animation_happy_antennas(reachy)
+
         goto(
             goal_positions=l_point2,
             duration = 1.0,
@@ -104,6 +107,7 @@ def animation_start_reachy(reachy):
         duration=1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
     )
+
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
     reachy.head.look_at(0.5, 0, 0, 1)

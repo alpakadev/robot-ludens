@@ -14,16 +14,9 @@ def animation_win(reachy):
 
     time.sleep(0.5)
 
-    reachy.head.look_at(0.5, -0, 0, duration=0.5)
+    reachy.head.look_at(0.05, 0, 0, duration=0.5)
     reachy.head.l_antenna.goal_position = 40.0
     reachy.head.r_antenna.goal_position = -40.0
-        
-    for _ in range(2):
-
-        reachy.head.look_at(0.5, 0, 0.2, duration=0.70) 
-        time.sleep(0.1)
-        reachy.head.look_at(0.5, 0, -0.2, duration=0.70) 
-    reachy.head.look_at(0.5, 0, -0, duration=0.80)
             
     time.sleep(0.2)
 
@@ -52,13 +45,13 @@ def animation_win(reachy):
         
         goto(
             goal_positions=left_up_position,
-            duration=0.5,
+            duration=0.6,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
         
         goto(
             goal_positions=right_up_position,
-            duration=0.3,
+            duration=0.6,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
         animation_happy_antennas(reachy)
@@ -88,13 +81,13 @@ def animation_win(reachy):
        
         goto(
             goal_positions=left_up2_position,
-            duration=0.3,
+            duration=0.6,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
         
         goto(
             goal_positions=right_up2_position,
-            duration=0.5,
+            duration=0.6,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
 
@@ -116,22 +109,22 @@ def animation_win(reachy):
     }
     left_base_position = {
         reachy.l_arm.l_shoulder_pitch: -25,
-        reachy.l_arm.l_shoulder_roll: -20,  # moves left to right
+        reachy.l_arm.l_shoulder_roll: 0,  # moves left to right
         reachy.l_arm.l_arm_yaw: 15,  # forward/back
         reachy.l_arm.l_elbow_pitch: -40,
-        reachy.l_arm.l_forearm_yaw: -15,
+        reachy.l_arm.l_forearm_yaw: -20,
         reachy.l_arm.l_wrist_pitch: -25,
         reachy.l_arm.l_wrist_roll: 0,
         reachy.l_arm.l_gripper: 20,
     }
     goto(
         goal_positions=right_base_position,
-        duration=0.90,
+        duration=1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
     )
     goto(
-        goal_positions=left_base_position,
-        duration=0.90,
+        goal_positions=left_base_position, #anpassen 
+        duration=1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
     )
     reachy.head.look_at(0.5, -0, 0, duration=0.5)

@@ -27,8 +27,8 @@ def animation_angry(reachy):
     time.sleep(0.8)
 
     r_start_position = {
-        reachy.r_arm.r_shoulder_pitch: -15,
-        reachy.r_arm.r_shoulder_roll: -50,   # moves left to right
+        reachy.r_arm.r_shoulder_pitch: -20,
+        reachy.r_arm.r_shoulder_roll: -60,   # moves left to right
         reachy.r_arm.r_arm_yaw: 30,    # forward/back
         reachy.r_arm.r_elbow_pitch: -70,
         reachy.r_arm.r_forearm_yaw: -40,
@@ -38,14 +38,14 @@ def animation_angry(reachy):
         }
     goto(
         goal_positions=r_start_position,
-        duration = 2.5,
+        duration = 2.3,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
     r_sweep_position = {
         reachy.r_arm.r_shoulder_pitch: -25, #up / down if too high try -25/-20
-        reachy.r_arm.r_shoulder_roll: 5,  # moves left to right
-        reachy.r_arm.r_arm_yaw: 20,
-        reachy.r_arm.r_elbow_pitch: -50,
+        reachy.r_arm.r_shoulder_roll: 20,  # moves left to right
+        reachy.r_arm.r_arm_yaw: 10,
+        reachy.r_arm.r_elbow_pitch: -40,
         reachy.r_arm.r_forearm_yaw: 0,
         reachy.r_arm.r_wrist_pitch: -20,
         reachy.r_arm.r_wrist_roll: 0,
@@ -53,15 +53,15 @@ def animation_angry(reachy):
         }
     goto(
         goal_positions=r_sweep_position,
-        duration = 2.5,
+        duration = 2.3,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
 
     rbase_position = {
-        reachy.r_arm.r_shoulder_pitch: -15,
+        reachy.r_arm.r_shoulder_pitch: -23,
         reachy.r_arm.r_shoulder_roll: -45,    # moves left to right
         reachy.r_arm.r_arm_yaw: 30,    # forward/back
-        reachy.r_arm.r_elbow_pitch: -50,
+        reachy.r_arm.r_elbow_pitch: -70,
         reachy.r_arm.r_forearm_yaw: 0,
         reachy.r_arm.r_wrist_pitch: -20,
         reachy.r_arm.r_wrist_roll: 0,
@@ -69,7 +69,7 @@ def animation_angry(reachy):
         }
     goto(
         goal_positions=rbase_position,
-        duration=2.5,
+        duration=2.3,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
    
@@ -93,9 +93,14 @@ def animation_angry(reachy):
         #reachy.head.l_antenna.goal_position = 20
         #reachy.head.r_antenna.goal_position = -20
 
-    time.sleep(2.0)
+    
+    time.sleep(0.1)
     reachy.turn_off_smoothly("r_arm")
+    time.sleep(0.1)
     reachy.head.l_antenna.goal_position = 0.0
+    time.sleep(0.1)
     reachy.head.r_antenna.goal_position = 0.0
-    reachy.turn_off("head")
+   
+
+    
 

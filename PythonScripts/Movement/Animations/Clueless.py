@@ -16,20 +16,19 @@ def animation_clueless(reachy): #not done yet tilt head right to left
 
     for x in range(2):
 
-        head = {
+        start_head = {
             reachy.head.l_antenna: -35,
             reachy.head.r_antenna: -65,  
-            reachy.head.neck_roll: 35,  # tilt +left to -right 35
-            reachy.head.neck_pitch: 20,   # up down
-            reachy.head.neck_yaw: 10,     # left to right side
+            reachy.head.neck_roll: 15,  # tilt +left to -right 35
+            reachy.head.neck_pitch: 10,   # up down
+            reachy.head.neck_yaw: 15,     # left to right side
             }
     
         goto(
-            goal_positions=head,
+            goal_positions=start_head,
             duration=1.6,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
             )
-
 
         head2 = {
             reachy.head.l_antenna: 55,
@@ -43,20 +42,7 @@ def animation_clueless(reachy): #not done yet tilt head right to left
             duration=1.5,
             interpolation_mode=InterpolationMode.MINIMUM_JERK,
             )
-        
-        head3 = {
-            reachy.head.l_antenna: 60,
-            reachy.head.r_antenna: 50,  
-            reachy.head.neck_roll: -20,  # tilt +left to -right 35
-            reachy.head.neck_pitch: 5,   # up down
-            reachy.head.neck_yaw: -10,     # left to right side
-            }
-        goto(
-            goal_positions=head3,
-            duration=1.5,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK,
-            )
-        time.sleep(0.2)
+        time.sleep(0.5)
 
       
     reachy.head.look_at(0.5, 0, 0, 1)

@@ -13,7 +13,7 @@ def animation_start_opponent(reachy):
     reachy.head.r_antenna.goal_position = -40.0
 
     
-    l_arm2 = {
+    l_arm_start = {
         reachy.l_arm.l_shoulder_pitch: -25, #up or down
         reachy.l_arm.l_shoulder_roll: 10,   # moves left to right
         reachy.l_arm.l_arm_yaw: -25,    # forward/back
@@ -25,8 +25,8 @@ def animation_start_opponent(reachy):
         }
     
     goto(
-        goal_positions=l_arm2,
-        duration = 0.8,
+        goal_positions=l_arm_start,
+        duration = 1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
     l_arm = {
@@ -50,16 +50,36 @@ def animation_start_opponent(reachy):
     
     goto(
         goal_positions=head,
-        duration=1.6,
+        duration=1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
     
     goto(
         goal_positions=l_arm,
-        duration = 0.8,
+        duration = 1.0,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
     
+    for _ in range(2):
+
+        goto(
+        goal_positions=l_arm_start,
+        duration = 1.3,
+        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        )
+        reachy.head.l_antenna.goal_position = 50.0
+        reachy.head.r_antenna.goal_position = -20.0
+
+        goto(
+        goal_positions=l_arm,
+        duration = 1.3,
+        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        )
+
+        reachy.head.l_antenna.goal_position = 30.0
+        reachy.head.r_antenna.goal_position = -40.0
+        
+
     left_base_position = {
         reachy.l_arm.l_shoulder_pitch: -25,
         reachy.l_arm.l_shoulder_roll: 0,  # moves left to right
