@@ -117,7 +117,7 @@ class Game:
                 for combo in range(len(self.wincombinations)):
                     if (combo == 1 or 4 or 6 or 7) and self.combovalue(combo) == 0:
                         return True
-
+        return False
 
 
     def play(self, move: MoveFacade):
