@@ -8,5 +8,5 @@ class PiecePerception:
     def get_unused_pieces_from_frame(self, frame):
         return unused_pieces_detection(frame)
     
-    def get_nearest_unused_piece(self, frame, board_corners, available_game_pieces):
-        return get_nearest_unused_piece(frame, board_corners, available_game_pieces)
+    def get_nearest_unused_piece(self, frame, board_corners):
+        return get_nearest_unused_piece(frame, board_corners)

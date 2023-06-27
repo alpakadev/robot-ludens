@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def get_nearest_unused_piece(frame, board_corners, available_game_pieces):
+def get_nearest_unused_piece(frame, board_corners):
 
     image = frame.copy()
 
@@ -36,9 +36,13 @@ def get_nearest_unused_piece(frame, board_corners, available_game_pieces):
 
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    contours = sorted(contours, key=cv2.contourArea, reverse=True)
-
-    contours = contours[:available_game_pieces]
+    green_contours = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > 100:
+            green_contours.append(contour)
+    
+    contours = green_contours
 
     if len(contours) > 0:
         min_distance = float('inf')
