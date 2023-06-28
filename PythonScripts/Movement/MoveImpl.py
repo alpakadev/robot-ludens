@@ -380,15 +380,18 @@ class MoveImpl:
 
     def steal_object(self, block: Board):
         self.reachy.turn_on('reachy')
-        value = [0, -0.1, 0]
+        value = block.value
+        value[1] = -value[1]
+        r_value = block.value
        # value[2] -= constants.DELTA_HEIGHT
 
-        target_kinematic = self.kinematic_model_helper.get_kinematic_move(value, {'x': 0, 'y': 0, 'z': 0})
+        target_kinematic = self.kinematic_model_helper.get_kinematic_move(value, {'x': 0, 'y': 90, 'z': 0})
+        r_target_kinematic = self.kinematic_model_helper.get_kinematic_move(r_value, {'x': 0, 'y': -90, 'z': 0})
         pos = self.reachy.l_arm.inverse_kinematics(target_kinematic)
-        r_pos = self.reachy.r_arm.inverse_kinematics(target_kinematic)
+        r_pos = self.reachy.r_arm.inverse_kinematics(r_target_kinematic)
 
-        goto({joint: pos for joint, pos in zip(self.reachy.l_arm.joints.values(), pos)}, duration=1.0)
-        goto({joint: r_pos for joint, r_pos in zip(self.reachy.r_arm.joints.values(), r_pos)}, duration=1)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=1.0)
+        goto({joint: r_p for joint, r_p in zip(self.reachy.r_arm.joints.values(), r_pos)}, duration=1)
 
         self.move_head(constants.HEAD_LOOK_FRONT)
         self.move_head(constants.HEAD_LOOK_DOWN)
