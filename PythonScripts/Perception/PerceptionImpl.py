@@ -64,6 +64,15 @@ class PerceptionImplementation:
                                                                        board_corners)
         return nearest_piece
 
+    def get_already_placed_pieces_coordinates(self):
+        # Gibt Mittelpunkte aller grünen sowie roten Spielsteine, die bereits auf dem Feld stehen, mittels zweier Arrays zurück
+        frame = self.get_non_moving_image()
+        board_corners = self.board_perception.get_board_corners(frame)
+        red_contours, green_contours = self.piece_perception.get_all_pieces_coordinates(frame, board_corners)
+        #TODO: wandle red_contours und green_contours jeweils in ein Array um, das statt zweier Eckpunkte pro Kontur genau einen Mittelpunkt pro Kontur enthält
+        #pseudo: red_midpoints, green_midpoints = todo_function(red_contours, green_contours)
+        return red_midpoints, green_midpoints
+
 
     def check_for_unused_pieces(self, frame):
         # Untersucht den aktuellen Frame nach ungenutzen Spielsteinen
