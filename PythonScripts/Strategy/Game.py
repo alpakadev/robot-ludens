@@ -1,3 +1,4 @@
+import random
 from . import Human_Interaction as HI
 from . import Computer_Player as Reachy
 from Movement.MoveFacade import MoveFacade 
@@ -57,6 +58,12 @@ class Game:
                     new_piece += 1
                 elif self.board[i][j] != input[i][j]:
                     illegal_change = True
+        if new_piece == 3:
+            if random.random() < 0.4:
+                print("Damn, 3 game figures at once?!?")
+                self.move.do_animation(Animation.ANGRY)
+                self.game_closed = True
+                return False
         if new_piece != 1 and illegal_change:
             print("wrong amount of new pieces: " + str(new_piece) + " and illegal change detected")
             return False
@@ -86,6 +93,8 @@ class Game:
                 self.game_closed = True
             elif self.combovalue(combo) == -3:
                 move.do_animation(Animation.LOOSE)
+                if random.random() < 0.275:
+                    move.do_animation(Animation.ANGRY)
                 print("Human won!")
                 self.player_score = self.player_score + 1
                 self.nextLevel(1)
