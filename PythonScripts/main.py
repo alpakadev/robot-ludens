@@ -1,4 +1,6 @@
 from reachy_sdk import ReachySDK
+
+from Movement import constants
 from Movement.MoveFacade import MoveFacade
 from Perception.PerceptionFacade import PerceptionFacade
 from Strategy.StrategyFacade import StrategyFacade
@@ -23,15 +25,19 @@ strat.set_dependencies(move, perc)
 #move.do_animation(Animation.HAPPY)
 
 # If the Arm gets stuck, call this function
-move.do_deactivate_right_arm()
+# move.do_deactivate_right_arm()
 
 # Calibrating real Reachy; Not needed in simulation
-move.do_calibration()
+# move.do_calibration()
 
 # time.sleep(5)
 # To ensure a safe arm position without collision with the blocks
 # Outsource this as one command in MoveFacade
-move.do_safe_arm_pos()
+# move.do_safe_arm_pos()
 
 # Starting the Game
-strat.start_game()
+
+# move.do_move_block(Outside.Outside.BLOCK_1, Board.Board.CENTER_LEFT)
+move.steal_block(Board.Board.BOTTOM_CENTER)
+
+# strat.start_game()
