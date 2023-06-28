@@ -1,5 +1,6 @@
 from .unused_pieces_detection import unused_pieces_detection
 from .nearest_unused_piece import get_nearest_unused_piece
+from .game_figure_detection import get_all_pieces_coordinates
 
 class PiecePerception:
     def __init__(self, config):
@@ -10,3 +11,6 @@ class PiecePerception:
     
     def get_nearest_unused_piece(self, frame, board_corners):
         return get_nearest_unused_piece(frame, board_corners)
+
+    def get_all_pieces_coordinates(self, frame, game_board_coords):
+        return get_all_pieces_coordinates(frame, game_board_coords)
