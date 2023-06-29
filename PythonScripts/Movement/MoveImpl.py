@@ -1,5 +1,6 @@
 import time
 import numpy as np
+from itertools import permutations
 
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
@@ -34,7 +35,7 @@ class MoveImpl:
         self.perception = None
         self.reachy = None
         self.POS_GRIPPER = None
-        self.kinematic_model_helper = KinematicModelHelper()
+        self.kinematic_moder_helper = KinematicModelHelper()
         # The origin point, to which all other coordinates of the Board and the Blocks are relative.
         self.origin = constants.ORIGIN_COORDINATES
 
@@ -283,7 +284,7 @@ class MoveImpl:
         Moving arm to Position
 
         """
-        target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
+        target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
         goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration=2.0)
 
@@ -296,14 +297,14 @@ class MoveImpl:
         opens grip completely
         """
         self._change_grip_force(constants.GRIPPER_OPEN_FULL)
-        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(goar_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _grip_close(self):
         """
         closes grip until is_holding is true
         """
         self._change_grip_force(constants.GRIPPER_CLOSED)
-        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(goar_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _is_holding(self):
         """
@@ -352,12 +353,12 @@ class MoveImpl:
         # Head follows arm
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
-            # self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=1.0)
+            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=1.0)
 
         # Head looks at given x,y,z
         else:
             x, y, z = look_at
-            # self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
+            self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
 
         self.reachy.turn_off_smoothly("head")
 
@@ -380,25 +381,37 @@ class MoveImpl:
 
     def steal_object(self, block: Board):
         self.reachy.turn_on('reachy')
-        value = block.value
-        value[1] = -value[1]
-        r_value = block.value
-       # value[2] -= constants.DELTA_HEIGHT
 
-        target_kinematic = self.kinematic_model_helper.get_kinematic_move(value, {'x': 0, 'y': 90, 'z': 0})
-        r_target_kinematic = self.kinematic_model_helper.get_kinematic_move(r_value, {'x': 0, 'y': -90, 'z': 0})
+        i_value = block.value
+        i_value = add_lists(self.origin, i_value)
+        i_value = add_lists(i_value, [-0.06, 0, 0.01])
+
+        target_kinematic = self.kinematic_moder_helper.get_kinematic_move(i_value, {'y': -90, 'x': 0, 'z': -90})
         pos = self.reachy.l_arm.inverse_kinematics(target_kinematic)
-        r_pos = self.reachy.r_arm.inverse_kinematics(r_target_kinematic)
 
-        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=1.0)
-        goto({joint: r_p for joint, r_p in zip(self.reachy.r_arm.joints.values(), r_pos)}, duration=1)
+        # goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=0.1)
+        time.sleep(0.5)
 
-        self.move_head(constants.HEAD_LOOK_FRONT)
-        self.move_head(constants.HEAD_LOOK_DOWN)
-        # self.reachy.turn_off_smoothly('l_arm')
+        m_value = add_lists(i_value, [0, 0, 0.2])
+        self._move_l_arm(m_value, {'y': 90, 'x': 90, 'z': -90})
+        rots = all_90_rots()
+        print(rots)
+        for x in rots:
+            self._move_l_arm(m_value, {'x': x[0], 'y': x[1], 'z': x[2]})
+            print(x)
+            time.sleep(1)
+
+        # goto({joint: r_p for joint, r_p in zip(self.reachy.r_arm.joints.values(), r_pos)}, duration=1)
+
+        # self.move_head(constants.HEAD_LOOK_FRONT)
+        # self.move_head(constants.HEAD_LOOK_DOWN)
+        # self.reachy.turn_off_smoothly('r_arm')
+
+    def _move_l_arm(self, pos, rot):
+        m_target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pos, rot)
+        m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration=.1)
 
 
-def for_left(block: Board):
-    values = block.value
-    values[1] += 2
-    return values
+def all_90_rots():
+    return list(dict.fromkeys(permutations([90, 90, 90, -90, -90, -90, 0, 0, 0], 3)))
