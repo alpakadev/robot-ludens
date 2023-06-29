@@ -152,6 +152,12 @@ class Game:
                         return True
         print("kein combomove gefunden")
         return False
+    
+    def think(self):
+        p = random.randint(0, 100)
+        if p < (100 - self.thinkProbability[self.level]):
+            return False
+        print('Reachy is thinking')
 
     #Unentschieden frühzeitig erkennen
     def regtie(self):
@@ -176,12 +182,7 @@ class Game:
                         return True
         print("kein tie erkannt in regtie")
         return False
-
-    def think(self):
-        p = random.randint(0, 100)
-        if p < (100 - self.thinkProbability[self.level]):
-            return False
-        print('Reachy is thinking')
+    
 
     def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
