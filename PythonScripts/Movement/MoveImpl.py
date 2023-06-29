@@ -392,12 +392,13 @@ class MoveImpl:
         # goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=0.1)
         time.sleep(0.5)
 
-        m_value = add_lists(i_value, [0, 0, 0.2])
-        self._move_l_arm(m_value, {'y': 90, 'x': 90, 'z': -90})
+        m_value = add_lists(i_value, [0, -0.08, 0.05])
+        self._move_l_arm(m_value, {'x': 0, 'y': 90,  'z': -90})
         rots = all_90_rots()
+        
         print(rots)
         for x in rots:
-            self._move_l_arm(m_value, {'x': x[0], 'y': x[1], 'z': x[2]})
+            #self._move_l_arm(m_value, {'x': x[0], 'y': x[1], 'z': x[2]})
             print(x)
             time.sleep(1)
 
