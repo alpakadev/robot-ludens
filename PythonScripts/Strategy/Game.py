@@ -105,16 +105,18 @@ class Game:
                 print("Human won!")
                 self.player_score = self.player_score + 1
                 self.nextLevel(1)
-            elif not self.game_closed and self.regtie():
-                print("incoming Tie")
-
-                self.game_closed = True
-                self.react(-1, self.move)
 
         if self.player_moveCounter + self.reachy_moveCounter == 9 and not self.game_closed:
             print("No more moves possible...")
             self.game_closed = True
             self.react(0, self.move)
+
+        elif not self.game_closed and self.regtie():
+                print("incoming Tie")
+
+                self.game_closed = True
+                self.react(-1, self.move)
+                
 
     def react(self, last, move: MoveFacade):
         self.winHistory.append(last)
