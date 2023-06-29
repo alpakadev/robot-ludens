@@ -407,6 +407,7 @@ class MoveImpl:
 
         # self.move_head(constants.HEAD_LOOK_FRONT)
         # self.move_head(constants.HEAD_LOOK_DOWN)
+        time.sleep(5)
         self.reachy.turn_off_smoothly('l_arm')
         self.reachy.turn_off_smoothly('r_arm')
 
