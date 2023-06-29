@@ -297,14 +297,14 @@ class MoveImpl:
         opens grip completely
         """
         self._change_grip_force(constants.GRIPPER_OPEN_FULL)
-        goto(goar_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _grip_close(self):
         """
         closes grip until is_holding is true
         """
         self._change_grip_force(constants.GRIPPER_CLOSED)
-        goto(goar_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _is_holding(self):
         """
@@ -392,15 +392,18 @@ class MoveImpl:
         # goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=0.1)
         time.sleep(0.5)
 
-        m_value = add_lists(i_value, [0, -0.08, 0.05])
-        self._move_l_arm(m_value, {'x': 0, 'y': 90,  'z': -90})
+        m_value = add_lists(i_value, [0, -0.1, 0.03])
+        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': -140})
+        goto(goal_positions={self.reachy.l_arm.l_gripper: 0}, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         rots = all_90_rots()
-        
+
+
         print(rots)
         for x in rots:
             #self._move_l_arm(m_value, {'x': x[0], 'y': x[1], 'z': x[2]})
-            print(x)
-            time.sleep(1)
+            #print(x)
+            #time.sleep(1)
+            pass
 
         # goto({joint: r_p for joint, r_p in zip(self.reachy.r_arm.joints.values(), r_pos)}, duration=1)
 
