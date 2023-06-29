@@ -14,8 +14,16 @@ class Game:
         self.reachy_moveCounter = 0
         self.player_moveCounter = 0
         self.level = 2
+        self.winHistory = []
 
         self.game_closed = False
+
+        self.thinkProbability = {
+            0: 0,
+            1: 20,
+            2: 40,
+            3: 60
+        }
 
 
         self.first = 0 #Startspieler (1 = reacy / 2 = player)
@@ -86,26 +94,50 @@ class Game:
 
         for combo in range(len(self.wincombinations)):
             if self.combovalue(combo) == 3:
-                move.do_animation(Animation.WIN)
+                #move.do_animation(Animation.WIN)
                 print("Reachy won!")
                 self.reachy_score = self.reachy_score + 1
                 self.nextLevel(-1)
                 self.game_closed = True
+                self.react(1, self.move)
             elif self.combovalue(combo) == -3:
-                move.do_animation(Animation.LOOSE)
-                if random.random() < 0.275:
-                    move.do_animation(Animation.ANGRY)
+                #move.do_animation(Animation.LOOSE)
                 print("Human won!")
                 self.player_score = self.player_score + 1
                 self.nextLevel(1)
-                 
+            elif not self.game_closed and self.regtie():
+                print("incoming Tie")
+
+                self.game_closed = True
+                self.react(-1, self.move)
 
         if self.player_moveCounter + self.reachy_moveCounter == 9 and not self.game_closed:
             print("No more moves possible...")
             self.game_closed = True
+            self.react(0, self.move)
 
-        elif not self.game_closed and self.regtie():
-            print("incoming Tie")
+    def react(self, last, move: MoveFacade):
+        self.winHistory.append(last)
+        history = sum(self.winHistory[-3:])
+        # falls 3x nicht gewonnen, letztes verloren: angry
+        if last == -1 and history <= -1:
+            #print('Reachy is angry')
+            move.do_animation(Animation.ANGRY)
+        elif last == -1:
+            #print('Reachy is sad')
+            move.do_animation(Animation.LOOSE)
+        # falls zwei mal verloren, danach gewonnen: super happy
+        if last == 1 and history == -1:
+            #print('Reachy does the arm-dance')
+            move.do_animation(Animation.WIN)
+        elif last == 1:
+            #print('Reachy has happy antennaes')
+            move.do_animation(Animation.HAPPY)
+        # falls 3x unentschieden in Level 3: frustriert
+        if self.winHistory.count(0) == 3 and self.level == 3:
+            print('Reachy leaves')
+
+        
 
 
     def check_combo_move(self, n):
@@ -144,6 +176,11 @@ class Game:
         print("kein tie erkannt in regtie")
         return False
 
+    def think(self):
+        p = random.randint(0, 100)
+        if p < (100 - self.thinkProbability[self.level]):
+            return False
+        print('Reachy is thinking')
 
     def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
@@ -160,6 +197,7 @@ class Game:
                 if check_board_status == True:
                     self.check_state(self.move)
                     if not self.game_closed:
+                        self.think()
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
                         self.reachy_moveCounter += 1
                         print("reachy moved {} times".format(self.reachy_moveCounter))
@@ -167,8 +205,9 @@ class Game:
                     HI.print_board(self.board)
                     counter = 5
             if check_board_status == False:
-                 move.do_animation(Animation.DISAPPROVAL)
-
+                move.do_animation(Animation.DISAPPROVAL)
+                # print("reachy shakes head")
+                continue
         print("current score: Reachy ({}) : Player ({})".format(self.reachy_score, self.player_score))
         print("You are level", self.level)
 
