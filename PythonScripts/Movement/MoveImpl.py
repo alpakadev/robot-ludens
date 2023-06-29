@@ -384,20 +384,21 @@ class MoveImpl:
 
         i_value = block.value
         i_value = add_lists(self.origin, i_value)
-        i_value = add_lists(i_value, [-0.06, 0, 0.01])
+        i_value = add_lists(i_value, [-0.06, 0, 0.1])
 
         target_kinematic = self.kinematic_moder_helper.get_kinematic_move(i_value, {'y': -90, 'x': 0, 'z': -90})
         pos = self.reachy.l_arm.inverse_kinematics(target_kinematic)
 
-        # goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=0.1)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=2)
         time.sleep(0.5)
 
-        m_value = add_lists(i_value, [0, -0.1, 0.03])
-        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': -140})
-        goto(goal_positions={self.reachy.l_arm.l_gripper: 0}, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+
+
+       #  m_value = add_lists(self.origin, add_lists(block.value, [0, -0.1, 0.03]))
+        m_value = add_lists(i_value, [0.0, -0.2, 0])
+        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': -90})
+        # goto(goal_positions={self.reachy.l_arm.l_gripper: 0}, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
         rots = all_90_rots()
-
-
         print(rots)
         for x in rots:
             #self._move_l_arm(m_value, {'x': x[0], 'y': x[1], 'z': x[2]})
@@ -409,12 +410,14 @@ class MoveImpl:
 
         # self.move_head(constants.HEAD_LOOK_FRONT)
         # self.move_head(constants.HEAD_LOOK_DOWN)
-        # self.reachy.turn_off_smoothly('r_arm')
+        self.reachy.turn_off_smoothly('l_arm')
+        self.reachy.turn_off_smoothly('r_arm')
+
 
     def _move_l_arm(self, pos, rot):
         m_target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pos, rot)
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
-        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration=.1)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration=2)
 
 
 def all_90_rots():
