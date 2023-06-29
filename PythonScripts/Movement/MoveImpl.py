@@ -386,10 +386,7 @@ class MoveImpl:
         i_value = add_lists(self.origin, i_value)
         i_value = add_lists(i_value, [-0.06, 0, 0.1])
 
-        target_kinematic = self.kinematic_moder_helper.get_kinematic_move(i_value, {'y': -90, 'x': 0, 'z': -90})
-        pos = self.reachy.l_arm.inverse_kinematics(target_kinematic)
-
-        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), pos)}, duration=2)
+        self._move_l_arm(i_value, {'y': -90, 'x': 0, 'z': -90})
         time.sleep(0.5)
 
 
