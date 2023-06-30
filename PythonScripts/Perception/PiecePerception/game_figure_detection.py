@@ -1,6 +1,3 @@
-# CURRENTLY UNUSED
-# CAN BE IGNORED
-
 import cv2
 import numpy as np
 import yaml
@@ -9,8 +6,8 @@ def get_all_pieces_coordinates(frame, game_board_coords):
     imageFrame = frame.copy()
     config = yaml.safe_load(open("global_config.yml"))
 
-    red_figure_coords = []
-    green_figure_coords = []
+    red_figure_centers = []
+    green_figure_centers = []
 
     # Define the lower and upper bounds for red and green color
     lower_green = np.array(config["color_bounds"]["green_lower"])
@@ -38,10 +35,14 @@ def get_all_pieces_coordinates(frame, game_board_coords):
     for red_contour in red_contours:
         # Calculate the area of the contour
         area = cv2.contourArea(red_contour)
-        # Only draw the rectangle if the area is greater than the threshold
+        # Only consider the contour if the area is greater than the threshold
         if area > 100:
-            red_figure_coords.append(red_contour)
-            
+            # Calculate the centroid of the contour
+            M = cv2.moments(red_contour)
+            centroid_x = int(M['m10'] / M['m00'])
+            centroid_y = int(M['m01'] / M['m00'])
+            red_figure_centers.append((centroid_x, centroid_y))
+
     # Threshold the image to get the green color regions
     green_mask = cv2.inRange(hsv, lower_green, upper_green)
 
@@ -53,7 +54,10 @@ def get_all_pieces_coordinates(frame, game_board_coords):
         # Calculate the area of the contour
         area = cv2.contourArea(green_contour)
         if area > 100:
-            green_figure_coords.append(green_contour)
-            # cv2.rectangle(roi, (green_x, green_y), (green_x+green_w, green_y+green_h), (0, 255, 0), 2)
+            # Calculate the centroid of the contour
+            M = cv2.moments(green_contour)
+            centroid_x = int(M['m10'] / M['m00'])
+            centroid_y = int(M['m01'] / M['m00'])
+            green_figure_centers.append((centroid_x, centroid_y))
 
-    return red_figure_coords, green_figure_coords
+    return red_figure_centers, green_figure_centers
