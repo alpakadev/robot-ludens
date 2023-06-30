@@ -23,6 +23,10 @@ class PerceptionFacade:
         #Returns fixed position of the nearest available token not currently in the game
         return self.perception_implementation.get_nearest_unused_piece()
 
+    def get_already_placed_pieces_coordinates(self):
+        #Returns the midpoint coordinates of every token within the gameboard
+        return self.perception_implementation.get_already_placed_pieces_coordinates()
+
     def set_dependencies(self, move, strat):
         # Übergibt die Singletons des Movement und Strategie Moduls an unsere Klasse
         self.move = move
