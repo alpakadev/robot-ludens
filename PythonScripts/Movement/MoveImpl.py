@@ -156,6 +156,7 @@ class MoveImpl:
         
         #self.move_head()
         self.move_finished = True
+        self.move_head(constants.HEAD_LOOK_DOWN)
         self.reachy.turn_off_smoothly("head")
 
 
@@ -244,7 +245,7 @@ class MoveImpl:
         # Head follows arm
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
-            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=0.5)
+            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=0.1)
             
 
 
