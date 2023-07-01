@@ -20,5 +20,6 @@ class Animation(Enum):
     START_OPPONENT = "start_opponet",
     FORWARD = "forward",
     CLUELESS = "clueless",
+    HAPPY = "happy"
     
   

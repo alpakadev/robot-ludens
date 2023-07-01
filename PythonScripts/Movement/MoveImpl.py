@@ -23,6 +23,7 @@ from .Animations.StartReachy import animation_start_reachy
 from .Animations.StartOpponent import animation_start_opponent
 from .Animations.Forward import animation_forward
 from .Animations.Clueless import animation_clueless
+from .Animations.Happy import animation_happy
 
 from .Enums.Animation import Animation
 from .Enums.Board import Board
@@ -426,6 +427,8 @@ class MoveImpl:
                 animation_forward(self.reachy)
             case Animation.CLUELESS:
                 animation_clueless(self.reachy)
+            case Animation.HAPPY:
+                animation_happy(self.reachy)
             
 
            
