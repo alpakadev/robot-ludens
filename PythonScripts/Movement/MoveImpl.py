@@ -6,17 +6,32 @@ from reachy_sdk.trajectory.interpolation import InterpolationMode
 
 from . import constants
 from .Animations.Win import animation_win
-from .Animations.Loose import animation_loose
+from .Animations.Lose import animation_lose
 from .Animations.Angry import animation_angry
 from .Animations.Thinking import animation_thinking
 from .Animations.Disapproval import animation_disapproval
 from .Animations.SadAntennas import animation_sad_antennas
 from .Animations.HappyAntennas import animation_happy_antennas
+from .Animations.Inhale import animation_inhale
+from .Animations.Level0 import animation_level0
+from .Animations.Level1 import animation_level1
+from .Animations.Level2 import animation_level2
+from .Animations.Level3 import animation_level3
+from .Animations.Level4 import animation_level4
+from .Animations.Tie import animation_tie
+from .Animations.StartReachy import animation_start_reachy
+from .Animations.StartOpponent import animation_start_opponent
+from .Animations.Forward import animation_forward
+from .Animations.Clueless import animation_clueless
+from .Animations.Happy import animation_happy
+
 from .Enums.Animation import Animation
 from .Enums.Board import Board
 from .Enums.Outside import Outside
 from .Helper.KinematicModelHelper import KinematicModelHelper
 from .Helper.HandRotationMapper import HandRotationMapper
+
+
 
 
 def add_lists(a, b):
@@ -378,15 +393,47 @@ class MoveImpl:
         match animation_type:
             case Animation.WIN:
                 animation_win(self.reachy)
-            case Animation.LOOSE:
-                animation_loose(self.reachy)
+            case Animation.LOSE:
+                animation_lose(self.reachy)
             case Animation.ANGRY:
                 animation_angry(self.reachy)
             case Animation.THINKING:
                 animation_thinking(self.reachy)
             case Animation.DISAPPROVAL:
                 animation_disapproval(self.reachy)
-            case Animation.SAD:
+            case Animation.SAD_ANTENNAS:
                 animation_sad_antennas(self.reachy)
-            case Animation.HAPPY:
+            case Animation.HAPPY_ANTENNAS:
                 animation_happy_antennas(self.reachy)
+            case Animation.INHALE:
+                animation_inhale()
+            case Animation.LEVEL0:
+                animation_level0(self.reachy)
+            case Animation.LEVEL1:
+                animation_level1(self.reachy)
+            case Animation.LEVEL2:
+                animation_level2(self.reachy)
+            case Animation.LEVEL3:
+                animation_level3(self.reachy)
+            case Animation.LEVEL4:
+                animation_level4(self.reachy)
+            case Animation.TIE:
+                animation_tie(self.reachy)
+            case Animation.START_REACHY:
+                animation_start_reachy(self.reachy)
+            case Animation.START_OPPONENT:
+                animation_start_opponent(self.reachy)
+            case Animation.FORWARD:
+                animation_forward(self.reachy)
+            case Animation.CLUELESS:
+                animation_clueless(self.reachy)
+            case Animation.HAPPY:
+                animation_happy(self.reachy)
+            
+
+           
+            
+
+   
+
+    
