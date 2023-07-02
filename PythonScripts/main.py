@@ -10,17 +10,15 @@ import time
 reachy = ReachySDK("localhost")
 # reachy = ReachySDK("192.168.1.94")
 
-move = MoveFacade(reachy)
+move = MoveFacade()
 perc = PerceptionFacade(reachy)
 strat = StrategyFacade()
 
-
-
 perc.set_dependencies(move, strat)
-move.set_dependencies(perc, strat)
+move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
-#move.do_animation(Animation.HAPPY)
+# move.do_animation(Animation.HAPPY)
 
 # If the Arm gets stuck, call this function
 move.do_deactivate_right_arm()

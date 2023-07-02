@@ -138,7 +138,8 @@ class MoveImpl:
 
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
 
-    def start_move_object_requires_b_wahrnehmung_2(self, start: list, goal: Board):
+    def start_move_object_requires_b_wahrnehmung_2(self, goal: Board):
+        start = self.perception.get_nearest_unused_piece()
         print("preparing threads")
         t1 = Thread(target=self.move_block_requires_b_wahrnehmung_2, args=(start, goal))
         t2 = Thread(target=self.head_follows_arm_requires_b_wahrnehmung_2, args=[t1])
