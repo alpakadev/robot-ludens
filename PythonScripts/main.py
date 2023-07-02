@@ -26,17 +26,18 @@ strat.set_dependencies(move, perc)
 move.do_deactivate_right_arm()
 
 # Calibrating real Reachy; Not needed in simulation
-#move.do_calibration()
+move.do_calibration()
 
 # time.sleep(5)
 # To ensure a safe arm position without collision with the blocks
 # Outsource this as one command in MoveFacade
-#move.do_activate_right_arm()
-#move.do_right_angled_position()
-#move.do_pos_above_block_5()
+
+move.do_safe_arm_pos()
 
 # Starting the Game
-#strat.start_game()
+strat.start_game()
+
+# Testing animations
 
 #move.do_animation(Animation.ANGRY) #fertig
 #move.do_animation(Animation.CLUELESS) #fertig
@@ -58,4 +59,3 @@ move.do_deactivate_right_arm()
 
 
 #move.do_animation(Animation.INHALE)
-
