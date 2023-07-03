@@ -31,6 +31,9 @@ from .Enums.Outside import Outside
 from .Helper.KinematicModelHelper import KinematicModelHelper
 from .Helper.HandRotationMapper import HandRotationMapper
 
+import threading
+import sys
+
 
 
 
@@ -43,6 +46,7 @@ def add_lists(a, b):
 
 class MoveImpl:
 
+
     def __init__(self):
         self.strategy = None
         self.perception = None
@@ -51,6 +55,7 @@ class MoveImpl:
         self.kinematic_model_helper = KinematicModelHelper()
         # The origin point, to which all other coordinates of the Board and the Blocks are relative.
         self.origin = constants.ORIGIN_COORDINATES
+        self.move_finished = True
 
     def set_dependencies(self, reachy: ReachySDK, perc, strat):
         self.reachy = reachy
@@ -96,6 +101,8 @@ class MoveImpl:
 
 
     def move_object(self, position_from: Outside, position_to: Board):
+        self.move_finished = False
+        self.reachy.turn_on("head")
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
@@ -106,11 +113,14 @@ class MoveImpl:
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
 
+        thread1 = threading.Thread(target=self.head_follows_arm)
+        thread1.start()
+
         #calculate coordinate above block 5
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
-
+        #self.move_head()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
@@ -120,10 +130,13 @@ class MoveImpl:
         position_from_coordinates[2] += 0.15
         position_from_coordinates[0] -= constants.DELTA_FRONT
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        position_from_coordinates[2] -= 0.11
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
+        position_from_coordinates[2] -= 0.11
         
+        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        
+        #self.move_head()
+
         self._grip_open()
         
         position_from_coordinates[0] += constants.DELTA_FRONT
@@ -132,19 +145,19 @@ class MoveImpl:
 
         self._grip_close()
 
-        
-
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-
+        #self.move_head()
         #beginning of pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
+        
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         #Here neigung -70 
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
+        #self.move_head()
         
         self._grip_open()
 
@@ -155,156 +168,23 @@ class MoveImpl:
         self._grip_close()
         
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-
-
-
-
-    def move_object_v3(self, position_from: Outside, position_to: Board):
-        self.activate_right_arm()
+        
+        #self.move_head()
+        self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
-        mapper = HandRotationMapper()
-        
-        #self._grip_open()
-        #self._grip_close()
-
-        position_from_coordinates = position_from.value
-        position_to_coordinates = position_to.value
-        #Coordinate of Block 5 is added to origin Point
-        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value) #####WIEDER ZU 5 ÄNDERN!!!!
-        #First waiting point ist 15 cm above Block 5
-        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.15])
-        #Second waiting point is 20 cm closer to Reachy (Above Block 1)
-        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
-
-        
-        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
-        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
-        #move to save point above origin point
-        print(point_above_Block_5)
-        print(point_above_Block_1)
-        #Go to Right angle, WP1 and then WP2
-        #self.set_arm_to_right_angle_position()
-        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-        self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
-
-    
+        self.reachy.turn_off_smoothly("head")
 
 
-
-        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
-        #Higher to not touch the table
-        ##position_from_coordinates[2] += 0.1
-        position_from_coordinates[0] -= constants.DELTA_FRONT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        #Move Delta before cylinder to be taken
-        ##position_from_coordinates[2] -= 0.08
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        #Calculate next move
-        position_from_coordinates[0] += constants.DELTA_FRONT
-
-        self._grip_open()
-        #Moves Hand/arm to the cylinder
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        #closes Hand
-        self._grip_close()
-        #Take cylinder up
-        position_from_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        #Calculate and move to position about the goal
-        position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
-            position_to)})
-        position_to_coordinates[2] -= constants.DELTA_HEIGHT
-        #This is the lowest possible position for Reachy not to touch the other blocks
-        #position_to_coordinates[2] += constants.DELTA_SAFE_HEIGHT
-
-        # 7. moves arm to pos_to/Put Gripper down to get lower
-        self._move_arm(position_to_coordinates,
-                       rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
-        self._grip_open()
-        position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates,
-                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
-        position_to_coordinates[2] -= constants.DELTA_HEIGHT
-        self._grip_close()
-        # 10. Moves arm back to a save position
-        #self._grip_close()
-        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-
-
-    def move_object_v2(self, position_from: Outside, position_to: Board):
-        """
-        Moves Object from A (pos_from) to B (pos_to)
-
-        :param position_from: Coordinates where the Object to move is
-        :param position_to: Coordinates on where to move the object
-        """
-        self.activate_right_arm()
-        self.set_arm_to_right_angle_position()
-
-        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
-        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
-        
-
-        mapper = HandRotationMapper()
-
-        position_from_coordinates = position_from.value
-        position_to_coordinates = position_to.value
-
-        # Adds the position values to base position - Since the Enums are dependent of the Base Position
-        position_to_coordinates = add_lists(self.origin, position_to_coordinates)
-        position_from_coordinates = add_lists(self.origin, position_from_coordinates)
-
-        # Tiefe == x (nach vorne), breite == z , Hoehe ==y
-        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH  # Non Moving Part of Hand would knock Items over
-        # starting movement of reachy's head
-        self.move_head(constants.HEAD_LOOK_DOWN)
-        time.sleep(1.0)
-        self.move_head(constants.HEAD_LOOK_FRONT)
+    def head_follows_arm(self):
         self.move_head()
-        # 1. Moves arm in front of the Object
-        position_from_coordinates[0] -= constants.DELTA_FRONT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        position_from_coordinates[0] += constants.DELTA_FRONT
-        self.move_head()
-        # 2. Opens Hand
-        self._grip_open()
-        # 3. Moves Hand/arm to the object
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        # 4. closes Hand
-        self._grip_close()
-        # 5. Moves arm above current position
-        position_from_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        position_from_coordinates[2] -= constants.DELTA_HEIGHT
-        # self.move_head(pos_goal)
-        # 6. Moves arm above pos_to
-        position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
-            position_to)})  ##TODO: How to Handle POS_ABOVE_BOARD?
-        position_to_coordinates[2] -= constants.DELTA_HEIGHT
-        self.move_head()
-        # 7. moves arm to pos_to
-        self._move_arm(position_to_coordinates,
-                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
-        # 8. opens Hand
-        self._grip_open()
-        # 9. Moves arm up
-        position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates,
-                       rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(position_to)})
-        position_to_coordinates[2] -= constants.DELTA_HEIGHT
-        self.move_head()
-        # 10. Moves arm back to a save position
-        self._grip_close()
-        self.set_arm_to_right_angle_position()
-        # 11. Moving arm to the origin coordinate, so that it does not block the view
-        self._move_arm(add_lists(self.origin, [0, -0.085, 0.10]), rotation={'y': -90, 'x': 0, 'z': 0})
-
-        # Setting arm to compliant mode and lowering smoothly for preventing damaging
-        # self.deactivate_right_arm()
-        # head back to default and setting head to compliant mode
-        self.move_head(constants.HEAD_LOOK_FRONT)
+        time.sleep(0.5)
+        while True:
+            self.move_head()
+            print("Läuft")
+            #time.sleep(0.5)
+            if (self.move_finished):
+                print("Ende")
+                sys.exit()
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
@@ -375,19 +255,21 @@ class MoveImpl:
         follows the right arm's coordinates
 
         """
-        self.reachy.turn_on("head")
+        #self.reachy.turn_on("head")
 
         # Head follows arm
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
-            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=1.0)
+            self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=0.1)
+            
+
 
         # Head looks at given x,y,z
         else:
             x, y, z = look_at
             self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
 
-        self.reachy.turn_off_smoothly("head")
+        #self.reachy.turn_off_smoothly("head")
 
     def perform_animation(self, animation_type: Animation):
         match animation_type:
