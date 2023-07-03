@@ -139,13 +139,11 @@ def GKv1finden(vierboard):
     return GKv1gefunden
 
 def in001setzen(p):
-    print("in001setzten vielleicht")
     global chosen
     # nur mit bestimmter Wahrscheinlichkeit guten Zug machen
     if p < (100 - good[level]):
         return False
     
-    print("in001setzten")
     vierboard = boardtransformation()
     GKv1 = GKv1finden(vierboard)
     for feld in GKv1:
@@ -153,7 +151,7 @@ def in001setzen(p):
             #print("freies Feld: ", feld)
             board[feld[0]][feld[1]] = 1
             chosen = (feld[0],feld[1])
-            print("hat wirklich geklappt")
+            print("in001gesetzt")
             return True
 
 def setup_trap(p, move: MoveFacade):
