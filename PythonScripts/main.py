@@ -9,7 +9,6 @@ import time
 
 
 reachy = ReachySDK("localhost")
-#reachy = ReachySDK("192.168.1.94")
 #reachy = ReachySDK("192.168.1.94") # with_mobile_base = True) 
 
 move = MoveFacade()
@@ -27,7 +26,7 @@ strat.set_dependencies(move, perc)
 move.do_deactivate_right_arm()
 
 # Calibrating real Reachy; Not needed in simulation
-#move.do_calibration()
+move.do_calibration()
 
 # time.sleep(5)
 # To ensure a safe arm position without collision with the blocks
