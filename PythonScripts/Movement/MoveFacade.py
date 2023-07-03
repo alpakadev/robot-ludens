@@ -21,7 +21,9 @@ class MoveFacade:
         return self.move.move_object(position_from=from_enum, position_to=to_enum)
 
     def do_move_head(self, look_at: list):
+        self.move.reachy.turn_on('head')
         self.move.move_head(look_at)
+        self.move.reachy.turn_off_smoothly('head')
 
     def do_activate_right_arm(self):
         self.move.activate_right_arm()
