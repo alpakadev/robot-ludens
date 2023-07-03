@@ -176,14 +176,16 @@ class MoveImpl:
 
 
     def head_follows_arm(self):
+        """
+        Head following the Hand Continiously until the Movement of a block is finished
+        Has to be called in a parallel thread.
+        """
         self.move_head()
         time.sleep(0.5)
         while True:
             self.move_head()
-            print("Läuft")
             #time.sleep(0.5)
             if (self.move_finished):
-                print("Ende")
                 sys.exit()
 
     def _move_arm(self, pos_to: list, rotation: dict):
