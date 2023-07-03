@@ -196,7 +196,7 @@ class MoveImpl:
         t1.start()
         t2.start()
 
-        while t1.isAlive() or t2.isAlive():
+        while t1.is_alive() or t2.is_alive():
             print("threads are running...")
             time.sleep(5)
         print("threads ended")
