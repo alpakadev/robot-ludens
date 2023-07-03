@@ -13,7 +13,8 @@ class Game:
         self.player_score = 0
         self.reachy_moveCounter = 0
         self.player_moveCounter = 0
-        self.level = 2
+        self.level = 1
+        self.enableCheating = True
         self.winHistory = []
 
         self.game_closed = False
@@ -112,10 +113,11 @@ class Game:
             print("No more moves possible...")
             self.game_closed = True
             self.react(0, self.move)
-
         elif not self.game_closed and self.regtie():
                 print("incoming Tie")
 
+        if self.enableCheating:
+            Reachy.scan_trap(self.board)
 
     def react(self, last, move: MoveFacade):
         self.winHistory.append(last)
@@ -136,7 +138,7 @@ class Game:
             move.do_animation(Animation.HAPPY)
         # falls 3x unentschieden in Level 3: frustriert
         if self.winHistory.count(0) == 3 and self.level == 3:
-            print('Reachy leaves')
+            print('Reachy wants to leave')
 
         
 
@@ -187,7 +189,6 @@ class Game:
     def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
         while not self.game_closed:
-    
             counter = 0
             check_board_status = False
             while counter <= 4:
