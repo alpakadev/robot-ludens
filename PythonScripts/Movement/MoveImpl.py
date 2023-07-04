@@ -319,7 +319,7 @@ class MoveImpl:
         z = -0.37
         res = [x, y, z]
         self.set_origin(res)
-        print(self.get_origin())
+        print("Calibration of bottem right corner: ",self.get_origin())
 
     def move_head(self, look_at=None):
         """
