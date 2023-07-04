@@ -48,5 +48,5 @@ class MoveFacade:
     def do_animation(self, animation_type: Animation):
         self.move.perform_animation(animation_type)
 
-    def steal_block(self, block: Board):
-        self.move.steal_object(block)
+    def steal_block(self, f: Board):
+        self.move.steal_object(f)

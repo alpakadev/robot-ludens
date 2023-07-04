@@ -379,30 +379,67 @@ class MoveImpl:
             case Animation.HAPPY:
                 animation_happy_antennas(self.reachy)
 
-    def steal_object(self, block: Board):
+    def cheat_object(self, f: Board, t: Board):
         self.reachy.turn_on('l_arm')
         self.reachy.turn_on('r_arm')
 
-        i_value = block.value
-        print(i_value)
-        i_value = [0.31,0,-0.34]
-        print(i_value)
+        match f:
+            case Board.BOTTOM_LEFT:
+                self._move_l_arm([0.15, 0.15, -0.385])
+                self._open_l_gripper()
+                self._move_l_arm([0.15, 0.02, -0.385])
+            case Board.CENTER_LEFT:
+                self._move_l_arm([0.24, 0.15, -0.385])
+                self._open_l_gripper()
+                self._move_l_arm([0.26, 0.02, -0.385])
+            case Board.TOP_LEFT:
+                self._move_l_arm([0.3, 0.15, -0.385])
+                self._open_l_gripper()
+                self._move_l_arm([0.36, 0.02, -0.385])
 
-        self._move_l_arm(i_value, {'y': -90, 'x': 0, 'z': 0})
-        time.sleep(0.5)
-        m_value = add_lists(i_value, [0.0, 0.2, 0])
-        print(m_value)
-        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': 0})
+        self._close_l_gripper()
+
+        match t:
+            case Board.BOTTOM_LEFT:
+                self._move_l_arm([0.15, 0.02, -0.375])
+            case Board.CENTER_LEFT:
+                self._move_l_arm([0.26, 0.02, -0.375])
+            case Board.TOP_LEFT:
+                self._move_l_arm([0.36, 0.02, -0.375])
+
+        self._open_l_gripper()
+        time.sleep(5)
 
         self.reachy.turn_off_smoothly('l_arm')
         self.reachy.turn_off_smoothly('r_arm')
 
+    def steal_object(self, f: Board):
+        match f:
+            case Board.BOTTOM_LEFT:
+                self._move_l_arm([0.1, 0.15, -0.385])
+                self._open_l_gripper()
+                self._move_l_arm([0.15, 0.02, -0.385])
+            case Board.CENTER_LEFT:
+                self._move_l_arm([0.24, 0.15, -0.385])
+                self._open_l_gripper()
+                self._move_l_arm([0.26, 0.02, -0.385])
+            case Board.TOP_LEFT:
+                self._move_l_arm([0.3, 0.15, -0.385])
+                self._open_l_gripper()
+                self._move_l_arm([0.36, 0.02, -0.385])
 
-    def _move_l_arm(self, pos, rot):
+        self._move_l_arm([0.4, 0, -0.385])
+
+    def _move_l_arm(self, pos, rot = {'y': -90, 'x': 0, 'z': -90}):
         m_target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pos, rot)
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
-        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration=2)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration=1, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
+    def _open_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: 200}, duration=2, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+
+    def _close_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: -5}, duration=2, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
 def all_90_rots():
     return list(dict.fromkeys(permutations([90, 90, 90, -90, -90, -90, 0, 0, 0], 3)))

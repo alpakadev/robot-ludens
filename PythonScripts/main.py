@@ -9,8 +9,8 @@ from Movement.Enums import Board
 from Movement.Enums.Animation import Animation
 import time
 
-# reachy = ReachySDK("localhost")
-reachy = ReachySDK("192.168.1.94")
+reachy = ReachySDK("localhost")
+# reachy = ReachySDK("192.168.1.94")
 
 move = MoveFacade()
 perc = PerceptionFacade(reachy)
@@ -38,6 +38,6 @@ strat.set_dependencies(move, perc)
 # Starting the Game
 
 # move.do_move_block(Outside.Outside.BLOCK_1, Board.Board.CENTER_LEFT)
-move.steal_block(Board.Board.CENTER)
+move.steal_block(Board.Board.BOTTOM_LEFT)
 
 # strat.start_game()
