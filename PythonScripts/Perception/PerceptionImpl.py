@@ -4,16 +4,20 @@ from .GameState.GameState import GameState
 from .Helpers.Helpers import Helpers
 from .Exceptions.Exceptions import ViewCloudedError
 from .PiecePerception.PiecePerception import PiecePerception
-from Movement.MoveFacade import MoveFacade
-from Strategy.StrategyFacade import StrategyFacade
+import cv2
+from Movement.MoveFacade import MoveFacade 
+from .FaceRecognition.FaceRecognition import FaceRecognition
 
 class PerceptionImplementation:
-    def __init__(self, reachy):
+    def __init__(self, reachy, move):
         self.config = yaml.safe_load(open("PythonScripts/Perception/config.yml"))
         self.board_perception = BoardPerception(self.config)
         self.game_state = GameState()
         self.piece_perception = PiecePerception(self.config)
         self.helpers = Helpers(reachy, self.config)
+        self.face_recognition = FaceRecognition()
+        self.reachy = reachy
+        self.move = move
 
     def get_non_moving_image(self, move:MoveFacade):
         self.helpers.move_head_to_goal_position(move)
@@ -67,19 +71,7 @@ class PerceptionImplementation:
     def get_already_placed_pieces_coordinates(self):
         # Gibt Mittelpunkte aller grünen sowie roten Spielsteine, die bereits auf dem Feld stehen, mittels eines Arrays zurück
         # Beispielhafter Rückgabewert:
-        '''
-        [
-            (-20.5, 8.7, "R"),
-            (-13.7, 15.2, "G"),
-            (0, 0, 0),  # Keine Figur an dieser Position erkannt
-            (-20.5, 8.7, "R"),
-            (-26.4, 23.4, "G"),
-            (-13.7, 15.2, "R"),
-            (0, 0, 0),
-            (-20.5, 23.4, "G"),
-            (-13.7, 15.2, "R")
-        ]
-        '''
+        # [0, 0, 0, 0, 0, (-5.9299755, 17.198578, 'G'), 0, 0, 0]
         frame = self.get_non_moving_image()
         board_corners = self.board_perception.get_board_corners(frame)
         board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
@@ -95,3 +87,9 @@ class PerceptionImplementation:
         # Implementation in /PiecePerception/unused_pieces_detection.py
         unused_pieces = self.piece_perception.get_unused_pieces_from_frame(frame)
         return unused_pieces
+
+    def identify_human_player(self):
+        self.face_recognition.identify_human_player(self.reachy, self.move)
+    
+    def look_at_human_player(self):
+        self.face_recognition.look_at_human_player(self.reachy, self.move)

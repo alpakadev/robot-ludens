@@ -4,10 +4,7 @@ import numpy as np
 def estimate_metric_distance(frame, board_corners, centroid_x, centroid_y):
     image = frame.copy()
 
-    # List conversion to bring list in correct form for further processing
-    converted_list = [[x[0].tolist() for x in sublist] for sublist in board_corners]
-    converted_list = converted_list[0]
-    reference_image_points = converted_list[1:] + [converted_list[0]]
+    reference_image_points = board_corners
     reference_real_points = [[0, 0], [36.4, 0], [36.4, 36.6], [0, 36.4]]
 
     # Convert the reference image points to integer tuples

@@ -1,22 +1,10 @@
-import Perception.FaceRecognition.recognition as recognition
-from reachy_sdk import ReachySDK
-import reachy_sdk
+from Perception.FaceRecognition.FaceRecognition import FaceRecognition
 import time
 import asyncio
-from Movement.MoveFacade import MoveFacade
-reachy = ReachySDK("localhost")
-"""move = MoveFacade()
-move.set_dependencies(reachy, None, None)
+import reachy_sdk
+#reachy = reachy_sdk.ReachySDK("192.168.1.94")
 
-# Das sollte eine Datei speichern mit einem erkannten Gesicht
-# Falls kein Gesicht im Bild ist sollte er den Kopf einmal nach links und rechts drehen und nach einem Gesicht suchen
-recognition.detect_human_player(reachy, move)
-
-time.sleep(5)
-
-# Nach dem ein Gesicht erkannt wurde soll er seinen Blick so ausrichten, dass er die Person anschaut
-# Falls der Kopf sich gar nicht bewegt ist etwas schief gelaufen. Falls er sich komisch bewegt, dann sind in center_vision_on_face unten die Faktoren vertauscht
-recognition.look_at_human_player(reachy, move)"""
-
-face = recognition.detect_human_player(reachy)
-recognition.look_at_human_player(reachy, face)
+reachy = reachy_sdk.ReachySDK("localhost")
+face_recognition = FaceRecognition()
+face_recognition.identify_human_player(reachy, None)
+face_recognition.look_at_human_player(reachy, None)

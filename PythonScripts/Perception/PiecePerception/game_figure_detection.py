@@ -30,7 +30,7 @@ def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates
 
         # Crop the image to the coordinates of the current board case
         case_mask = np.zeros(frame.shape[:2], dtype="uint8")
-        case_roi = np.array([case["upLeft"], case["upRight"], case["downLeft"], case["downRight"]])
+        case_roi = np.array([case["upLeft"], case["upRight"], case["downRight"], case["downLeft"]])
         cv2.fillPoly(case_mask, [case_roi], (255, 255, 255))
         case_masked = cv2.bitwise_and(hsv, hsv, mask=case_mask)
 
