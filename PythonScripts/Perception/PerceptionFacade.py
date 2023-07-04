@@ -20,9 +20,9 @@ class PerceptionFacade:
         # Gibt die Echt-Welt Koordinaten eines gegbeen Squares zurück
         return self.perception_implementation.get_coordinates_of_square(square)
     
-    """def get_nearest_unused_piece(self):
-        #Returns fixed position of the nearest available token not currently in the game
-        return self.perception_implentation.get_nearest_unused_piece()"""
+    def get_nearest_unused_piece(self):
+        # Returns fixed position of the nearest available token not currently in the game
+        return self.perception_implementation.get_nearest_unused_piece()
     
     def identify_human_player(self):
         self.perception_implementation.identify_human_player()
