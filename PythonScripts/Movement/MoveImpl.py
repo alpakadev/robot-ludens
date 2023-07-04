@@ -180,6 +180,11 @@ class MoveImpl:
 
     def start_move_object_requires_b_wahrnehmung_2(self, goal: Board):
         start = self.perception.get_nearest_unused_piece()
+        
+        # Tuple to list
+        pos_from = start.value
+        pos_from += [0]
+        print("Pos From ist: ", pos_from)
         print("preparing threads")
         t1 = Thread(target=self.move_block_requires_b_wahrnehmung_2, args=(start, goal))
         t2 = Thread(target=self.head_follows_arm_requires_b_wahrnehmung_2, args=[t1])
