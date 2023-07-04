@@ -258,7 +258,7 @@ class MoveImpl:
         print("running: head follows")
         self.move_head()
         time.sleep(0.5)
-        while t1.isAlive():
+        while t1.is_alive():
             self.move_head()
 
     def _move_arm(self, pos_to: list, rotation: dict):
