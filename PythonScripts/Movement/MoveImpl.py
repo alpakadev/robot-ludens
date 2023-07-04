@@ -380,34 +380,20 @@ class MoveImpl:
                 animation_happy_antennas(self.reachy)
 
     def steal_object(self, block: Board):
-        self.reachy.turn_on('reachy')
+        self.reachy.turn_on('l_arm')
+        self.reachy.turn_on('r_arm')
 
         i_value = block.value
-        i_value = add_lists(self.origin, i_value)
-        i_value = add_lists(i_value, [-0.06, 0, 0.1])
+        print(i_value)
+        i_value = [0.31,0,-0.34]
+        print(i_value)
 
-        self._move_l_arm(i_value, {'y': -90, 'x': 0, 'z': -90})
+        self._move_l_arm(i_value, {'y': -90, 'x': 0, 'z': 0})
         time.sleep(0.5)
+        m_value = add_lists(i_value, [0.0, 0.2, 0])
+        print(m_value)
+        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': 0})
 
-
-
-       #  m_value = add_lists(self.origin, add_lists(block.value, [0, -0.1, 0.03]))
-        m_value = add_lists(i_value, [0.0, -0.2, 0])
-        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': -90})
-        # goto(goal_positions={self.reachy.l_arm.l_gripper: 0}, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
-        rots = all_90_rots()
-        print(rots)
-        for x in rots:
-            #self._move_l_arm(m_value, {'x': x[0], 'y': x[1], 'z': x[2]})
-            #print(x)
-            #time.sleep(1)
-            pass
-
-        # goto({joint: r_p for joint, r_p in zip(self.reachy.r_arm.joints.values(), r_pos)}, duration=1)
-
-        # self.move_head(constants.HEAD_LOOK_FRONT)
-        # self.move_head(constants.HEAD_LOOK_DOWN)
-        time.sleep(5)
         self.reachy.turn_off_smoothly('l_arm')
         self.reachy.turn_off_smoothly('r_arm')
 
