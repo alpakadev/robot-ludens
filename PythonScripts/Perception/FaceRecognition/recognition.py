@@ -31,7 +31,7 @@ def identify_human_player(reachy, move):
     # Größtes Gesicht ermitteln
     cv2.rectangle(image, (face_box[3], face_box[0]), (face_box[1], face_box[2]), (255, 0, 0), 4)
     cv2.imwrite("PythonScripts/Perception/FaceRecognition/Player.png", image)
-    
+
     print("Face Detected")
     return face_encoding
     
@@ -66,7 +66,6 @@ def compare_faces_for_pos(image, player_face_enc):
 
     for face in face_positions:
         unknown_face_enc = fr.face_encodings(image, known_face_locations=[face], num_jitters=5, model="large")
-        print("player", player_face_enc[0], "unknonw", unknown_face_enc[0])
 
         results = fr.face_distance([unknown_face_enc[0]], player_face_enc[0])
         if smallest_distance is None:
@@ -125,7 +124,7 @@ def center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
 
     #move.do_move_head([1, distance_to_move_horizontally, distance_to_move_vertically, 1])
     reachy.head.look_at(1, distance_to_move_horizontally, distance_to_move_vertically, 1, "simul")
-    reachy.head.turn_off_smoothly()
+    reachy.turn_off_smoothly("head")
 
 
 def calc_center_diff(p_c_diff, im_dim):
