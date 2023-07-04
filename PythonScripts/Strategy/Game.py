@@ -13,7 +13,8 @@ class Game:
         self.player_score = 0
         self.reachy_moveCounter = 0
         self.player_moveCounter = 0
-        self.level = 2
+        self.level = 1
+        self.enableCheating = True
         self.winHistory = []
 
         self.game_closed = False
@@ -25,6 +26,8 @@ class Game:
             3: 60
         }
 
+
+        self.first = 0 #Startspieler (1 = reacy / 2 = player)
 
         # alle möglichen Gewinnkombinationen
         self.wincombinations = [
@@ -110,6 +113,11 @@ class Game:
             print("No more moves possible...")
             self.game_closed = True
             self.react(0, self.move)
+        elif not self.game_closed and self.regtie():
+                print("incoming Tie")
+
+        if self.enableCheating:
+            Reachy.scan_trap(self.board)
 
     def react(self, last, move: MoveFacade):
         self.winHistory.append(last)
@@ -130,18 +138,57 @@ class Game:
             move.do_animation(Animation.HAPPY)
         # falls 3x unentschieden in Level 3: frustriert
         if self.winHistory.count(0) == 3 and self.level == 3:
-            print('Reachy leaves')
+            print('Reachy wants to leave')
 
+        
+
+
+    def check_combo_move(self, n):
+        print("check_combo_moves aufgerufen")
+        for combo in range(len(self.wincombinations)):
+            if self.board[self.wincombinations[combo][0][0]][self.wincombinations[combo][0][1]] + self.board[self.wincombinations[combo][1][0]][self.wincombinations[combo][1][1]] + self.board[self.wincombinations[combo][2][0]][self.wincombinations[combo][2][1]] == n:
+                
+                for i in range(3):
+                    if self.board[self.wincombinations[combo][i][0]][self.wincombinations[combo][i][1]] == 0:
+                        print("combomove für ",n, " gefunden")
+                        return True
+        print("kein combomove gefunden")
+        return False
+    
     def think(self):
         p = random.randint(0, 100)
         if p < (100 - self.thinkProbability[self.level]):
             return False
         print('Reachy is thinking')
 
+    #Unentschieden frühzeitig erkennen
+    def regtie(self):
+        print("regtie aufgerufen")
+        moves = self.reachy_moveCounter + self.player_moveCounter
+        chanceReachy = self.check_combo_move(2)
+        chancePlayer = self.check_combo_move(-2)
+        chances = chanceReachy or chancePlayer
+        print("chances=",chances)
+        if self.first == 1 and moves == 8:
+            if not chanceReachy: return True
+
+        #wenn keine Gewinnchancen in 1Zug vorliegen
+        if not chances:
+            if moves == 7: return True
+            #liegen auch keine Gewinnchancen in 2 vor, (da 1.Fall: Felder isoliert o. 2.Fall: jeder 1Feld davon) wenn es 2 freie Felder gibt)
+            if moves == 6:
+                #(oder da GKs max 1 gemeinsames Feld besitzen wenn es eine leere GK gibt)
+                for combo in range(len(self.wincombinations)):
+                    if (combo == 1 or 4 or 6 or 7) and self.combovalue(combo) == 0:
+                        print("tie erkannt in regtie")
+                        return True
+        print("kein tie erkannt in regtie")
+        return False
+    
+
     def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
         while not self.game_closed:
-            #input = HI.make_user_move(self.board)
             counter = 0
             check_board_status = False
             while counter <= 4:
@@ -191,15 +238,15 @@ class Game:
             self.game_closed = False
             self.reachy_moveCounter = 0
             self.player_moveCounter = 0
-            first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
-            if first == "1":
+            self.first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
+            if self.first == "1":
                 # reachy's first move
                 self.board = Reachy.make_first_move(self.board,self.reachy_moveCounter, self.move)
                 self.reachy_moveCounter = self.reachy_moveCounter + 1
                 HI.print_board(self.board)
                 self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
-            elif first == "2":
+            elif self.first == "2":
                 HI.print_board(self.board)
                 self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
