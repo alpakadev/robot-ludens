@@ -68,11 +68,11 @@ class PerceptionImplementation:
                                                                        board_corners)
         return nearest_piece
 
-    def get_already_placed_pieces_coordinates(self):
+    def get_already_placed_pieces_coordinates(self, move):
         # Gibt Mittelpunkte aller grünen sowie roten Spielsteine, die bereits auf dem Feld stehen, mittels eines Arrays zurück
         # Beispielhafter Rückgabewert:
         # [0, 0, 0, 0, 0, (-5.9299755, 17.198578, 'G'), 0, 0, 0]
-        frame = self.get_non_moving_image()
+        frame = self.get_non_moving_image(move)
         board_corners = self.board_perception.get_board_corners(frame)
         board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
         red_midpoints, green_midpoints = self.piece_perception.get_all_pieces_coordinates(

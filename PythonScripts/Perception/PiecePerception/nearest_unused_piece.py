@@ -5,11 +5,8 @@ def get_nearest_unused_piece(frame, board_corners):
 
     image = frame.copy()
 
-    # List conversion to bring list in correct form for further processing
-    converted_list = [[x[0].tolist() for x in sublist] for sublist in board_corners]
-    converted_list = converted_list[0]
-    reference_image_points = converted_list[1:] + [converted_list[0]]
-    reference_real_points = [[0, 0], [36.4, 0], [36.4, 36.6], [0, 36.4]]
+    reference_image_points = board_corners
+    reference_real_points = [[36.4, 0], [0, 0], [0, 36.4], [36.4, 36.6]]
 
     # Convert the reference image points to integer tuples
     reference_image_points = [tuple(point) for point in reference_image_points]
@@ -21,9 +18,9 @@ def get_nearest_unused_piece(frame, board_corners):
     image = cv2.bitwise_or(image, mask)
 
     # Define the region of interest (ROI) coordinates
-    roi_x_min = 0
-    roi_x_max = image.shape[1]
-    roi_y_min = 220
+    roi_x_min = 360
+    roi_x_max = 709
+    roi_y_min = 347
     roi_y_max = 560
 
     # Crop the image to the ROI, to exclude other parts of the image apart from the table
@@ -39,7 +36,7 @@ def get_nearest_unused_piece(frame, board_corners):
     green_contours = []
     for contour in contours:
         area = cv2.contourArea(contour)
-        if area > 100:
+        if area > 500:
             green_contours.append(contour)
     
     contours = green_contours
@@ -57,7 +54,7 @@ def get_nearest_unused_piece(frame, board_corners):
             center = (center[0] + roi_x_min, center[1] + roi_y_min)
 
             # Calculate Euclidean distance between (0,0) and the current center
-            distance = np.linalg.norm(np.array(center) - np.array(reference_image_points[1]))
+            distance = np.linalg.norm(np.array(center) - np.array(reference_image_points[2]))
 
             if distance < min_distance:
                 min_distance = distance
@@ -85,15 +82,15 @@ def get_nearest_unused_piece(frame, board_corners):
             transformed_unknown_point = cv2.perspectiveTransform(unknown_point.reshape(-1, 1, 2), homography).reshape(-1, 2)
 
             # Calculate Euclidean distance between (0,0) and the transformed unknown point
-            distance = np.linalg.norm(transformed_unknown_point - transformed_points[1])
+            distance = np.linalg.norm(transformed_unknown_point - transformed_points[2])
 
             # Calculate the distance along the x-axis
-            x_distance = transformed_unknown_point[0, 0] - transformed_points[1, 0]
+            x_distance = transformed_unknown_point[0, 0] - transformed_points[2, 0]
 
             # Calculate the distance along the y-axis
-            y_distance = transformed_unknown_point[0, 1] - transformed_points[1, 1]
+            y_distance = transformed_unknown_point[0, 1] - transformed_points[2, 1]
 
-            return tuple(float(x_distance), float(y_distance))
+            return [float(x_distance), float(y_distance)]
         else:
             print("No valid contour center found.")
     else:

@@ -30,8 +30,8 @@ class PerceptionFacade:
     def look_at_human_player(self):
         self.perception_implementation.look_at_human_player()
 
-    def set_dependencies(self, reachy, move, strat):
-        return self.perception_implementation.get_nearest_unused_piece()
+    # def set_dependencies(self, reachy, move, strat):
+    #     return self.perception_implementation.get_nearest_unused_piece()
 
     def get_already_placed_pieces_coordinates(self):
         #Returns the midpoint coordinates of every token within the gameboard
