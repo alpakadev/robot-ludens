@@ -58,11 +58,11 @@ class PerceptionImplementation:
         # Get Real World Coordinates of certain square
         return self.board_perception.get_coordinates_of_square(square)
 
-    def get_nearest_unused_piece(self):
+    def get_nearest_unused_piece(self, move):
         # Gibt Position des nähesten freien Spielsteins 
         # in der Form (X, Y) zurück
         # @return: (float, float)
-        frame = self.get_non_moving_image()
+        frame = self.get_non_moving_image(move)
         board_corners = self.board_perception.get_board_corners(frame)
         nearest_piece = self.piece_perception.get_nearest_unused_piece(frame, 
                                                                        board_corners)
