@@ -12,12 +12,12 @@ reachy = ReachySDK("localhost")
 #reachy = ReachySDK("192.168.1.94") # with_mobile_base = True) 
 
 move = MoveFacade()
-perc = PerceptionFacade(reachy)
+perc = PerceptionFacade()
 strat = StrategyFacade()
 
 
 
-perc.set_dependencies(move, strat)
+perc.set_dependencies(reachy, move, strat)
 move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
