@@ -311,8 +311,7 @@ def make_first_move(currentboard,reachy_moves, move: MoveFacade):
     chosenmove =  board_positions[chosen]
     currentblock = block_positions[reachy_moveCounter]
     print(chosenmove , currentblock)
-    #move.do_move_block(from_enum=currentblock,to_enum=chosenmove)
-    move.do_move_block_v2_auto_detect_outside_block(chosenmove)
+    move.do_move_block(from_enum=currentblock,to_enum=chosenmove)
     return tmp_board
 
 
