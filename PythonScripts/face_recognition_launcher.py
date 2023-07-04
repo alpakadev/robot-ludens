@@ -1,10 +1,20 @@
 import Perception.FaceRecognition.recognition as recognition
-from reachy_sdk import ReachySDK
 import reachy_sdk
 import time
 import asyncio
 from Movement.MoveFacade import MoveFacade
-reachy = ReachySDK("localhost")
+from Perception.PerceptionFacade import PerceptionFacade
+#reachy = reachy_sdk.ReachySDK("192.168.1.94")
+
+reachy = reachy_sdk.ReachySDK("localhost")
+perc = PerceptionFacade()
+move = MoveFacade()
+move.set_dependencies(reachy, perc, None)
+perc.set_dependencies(reachy, move, None)
+
+perc.identify_human_player()
+perc.look_at_human_player()
+
 """move = MoveFacade()
 move.set_dependencies(reachy, None, None)
 
@@ -18,5 +28,9 @@ time.sleep(5)
 # Falls der Kopf sich gar nicht bewegt ist etwas schief gelaufen. Falls er sich komisch bewegt, dann sind in center_vision_on_face unten die Faktoren vertauscht
 recognition.look_at_human_player(reachy, move)"""
 
+"""reachy.turn_on("head")
 face = recognition.detect_human_player(reachy)
+print(face)
+time.sleep(5.0)
 recognition.look_at_human_player(reachy, face)
+reachy.turn_off_smoothly("head")"""
