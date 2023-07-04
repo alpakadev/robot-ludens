@@ -6,14 +6,18 @@ from .Exceptions.Exceptions import ViewCloudedError
 from .PiecePerception.PiecePerception import PiecePerception
 import cv2
 from Movement.MoveFacade import MoveFacade 
+from .FaceRecognition.FaceRecognition import FaceRecognition
 
 class PerceptionImplementation:
-    def __init__(self, reachy):
+    def __init__(self, reachy, move):
         self.config = yaml.safe_load(open("PythonScripts/Perception/config.yml"))
         self.board_perception = BoardPerception(self.config)
         self.game_state = GameState()
         self.piece_perception = PiecePerception(self.config)
         self.helpers = Helpers(reachy, self.config)
+        self.face_recognition = FaceRecognition()
+        self.reachy = reachy
+        self.move = move
 
     def get_non_moving_image(self, move:MoveFacade):
         self.helpers.move_head_to_goal_position(move)
@@ -69,3 +73,9 @@ class PerceptionImplementation:
         # Implementation in /PiecePerception/unused_pieces_detection.py
         unused_pieces = self.piece_perception.get_unused_pieces_from_frame(frame)
         return unused_pieces
+
+    def identify_human_player(self):
+        self.face_recognition.identify_human_player(self.reachy, self.move)
+    
+    def look_at_human_player(self):
+        self.face_recognition.look_at_human_player(self.reachy, self.move)
