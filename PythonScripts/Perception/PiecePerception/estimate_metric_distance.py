@@ -12,6 +12,7 @@ def estimate_metric_distance(frame, board_corners, centroid_x, centroid_y):
 
     # Create a mask for the area outside of the enclosed region
     mask = np.ones_like(image) * 255
+    cv2.fillPoly(mask, [np.array(reference_image_points)], (0, 0, 0))
     # cv2.drawContours(mask, [np.array(reference_image_points)], 0, (0, 0, 0), -1)
     
     # Apply the mask to the image
