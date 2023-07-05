@@ -13,14 +13,15 @@ def get_nearest_unused_piece(frame, board_corners):
 
     # Create a mask for the enclosed region
     mask = np.zeros_like(image)
+    cv2.fillPoly(mask, [np.array(reference_image_points)], (255, 255, 255))
 
     # Apply the mask to the image
     image = cv2.bitwise_or(image, mask)
 
     # Define the region of interest (ROI) coordinates
-    roi_x_min = 360
-    roi_x_max = 709
-    roi_y_min = 347
+    roi_x_min = 0
+    roi_x_max = image.shape[1]
+    roi_y_min = 220
     roi_y_max = 560
 
     # Crop the image to the ROI, to exclude other parts of the image apart from the table
@@ -65,7 +66,7 @@ def get_nearest_unused_piece(frame, board_corners):
             unknown_point = closest_center
 
             # center of contour without + static correction of x any image coordinates
-            # unknown_point = (closest_center[0] + 11, closest_center[1] + 13)
+            # unknown_point = (closest_center[0] - 10, closest_center[1] - 3)
 
             # Convert the points to numpy arrays
             image_points = np.array(reference_image_points, dtype=np.float32)
