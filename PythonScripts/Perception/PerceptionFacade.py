@@ -9,7 +9,7 @@ class PerceptionFacade:
     
     def get_game_state(self):
         # Gibt den Spielstand als 2D Array zurück
-        return self.perception_implentation.get_game_state(self.move)
+        return self.perception_implementation.get_game_state(self.move)
     
     def check_game_state_validity(self, state):
         # Gibt zurück, ob der angebene state valide ist. Bei nicht Übereinstimmung werden Zeile und Spalte des Fehlers zurückgegeben
@@ -20,15 +20,22 @@ class PerceptionFacade:
         # Gibt die Echt-Welt Koordinaten eines gegbeen Squares zurück
         return self.perception_implementation.get_coordinates_of_square(square)
     
-    """def get_nearest_unused_piece(self):
-        #Returns fixed position of the nearest available token not currently in the game
-        return self.perception_implentation.get_nearest_unused_piece()"""
+    def get_nearest_unused_piece(self):
+        # Returns fixed position of the nearest available token not currently in the game
+        return self.perception_implementation.get_nearest_unused_piece(self.move)
     
     def identify_human_player(self):
         self.perception_implementation.identify_human_player()
     
     def look_at_human_player(self):
         self.perception_implementation.look_at_human_player()
+
+    # def set_dependencies(self, reachy, move, strat):
+    #     return self.perception_implementation.get_nearest_unused_piece()
+
+    def get_already_placed_pieces_coordinates(self):
+        #Returns the midpoint coordinates of every token within the gameboard
+        return self.perception_implementation.get_already_placed_pieces_coordinates()
 
     def set_dependencies(self, reachy, move, strat):
         # Übergibt die Singletons des Movement und Strategie Moduls an unsere Klasse

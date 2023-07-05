@@ -3,6 +3,7 @@ import time
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+from threading import Thread
 
 from . import constants
 from .Animations.Win import animation_win
@@ -88,9 +89,11 @@ class MoveImpl:
     def gotoposabove5(self):
         self.activate_right_arm()
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
-        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
+        point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-
+    
+    def set_arm_to_side_position(self):
+        self._move_arm(constants.POS_ARM_SIDE, rotation={'y': -90, 'x': 0, 'z': 90})
 
     def move_object(self, position_from: Outside, position_to: Board):
         self.move_finished = False
@@ -98,7 +101,7 @@ class MoveImpl:
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
-        
+
         position_from_coordinates = position_from.value
         position_to_coordinates = position_to.value
 
@@ -112,11 +115,11 @@ class MoveImpl:
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
-        #self.move_head()
+
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #Add hand width
+        # Add hand width
         position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
 
         position_from_coordinates[2] += 0.15
@@ -126,11 +129,10 @@ class MoveImpl:
         position_from_coordinates[2] -= 0.11
         
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        
-        #self.move_head()
 
-        self._grip_open()
         
+        self._grip_open()
+
         position_from_coordinates[0] += constants.DELTA_FRONT
         position_from_coordinates[0] += 0.02
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
@@ -139,29 +141,27 @@ class MoveImpl:
 
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
-        #self.move_head()
+
         #beginning of pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
         
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
-        #Here neigung -70 
+        # Here neigung -70
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
-        #self.move_head()
         
         self._grip_open()
 
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
-        
+
         self._grip_close()
-        
+
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         
-        #self.move_head()
         self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
         self.reachy.turn_off_smoothly("head")
@@ -170,7 +170,8 @@ class MoveImpl:
     def head_follows_arm(self):
         """
         Head following the Hand Continiously until the Movement of a block is finished
-        Has to be called in a parallel thread.
+        v1 Has to be called as a thread **inside** `move_object()`. 
+        The movement function needs to set the Variable `move_finished` to True
         """
         self.move_head()
         time.sleep(0.5)
@@ -179,6 +180,41 @@ class MoveImpl:
             #time.sleep(0.5)
             if (self.move_finished):
                 sys.exit()
+
+    def head_follows_arm_v2(self, thread_moving_object: Thread):
+        """
+        Head following the Hand Continiously until the Movement of a block is finished
+        v2 Has to be called **beside** `move_object()` in a parallel thread. 
+        Finishes when the thread_moving_object finishes
+        """
+        self.move_head()
+        time.sleep(0.5)
+        while thread_moving_object.is_alive():
+            self.move_head()
+
+    def start_move_object_as_threads(self, goal: Board):
+        """
+        This function is an approach for Moving the head parallel to the arm
+        It currently also is the function utilizing the detection of unused Blocks.
+        
+        TODO: Decide, where the arm should be moved when detecting Blocks
+        """
+        self.set_arm_to_side_position() # Temporary Position to move Arm out of the view
+        start = self.perception.get_nearest_unused_piece() # returns list [x,y] coord
+        start += [-0.05] # Adds [z] coordinate; Value Adjusted to `Outside.py`
+        # start = Outside.BLOCK_1.value # Test: Taking predefined Position of Block 1
+        self.gotoposabove5()
+        print("Detected nearest Block at Coordinate: ", start)
+        thread_moving_object = Thread(target=self.move_object, args=(start, goal))
+        thread_head_following_hand = Thread(target=self.head_follows_arm_v2, args=[thread_moving_object])
+
+        thread_moving_object.start()
+        thread_head_following_hand.start()
+
+        while thread_moving_object.is_alive() or thread_head_following_hand.is_alive():
+            pass
+        print("Movement threads have ended")
+
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
@@ -305,11 +341,3 @@ class MoveImpl:
                 animation_clueless(self.reachy)
             case Animation.HAPPY:
                 animation_happy(self.reachy)
-            
-
-           
-            
-
-   
-
-    

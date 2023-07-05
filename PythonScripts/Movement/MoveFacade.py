@@ -13,8 +13,19 @@ class MoveFacade:
     def set_dependencies(self, reachy, perc, strat):
         self.move.set_dependencies(reachy, perc, strat)
 
+    # TESTING REQUIRED: outside blocks are detected by perception.
+    def do_move_block_v2_auto_detect_outside_block(self, to_board_pos: Board):
+        self.move.start_move_object_requires_b_wahrnehmung_2(to_board_pos)
+
     def do_move_block(self, from_enum: Outside, to_enum: Board):
-        return self.move.move_object(position_from=from_enum, position_to=to_enum)
+        """
+        Calls a Function to move a Block to Board.
+        Mode 1: Utilizing Predefined Positions for the Outside Blocks
+        Mode 2: Utilizing Outside Block Detection via Perception 
+        #TODO: Variable to change Modes easily
+        """
+        self.move.move_object(position_from=from_enum, position_to=to_enum) # Mode 1
+        #self.do_move_block_v2_auto_detect_outside_block(to_enum) # Mode 2
 
     def do_move_head(self, look_at: list):
         self.move.reachy.turn_on('head')
