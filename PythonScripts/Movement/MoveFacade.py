@@ -24,8 +24,8 @@ class MoveFacade:
         Mode 2: Utilizing Outside Block Detection via Perception 
         #TODO: Variable to change Modes easily
         """
-        #self.move.move_object(position_from=from_enum, position_to=to_enum) # Mode 1
-        self.do_move_block_v2_auto_detect_outside_block(to_enum) # Mode 2
+        self.move.move_object(position_from=from_enum, position_to=to_enum) # Mode 1
+        #self.do_move_block_v2_auto_detect_outside_block(to_enum) # Mode 2
 
     def do_move_head(self, look_at: list):
         self.move.reachy.turn_on('head')
