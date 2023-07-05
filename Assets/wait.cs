@@ -7,6 +7,7 @@ public class wait : MonoBehaviour
 
     public GameObject Figur = null;
     public GameObject Figur2 = null;
+    [SerializeField] int SpawnTime = 13;
 
 
     public void Start()
@@ -23,7 +24,7 @@ public class wait : MonoBehaviour
     {
         
 
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(SpawnTime);
 
         Figur.SetActive(true);
         Figur2.SetActive(true);
