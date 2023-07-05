@@ -1,4 +1,3 @@
-import dlib
 import face_recognition as fr
 import cv2
 import numpy as np
@@ -6,6 +5,7 @@ import time
 from math import ceil, radians, sin
 import json
 from Perception.FaceRecognition.NumpyEncoder import NumpyEncoder
+# import dlib
 
 # Durchsucht ein aufgenommenes Bild auf Gesichter und entnimmt das größte
 def identify_human_player(reachy, move):
