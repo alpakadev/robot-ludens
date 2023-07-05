@@ -162,7 +162,6 @@ class MoveImpl:
 
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         
-        #self.move_head()
         self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
         self.reachy.turn_off_smoothly("head")
@@ -205,14 +204,12 @@ class MoveImpl:
     def move_block_requires_b_wahrnehmung_2(self, start: list, goal: Board):
         print("running: move block requires b wahrnehmung 2")
         self.activate_right_arm()
-        self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
-
         position_to_coordinates = add_lists(self.origin, goal.value)
         position_from_coordinates = add_lists(self.origin, start)
 
         # calculate coordinate above block 5
-        temp_waiting_point = add_lists(self.origin, Outside.WAITING.value)
+        temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17, 0, 0])
 
