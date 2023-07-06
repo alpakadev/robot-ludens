@@ -97,7 +97,7 @@ def get_nearest_unused_piece(frame, board_corners):
             y_distance = transformed_unknown_point[0, 1] - transformed_points[3, 1]
             print(x_distance)
             print(y_distance)
-            return [float(x_distance/100), float(-y_distance/100)]
+            return [float(-y_distance/100), float(-x_distance/100)]
         else:
             print("No valid contour center found.")
     else:

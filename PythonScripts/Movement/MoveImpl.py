@@ -241,6 +241,10 @@ class MoveImpl:
             pos_from = self.perception.get_nearest_unused_piece() # returns list [x,y] coord
             pos_from += [-0.05] # Adds [z] coordinate; Value Adjusted to `Outside.py`
             print("Dedected nearest Block with Coordinate:", pos_from)
+            ## Adjustments since
+            #pos_from[0] += 0.00
+            #pos_from[1] -= 0.02
+            print("Adjusted Coordinate:", pos_from)
         except Exception as exeption:
             print(exeption)
             print("Could not detect an unused block")
