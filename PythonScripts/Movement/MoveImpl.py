@@ -17,7 +17,6 @@ from .Animations.Level0 import animation_level0
 from .Animations.Level1 import animation_level1
 from .Animations.Level2 import animation_level2
 from .Animations.Level3 import animation_level3
-from .Animations.Level4 import animation_level4
 from .Animations.Tie import animation_tie
 from .Animations.StartReachy import animation_start_reachy
 from .Animations.StartOpponent import animation_start_opponent
@@ -372,7 +371,7 @@ class MoveImpl:
     def move_head(self, look_at=None):
         """
         Moves reachy's head either by the given coordinates defined by look_at or
-        follows the right arm's coordinates
+        follows the right arm's coordinates with delay
 
         """
         self.reachy.turn_on("head")
@@ -415,8 +414,6 @@ class MoveImpl:
                 animation_level2(self.reachy)
             case Animation.LEVEL3:
                 animation_level3(self.reachy)
-            case Animation.LEVEL4:
-                animation_level4(self.reachy)
             case Animation.TIE:
                 animation_tie(self.reachy)
             case Animation.START_REACHY:
