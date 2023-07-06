@@ -139,13 +139,11 @@ def GKv1finden(vierboard):
     return GKv1gefunden
 
 def in001setzen(p):
-    print("in001setzten vielleicht")
     global chosen
     # nur mit bestimmter Wahrscheinlichkeit guten Zug machen
     if p < (100 - good[level]):
         return False
     
-    print("in001setzten")
     vierboard = boardtransformation()
     GKv1 = GKv1finden(vierboard)
     for feld in GKv1:
@@ -153,7 +151,7 @@ def in001setzen(p):
             #print("freies Feld: ", feld)
             board[feld[0]][feld[1]] = 1
             chosen = (feld[0],feld[1])
-            print("hat wirklich geklappt")
+            print("in001gesetzt")
             return True
 
 def setup_trap(p, move: MoveFacade):
@@ -197,6 +195,27 @@ def setup_trap(p, move: MoveFacade):
                 chosen = (feld[0],feld[1])
                 move.do_animation(Animation.THINKING)
                 return True
+    return False
+
+def scan_trap(state):
+    global board
+    board = state
+    vierboard = boardtransformation()
+    GKv4 = []
+    for combo in range(len(wincombinations)):
+        if combovalue(combo, vierboard) == 8:
+            GKv4 += (wincombinations[combo])
+    print(GKv4)
+
+    if len(GKv4) > 1:
+       #Gemeinsames Feld zweier GKv4 finden
+       for feld in GKv4:
+           if GKv4.count(feld) > 1 and board[feld[0]][feld[1]] == -1:
+               print("fallensteller ", feld)
+               board[feld[0]][feld[1]] = 1
+               # chosen = (feld[0],feld[1])
+               # Schummelbewegung aufrufen (feld[0],feld[1])
+               return True
     return False
           
 
