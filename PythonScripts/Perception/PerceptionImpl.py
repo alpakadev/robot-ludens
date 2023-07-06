@@ -1,7 +1,6 @@
 import yaml
 from .BoardPerception.BoardPerception import BoardPerception
 from .GameState.GameState import GameState
-from .Exceptions.Exceptions import ViewCloudedError
 from .PiecePerception.PiecePerception import PiecePerception
 import cv2
 from Movement.MoveFacade import MoveFacade 
@@ -42,14 +41,14 @@ class PerceptionImplementation:
                 reachy.head.look_at(0.5, 0, -0.6, 1, "simul")
 
             return game_state
-        except ViewCloudedError:
+        except IndexError:
             try:
                 #reachy.head.look_at(0.5, 0, 0, duration=1)
                 move.do_move_head([0.5, 0, -0.6])
             except TypeError:
                 print("type error")
                 reachy.head.look_at(0.5, 0, -0.6, 1, "simul")
-            return "Faulty Image, please try again"
+            print("Faulty Image, please try again")
 
     def check_state_validity(self, state):
         # state = [[x1, x2, x3], [y1, y2, y3], [z1, z2, z3]]
@@ -77,23 +76,29 @@ class PerceptionImplementation:
         # in der Form (X, Y) zurück
         # @return: (float, float)
         frame = self.get_non_moving_image(move)
-        board_corners = self.board_perception.get_board_corners(frame)
-        nearest_piece = self.piece_perception.get_nearest_unused_piece(frame, 
-                                                                       board_corners)
-        return nearest_piece
+        try:
+            board_corners = self.board_perception.get_board_corners(frame)
+            nearest_piece = self.piece_perception.get_nearest_unused_piece(frame, 
+                                                                        board_corners)
+            return nearest_piece
+        except IndexError:
+            print("No nearest Unused Piece found!")
 
     def get_already_placed_pieces_coordinates(self, move):
         # Gibt Mittelpunkte aller grünen sowie roten Spielsteine, die bereits auf dem Feld stehen, mittels eines Arrays zurück
         # Beispielhafter Rückgabewert:
         # [0, 0, 0, 0, 0, (-5.9299755, 17.198578, 'G'), 0, 0, 0]
         frame = self.get_non_moving_image(move)
-        board_corners = self.board_perception.get_board_corners(frame)
-        board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
-        red_midpoints, green_midpoints = self.piece_perception.get_all_pieces_coordinates(
-            frame, 
-            board_corners, 
-            board_cases_coordinates)
-        return red_midpoints, green_midpoints
+        try:
+            board_corners = self.board_perception.get_board_corners(frame)
+            board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
+            red_midpoints, green_midpoints = self.piece_perception.get_all_pieces_coordinates(
+                frame, 
+                board_corners, 
+                board_cases_coordinates)
+            return red_midpoints, green_midpoints
+        except IndexError:
+            print("No sufficient board state provided!")
 
 
     def check_for_unused_pieces(self, frame):
