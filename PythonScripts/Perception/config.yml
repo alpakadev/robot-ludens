@@ -1,4 +1,3 @@
-stage: "simulation"
 time_between_images: 1
 color_bounds:
   red_lower: [0, 70, 50]
