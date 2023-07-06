@@ -1,7 +1,11 @@
 import time
 
 
-def animation_happy_antennas(reachy): #?? fix needed
+def animation_happy_antennas(reachy): 
+    """
+    exciting swinging antennas
+    
+    """
     reachy.turn_on("head")
     reachy.head.l_antenna.speed_limit = 0.0
     reachy.head.r_antenna.speed_limit = 0.0
@@ -17,4 +21,5 @@ def animation_happy_antennas(reachy): #?? fix needed
 
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
+
     
