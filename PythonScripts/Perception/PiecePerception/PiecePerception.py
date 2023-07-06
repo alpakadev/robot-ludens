@@ -16,5 +16,7 @@ class PiecePerception:
     def get_all_pieces_coordinates(self, frame, game_board_coords):
         return get_all_pieces_coordinates(frame, game_board_coords)
     
-    def estimate_metric_distance(self, frame, board_corners, centroid_x, centroid_y):
-        return estimate_metric_distance(frame, board_corners, centroid_x, centroid_y)
+    def estimate_metric_distance(self, frame, board_corners, 
+                                 centroid_x, centroid_y):
+        return estimate_metric_distance(frame, board_corners, 
+                                        centroid_x, centroid_y)

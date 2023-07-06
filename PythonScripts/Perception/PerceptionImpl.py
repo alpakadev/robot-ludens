@@ -8,7 +8,9 @@ from .FaceRecognition.FaceRecognition import FaceRecognition
 
 class PerceptionImplementation:
     def __init__(self, reachy, move):
-        self.config = yaml.safe_load(open("PythonScripts/Perception/config.yml"))
+        self.config = yaml.safe_load(
+            open("PythonScripts/Perception/config.yml")
+        )
         self.board_perception = BoardPerception(reachy, self.config)
         self.game_state = GameState()
         self.piece_perception = PiecePerception(self.config)
@@ -31,8 +33,13 @@ class PerceptionImplementation:
         frame = self.get_non_moving_image(move)
         try:
             board_corners = self.board_perception.get_board_corners(frame)
-            board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
-            game_state = self.game_state.get_game_state(frame, board_cases_coordinates, self.config)
+            board_cases_coordinates = self.board_perception \
+                                          .get_board_cases(board_corners)
+            game_state = self.game_state.get_game_state(
+                frame, 
+                board_cases_coordinates, 
+                self.config
+            )
             try:
                 #reachy.head.look_at(0.5, 0, 0, duration=1)
                 move.do_move_head([0.5, 0, -0.6])
@@ -67,7 +74,6 @@ class PerceptionImplementation:
             return True
 
     def get_coordinates_of_square(self, square):
-        # Square = "TOP_LEFT_CORNER", "TOP_RIGHT_CORNER", "TOP_MIDDLE", "BOTTOM_LEFT_CORNER", "BOTTOM_RIGHT_CORNER", "BOTTOM_MIDDLE", "LEFT_MIDDLE", "RIGHT_MIDDLE", "CENTER"
         # Get Real World Coordinates of certain square
         return self.board_perception.get_coordinates_of_square(square)
 
@@ -77,25 +83,30 @@ class PerceptionImplementation:
         # @return: (float, float)
         frame = self.get_non_moving_image(move)
         try:
-            board_corners = self.board_perception.get_board_corners(frame)
-            nearest_piece = self.piece_perception.get_nearest_unused_piece(frame, 
-                                                                        board_corners)
+            board_corners = self.board_perception \
+                                .get_board_corners(frame)
+            nearest_piece = self.piece_perception \
+                                .get_nearest_unused_piece(frame, board_corners)
             return nearest_piece
         except IndexError:
             print("No nearest Unused Piece found!")
 
     def get_already_placed_pieces_coordinates(self, move):
-        # Gibt Mittelpunkte aller grünen sowie roten Spielsteine, die bereits auf dem Feld stehen, mittels eines Arrays zurück
+        # Gibt Mittelpunkte aller grünen sowie roten Spielsteine, 
+        # die bereits auf dem Feld stehen, mittels eines Arrays zurück
         # Beispielhafter Rückgabewert:
         # [0, 0, 0, 0, 0, (-5.9299755, 17.198578, 'G'), 0, 0, 0]
         frame = self.get_non_moving_image(move)
         try:
             board_corners = self.board_perception.get_board_corners(frame)
-            board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
-            red_midpoints, green_midpoints = self.piece_perception.get_all_pieces_coordinates(
-                frame, 
-                board_corners, 
-                board_cases_coordinates)
+            board_cases_coordinates = self.board_perception \
+                                          .get_board_cases(board_corners)
+            red_midpoints, green_midpoints = self.piece_perception \
+                                                 .get_all_pieces_coordinates(
+                                                    frame, 
+                                                    board_corners, 
+                                                    board_cases_coordinates
+                                                    )
             return red_midpoints, green_midpoints
         except IndexError:
             print("No sufficient board state provided!")
@@ -104,7 +115,8 @@ class PerceptionImplementation:
     def check_for_unused_pieces(self, frame):
         # Untersucht den aktuellen Frame nach ungenutzen Spielsteinen
         # Implementation in /PiecePerception/unused_pieces_detection.py
-        unused_pieces = self.piece_perception.get_unused_pieces_from_frame(frame)
+        unused_pieces = self.piece_perception \
+                            .get_unused_pieces_from_frame(frame)
         return unused_pieces
 
     def identify_human_player(self):
