@@ -36,6 +36,7 @@ class MoveImpl:
         self.reachy = None
         self.POS_GRIPPER = None
         self.kinematic_moder_helper = KinematicModelHelper()
+        self.set_origin(constants.ORIGIN_COORDINATES)
         # The origin point, to which all other coordinates of the Board and the Blocks are relative.
         self.origin = constants.ORIGIN_COORDINATES
 
@@ -74,6 +75,9 @@ class MoveImpl:
 
     def deactivate_right_arm(self):
         self.reachy.turn_off_smoothly("r_arm")
+
+    def deactivate_left_arm(self):
+        self.reachy.turn_off_smoothly("l_arm")
 
     def gotoposabove5(self):
         self.activate_right_arm()
@@ -383,25 +387,60 @@ class MoveImpl:
         self.reachy.turn_on('l_arm')
         self.reachy.turn_on('r_arm')
 
-        i_value = block.value
-        print(i_value)
-        i_value = [0.31,0,-0.34]
-        print(i_value)
-
-        self._move_l_arm(i_value, {'y': -90, 'x': 0, 'z': 0})
-        time.sleep(0.5)
-        m_value = add_lists(i_value, [0.0, 0.2, 0])
-        print(m_value)
-        self._move_l_arm(m_value, {'x': 0, 'y': -90,  'z': 0})
-
-        self.reachy.turn_off_smoothly('l_arm')
-        self.reachy.turn_off_smoothly('r_arm')
+        self._move_l_arm([0.1, 0.4, 0.05])
 
 
-    def _move_l_arm(self, pos, rot):
+        self._open_l_gripper()
+        match block:
+            case Board.BOTTOM_LEFT:
+                self._move_l_arm([-0.03, 0.4, 0])
+                self._move_l_arm([0, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([-0.03, 0.4, 0.05])
+            case Board.CENTER_LEFT:
+                self._move_l_arm([0.1, 0.4, 0])
+                self._move_l_arm([0.1, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([0.1, 0.4, 0.05])
+            case Board.TOP_LEFT:
+                self._move_l_arm([0.2, 0.4, 0])
+                self._move_l_arm([0.2, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([0.2, 0.4, 0.05])
+            case Board.BOTTOM_CENTER:
+                self._move_l_arm([0.09, 0.2, 0.1])
+                self._move_l_arm([0.09, 0.2, 0.1])
+                # self._move_l_arm([0.0, 0.3, 0.1])
+                self._close_l_gripper()
+                self._move_l_arm([0.09, 0.1, 0.2])
+                self._move_l_arm([0.0, 0.4, 0.2])
+            case Board.CENTER:
+                self._move_l_arm([0.18, 0.11, 0.08])
+                self._close_l_gripper()
+                self._move_l_arm([0.18, 0.4, 0.08])
+
+        self._move_l_arm(constants.STEAL_PLACE)
+        self._open_l_gripper()
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
+        self._move_l_arm([-0.03, 0.45, 0.02])
+
+
+    def _move_l_arm(self, pos, rot=None, duration=None):
+        if rot is None:
+            rot = {'x': 0, 'y': -90, 'z': -90}
+        if duration is None:
+            duration = 1.5
+        pos = add_lists(pos, self.get_origin())
         m_target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pos, rot)
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
-        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration=2)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration)
+
+    def _close_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_CLOSE}, duration=1)
+
+    def _open_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_OPEN}, duration=1)
 
 
 def all_90_rots():
