@@ -37,7 +37,7 @@ class MoveFacade:
             self.move.move_object(position_from=from_enum.value, position_to=to_enum) # Mode 1
         else:
             pos_from = self.move.detecting_nearest_block()
-            self.do_move_block(pos_from, to_enum) # Mode 2
+            self.move.move_object(pos_from, to_enum) # Mode 2
 
     def do_move_head(self, look_at: list):
         self.move.reachy.turn_on('head')

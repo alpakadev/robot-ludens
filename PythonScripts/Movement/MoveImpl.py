@@ -130,7 +130,7 @@ class MoveImpl:
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Add hand width
-        position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
+        # position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
 
         #Add safe height
         position_from_coordinates[2] += 0.15
@@ -240,6 +240,7 @@ class MoveImpl:
         try:
             pos_from = self.perception.get_nearest_unused_piece() # returns list [x,y] coord
             pos_from += [-0.05] # Adds [z] coordinate; Value Adjusted to `Outside.py`
+            print("Dedected nearest Block with Coordinate:", pos_from)
         except Exception as exeption:
             print(exeption)
             print("Could not detect an unused block")
