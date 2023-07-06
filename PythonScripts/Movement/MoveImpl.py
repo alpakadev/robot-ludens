@@ -236,15 +236,24 @@ class MoveImpl:
         returns detected nearest unused piece
         """
         self.set_arm_to_side_position() # Temporary Position to move Arm out of the view
-        try:
-            pos_from = self.perception.get_nearest_unused_piece() # returns list [x,y] coord
-            pos_from += [-0.05] # Adds [z] coordinate; Value Adjusted to `Outside.py`
-            print("Dedected nearest Block with Coordinate:", pos_from)
-        except Exception as exeption:
-            print(exeption)
-            print("Could not detect an unused block")
-            print("Uses Coordinates of Predefined Block 1 instead")
-            pos_from = Outside.BLOCK_1.value
+        while True:
+            try:
+                pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
+                pos_from += [-0.05]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
+                print("Detected nearest Block with Coordinate:", pos_from)
+                ## Adjustments since
+                # pos_from[0] += 0.00
+                # pos_from[1] -= 0.02
+                print("Adjusted Coordinate:", pos_from)
+
+                # Check if the return values are within the desired range
+                if -20 <= pos_from[0] <= 20 and -20 <= pos_from[1] <= 20:
+                    break
+            except Exception as exeption:
+                print(exeption)
+                print("Could not detect an unused block")
+                print("Uses Coordinates of Predefined Block 1 instead")
+                pos_from = Outside.BLOCK_1.value
         self.gotoposabove5() # Returns arm to a Position above Block 5
         return pos_from
 
