@@ -128,7 +128,7 @@ class Game:
             move.do_animation(Animation.ANGRY)
         elif last == -1:
             #print('Reachy is sad')
-            move.do_animation(Animation.LOOSE)
+            move.do_animation(Animation.LOSE)
         # falls zwei mal verloren, danach gewonnen: super happy
         if last == 1 and history == -1:
             #print('Reachy does the arm-dance')
