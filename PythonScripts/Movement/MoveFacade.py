@@ -9,10 +9,19 @@ class MoveFacade:
     def __init__(self):
         self.block_manager = OutsideBlockFacade()
         self.move = MoveImpl()
+        """ 
+        False: Use predefined unused block positions
+        True: Utilize perceptions "get_nearest_unused_piece()" 
+        """
+        self.mode_detected_blocks = False
 
     def set_dependencies(self, reachy, perc, strat):
         self.move.set_dependencies(reachy, perc, strat)
 
+    def set_mode_to_detecting_blocks(self):
+        # True: Utilize perceptions "get_nearest_unused_piece()" 
+        self.mode_detected_blocks = True
+    
     # TESTING REQUIRED: outside blocks are detected by perception.
     def do_move_block_v2_auto_detect_outside_block(self, to_board_pos: Board):
         self.move.start_move_object_as_threads(to_board_pos)
@@ -24,8 +33,11 @@ class MoveFacade:
         Mode 2: Utilizing Outside Block Detection via Perception 
         #TODO: Variable to change Modes easily
         """
-        self.move.move_object(position_from=from_enum, position_to=to_enum) # Mode 1
-        #self.do_move_block_v2_auto_detect_outside_block(to_enum) # Mode 2
+        if not self.mode_detected_blocks:
+            self.move.move_object(position_from=from_enum.value, position_to=to_enum) # Mode 1
+        else:
+            pos_from = self.move.detecting_nearest_block()
+            self.do_move_block(pos_from, to_enum) # Mode 2
 
     def do_move_head(self, look_at: list):
         self.move.reachy.turn_on('head')
