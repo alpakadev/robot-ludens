@@ -34,6 +34,7 @@ move.do_deactivate_right_arm()
 
 move.do_safe_arm_pos()
 
+# move.set_mode_to_detecting_blocks()
 # Starting the Game
 strat.start_game()
 
