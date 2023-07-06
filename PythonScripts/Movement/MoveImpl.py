@@ -54,6 +54,7 @@ class MoveImpl:
         self.reachy = None
         self.POS_GRIPPER = None
         self.kinematic_model_helper = KinematicModelHelper()
+        self.mapper = HandRotationMapper()
         # The origin point, to which all other coordinates of the Board and the Blocks are relative.
         self.origin = constants.ORIGIN_COORDINATES
         self.move_finished = True
@@ -100,7 +101,6 @@ class MoveImpl:
         self.reachy.turn_on("head")
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
-        mapper = HandRotationMapper()
 
         position_from_coordinates = position_from.value
         position_to_coordinates = position_to.value
@@ -144,18 +144,18 @@ class MoveImpl:
 
         #beginning of pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
         
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         # Here neigung -70
-        self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(
+        self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
         
         self._grip_open()
 
         position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
+        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
         self._grip_close()

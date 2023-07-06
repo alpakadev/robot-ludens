@@ -15,7 +15,7 @@ class MoveFacade:
 
     # TESTING REQUIRED: outside blocks are detected by perception.
     def do_move_block_v2_auto_detect_outside_block(self, to_board_pos: Board):
-        self.move.start_move_object_requires_b_wahrnehmung_2(to_board_pos)
+        self.move.start_move_object_as_threads(to_board_pos)
 
     def do_move_block(self, from_enum: Outside, to_enum: Board):
         """
