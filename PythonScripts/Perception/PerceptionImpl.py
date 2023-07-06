@@ -1,7 +1,6 @@
 import yaml
 from .BoardPerception.BoardPerception import BoardPerception
 from .GameState.GameState import GameState
-from .Helpers.Helpers import Helpers
 from .Exceptions.Exceptions import ViewCloudedError
 from .PiecePerception.PiecePerception import PiecePerception
 import cv2
@@ -11,17 +10,21 @@ from .FaceRecognition.FaceRecognition import FaceRecognition
 class PerceptionImplementation:
     def __init__(self, reachy, move):
         self.config = yaml.safe_load(open("PythonScripts/Perception/config.yml"))
-        self.board_perception = BoardPerception(self.config)
+        self.board_perception = BoardPerception(reachy, self.config)
         self.game_state = GameState()
         self.piece_perception = PiecePerception(self.config)
-        self.helpers = Helpers(reachy, self.config)
         self.face_recognition = FaceRecognition()
         self.reachy = reachy
         self.move = move
 
     def get_non_moving_image(self, move:MoveFacade):
-        self.helpers.move_head_to_goal_position(move)
-        frame = self.helpers.get_stable_image()
+        try:
+            #reachy.head.look_at(0.5, 0, -0.6, duration=1)
+            move.do_move_head([0.5, 0, -0.6])
+        except TypeError:
+            print("type error")
+            reachy.head.look_at(0.5, 0, -0.6, 1, "simul")
+        frame = self.board_perception.get_stable_board_image()
         return frame
             
     def get_game_state(self, move:MoveFacade):
@@ -31,10 +34,21 @@ class PerceptionImplementation:
             board_corners = self.board_perception.get_board_corners(frame)
             board_cases_coordinates = self.board_perception.get_board_cases(board_corners)
             game_state = self.game_state.get_game_state(frame, board_cases_coordinates, self.config)
-            self.helpers.move_head_to_base_position(move)
+            try:
+                #reachy.head.look_at(0.5, 0, 0, duration=1)
+                move.do_move_head([0.5, 0, -0.6])
+            except TypeError:
+                print("type error")
+                reachy.head.look_at(0.5, 0, -0.6, 1, "simul")
+
             return game_state
         except ViewCloudedError:
-            self.helpers.move_head_to_base_position(move)
+            try:
+                #reachy.head.look_at(0.5, 0, 0, duration=1)
+                move.do_move_head([0.5, 0, -0.6])
+            except TypeError:
+                print("type error")
+                reachy.head.look_at(0.5, 0, -0.6, 1, "simul")
             return "Faulty Image, please try again"
 
     def check_state_validity(self, state):
