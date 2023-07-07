@@ -13,7 +13,7 @@ class Game:
         self.player_score = 0
         self.reachy_moveCounter = 0
         self.player_moveCounter = 0
-        self.level = 1
+        self.level = 2
         self.enableCheating = True
         self.winHistory = []
 
@@ -27,7 +27,7 @@ class Game:
         }
 
 
-        self.first = 0 #Startspieler (1 = reacy / 2 = player)
+        self.first = 0 #Startspieler (1 = reachy / 2 = player)
 
         # alle möglichen Gewinnkombinationen
         self.wincombinations = [
@@ -56,7 +56,6 @@ class Game:
 
     # prüft, ob der neue Spielzustand legal ist
     def check_board(self, input):
-        #global board, player_moveCounter
         # max ein neuer Stein
         new_piece = 0
         # alte Steine bleiben unverändert und kein Reachy-stein auf ein leeres Feld
@@ -82,6 +81,8 @@ class Game:
         if illegal_change:
             print("illegal change detected")
             return False
+        # check if reachys chance was ruined
+        self.check_win_rui(input)
         self.board = input
         self.player_moveCounter += 1
         return True
@@ -89,10 +90,6 @@ class Game:
 
     # prüft, ob jemand gewonnen hat oder es unentschieden ist
     def check_state(self, move: MoveFacade):
-        #global game_closed
-        #global reachy_score
-        #global player_score
-
         for combo in range(len(self.wincombinations)):
             if self.combovalue(combo) == 3:
                 #move.do_animation(Animation.WIN)
@@ -144,15 +141,12 @@ class Game:
 
 
     def check_combo_move(self, n):
-        print("check_combo_moves aufgerufen")
         for combo in range(len(self.wincombinations)):
             if self.board[self.wincombinations[combo][0][0]][self.wincombinations[combo][0][1]] + self.board[self.wincombinations[combo][1][0]][self.wincombinations[combo][1][1]] + self.board[self.wincombinations[combo][2][0]][self.wincombinations[combo][2][1]] == n:
                 
                 for i in range(3):
                     if self.board[self.wincombinations[combo][i][0]][self.wincombinations[combo][i][1]] == 0:
-                        print("combomove für ",n, " gefunden")
                         return True
-        print("kein combomove gefunden")
         return False
     
     def think(self):
@@ -163,12 +157,12 @@ class Game:
 
     #Unentschieden frühzeitig erkennen
     def regtie(self):
-        print("regtie aufgerufen")
+        #print("regtie aufgerufen")
         moves = self.reachy_moveCounter + self.player_moveCounter
         chanceReachy = self.check_combo_move(2)
         chancePlayer = self.check_combo_move(-2)
         chances = chanceReachy or chancePlayer
-        print("chances=",chances)
+        #print("chances=",chances)
         if self.first == 1 and moves == 8:
             if not chanceReachy: return True
 
@@ -180,9 +174,9 @@ class Game:
                 #(oder da GKs max 1 gemeinsames Feld besitzen wenn es eine leere GK gibt)
                 for combo in range(len(self.wincombinations)):
                     if (combo == 1 or 4 or 6 or 7) and self.combovalue(combo) == 0:
-                        print("tie erkannt in regtie")
+                        #print("tie erkannt in regtie")
                         return True
-        print("kein tie erkannt in regtie")
+        #print("kein tie erkannt in regtie")
         return False
     
 
@@ -194,16 +188,20 @@ class Game:
             wert = self.board[self.wincombinations[k][0][0]][self.wincombinations[k][0][1]] + self.board[self.wincombinations[k][1][0]][self.wincombinations[k][1][1]] + self.board[self.wincombinations[k][2][0]][self.wincombinations[k][2][1]];
             if wert == 2:
                 möglicheGewinne += [k]
+        print('möglicheGewinne: ', möglicheGewinne)
         #überprüfen ob Gewinn verhindert wurde, dann muss Summe von vorheriger GewinnCombi nun 1 sein
-        for i in möglicheGewinne:
-            wertNeu = self.inputBoard[self.wincombinations[i][0][0]][self.wincombinations[i][0][1]] + self.inputBoard[self.wincombinations[i][1][0]][self.wincombinations[i][1][1]] + self.inputBoard[self.wincombinations[i][2][0]][self.wincombinations[i][2][1]];
-            if wertNeu == 1:
-                return True
+        if len(möglicheGewinne) == 1:
+            for i in möglicheGewinne:
+                wertNeu = inputBoard[self.wincombinations[i][0][0]][self.wincombinations[i][0][1]] + inputBoard[self.wincombinations[i][1][0]][self.wincombinations[i][1][1]] + inputBoard[self.wincombinations[i][2][0]][self.wincombinations[i][2][1]];
+                if wertNeu == 1:
+                    print("Reachys Gewinn wurde ruiniert!")
+                    # Audio für Spieler verhindert Sieg einfügen
+                    return True
         #es wurde kein Gewinn verhindert
         return False
 
+
     def play(self, move: MoveFacade):
-        #global reachy_moveCounter, board
         while not self.game_closed:
             counter = 0
             check_board_status = False
@@ -215,9 +213,6 @@ class Game:
                 check_board_status = self.check_board(input)
                 if check_board_status == True:
                     self.check_state(self.move)
-                    if self.check_win_rui(input):
-                        print("Reachys Gewinn wurde ruiniert!")
-                        #Audio für Spieler verhindert Sieg einfügen
                     if not self.game_closed:
                         self.think()
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
@@ -242,14 +237,26 @@ class Game:
         elif win_state == 1 and self.level < 4:
             self.level += 1
 
+    def who_starts(self):
+        # check previous startplayer, if 0 -> first game -> random
+        r = random.randint(1, 2)
+        if self.first == 0:
+            return r
+        # check winhistory, if last one was a tie -> random, else the one who lost starts
+        elif len(self.winHistory) > 0:
+            print(self.winHistory)
+            if self.winHistory[-1] == 0:
+                print(r, 'starts')
+                return r
+            elif self.winHistory[-1] == -1:
+                print('Reachy starts')
+                return 1
+            else:
+                print('Human starts')
+                return 2
 
 
     def arcadeModus(self):
-        # global level
-        # global game_closed
-        # global board
-        # global reachy_moveCounter
-        # global player_moveCounter
         h = True
         exit_game = "1"
         while exit_game == "1":
@@ -257,15 +264,17 @@ class Game:
             self.game_closed = False
             self.reachy_moveCounter = 0
             self.player_moveCounter = 0
-            self.first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
-            if self.first == "1":
+            #self.first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
+            tmp = self.who_starts()
+            self.first = tmp
+            if self.first == 1:
                 # reachy's first move
                 self.board = Reachy.make_first_move(self.board,self.reachy_moveCounter, self.move)
                 self.reachy_moveCounter = self.reachy_moveCounter + 1
                 HI.print_board(self.board)
                 self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
-            elif self.first == "2":
+            elif self.first == 2:
                 HI.print_board(self.board)
                 self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
