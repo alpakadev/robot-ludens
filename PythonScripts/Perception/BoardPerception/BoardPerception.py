@@ -7,6 +7,7 @@ class BoardPerception:
     def __init__(self, reachy, config):
         self.config = config
         self.reachy = reachy
+        
     
     def get_board_corners(self, frame):
         board_coordinates = game_board_detection(frame, self.config)

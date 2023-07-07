@@ -13,7 +13,6 @@ def estimate_metric_distance(frame, board_corners, centroid_x, centroid_y):
     # Create a mask for the area outside of the enclosed region
     mask = np.ones_like(image) * 255
     cv2.fillPoly(mask, [np.array(reference_image_points)], (0, 0, 0))
-    # cv2.drawContours(mask, [np.array(reference_image_points)], 0, (0, 0, 0), -1)
     
     # Apply the mask to the image
     image = cv2.bitwise_or(image, mask)
@@ -26,12 +25,14 @@ def estimate_metric_distance(frame, board_corners, centroid_x, centroid_y):
     homography, _ = cv2.findHomography(image_points, real_points, cv2.RANSAC)
 
     # Apply the homography to image points
-    transformed_points = cv2.perspectiveTransform(image_points.reshape(-1, 1, 2), homography).reshape(-1, 2)
+    transformed_points = cv2.perspectiveTransform(
+        image_points.reshape(-1, 1, 2), homography).reshape(-1, 2)
 
     # Transform the unknown point for contour
     center = (centroid_x, centroid_y)
     unknown_point = np.array([center], dtype=np.float32)
-    transformed_unknown_point = cv2.perspectiveTransform(unknown_point.reshape(-1, 1, 2), homography).reshape(-1, 2)
+    transformed_unknown_point = cv2.perspectiveTransform(
+        unknown_point.reshape(-1, 1, 2), homography).reshape(-1, 2)
 
     # Calculate the distance along the x-axis
     x_distance = transformed_unknown_point[0, 0] - transformed_points[1, 0]

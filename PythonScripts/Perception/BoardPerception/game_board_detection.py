@@ -21,7 +21,11 @@ def game_board_detection(frame, config):
     gray = cv2.cvtColor(masked_image, cv2.COLOR_BGR2GRAY)
 
     # Find contours around the detected corners
-    contours, hierarchy = cv2.findContours(gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(
+        gray, 
+        cv2.RETR_TREE, 
+        cv2.CHAIN_APPROX_SIMPLE
+    )
 
     # Find all rectangles among the contours
     rectangles = []
@@ -34,13 +38,17 @@ def game_board_detection(frame, config):
                 rectangles.append(approx)
 
     # Sort the rectangles by their area, from largest to smallest
-    rectangles = sorted(rectangles, key=lambda x: cv2.contourArea(x), reverse=True)
+    rectangles = sorted(
+        rectangles, 
+        key=lambda x: cv2.contourArea(x), 
+        reverse=True
+    )
 
     # Define game_board as the largest rectangle
     game_board = rectangles[0]
     game_board_coords = []
 
-    # Transform coordinates to flat the game board array: [[[x1, y1]]] => [[x1, y1]]
+    # Transform coordinates to flat the game board array [[[]]] => [[]]
     for coords in game_board:
         game_board_coords.append([coords[0][0], coords[0][1]])
     
