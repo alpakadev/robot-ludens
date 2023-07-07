@@ -2,7 +2,7 @@ HOST_ADDRESS = '192.168.1.94'
 
 ORIGIN_COORDINATES = [0.15, -0.31, -0.38]
 
-GRIP_FORCE_HOLDING = 50
+GRIP_FORCE_HOLDING = 60
 GRIP_FORCE_HOLDING_THRESHOLD = 100
 
 # The distance to position hand in front of object
