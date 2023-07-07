@@ -186,6 +186,22 @@ class Game:
         return False
     
 
+    def check_win_rui(self, inputBoard):
+        #inputBoard ist das neue Board
+        #wo konnte Reachy vorher gewinnen? wird in Array gespeichert, Summe muss 2 sein
+        möglicheGewinne = []
+        for k in range(len(self.wincombinations)):
+            wert = self.board[self.wincombinations[k][0][0]][self.wincombinations[k][0][1]] + self.board[self.wincombinations[k][1][0]][self.wincombinations[k][1][1]] + self.board[self.wincombinations[k][2][0]][self.wincombinations[k][2][1]];
+            if wert == 2:
+                möglicheGewinne += [k]
+        #überprüfen ob Gewinn verhindert wurde, dann muss Summe von vorheriger GewinnCombi nun 1 sein
+        for i in möglicheGewinne:
+            wertNeu = self.inputBoard[self.wincombinations[i][0][0]][self.wincombinations[i][0][1]] + self.inputBoard[self.wincombinations[i][1][0]][self.wincombinations[i][1][1]] + self.inputBoard[self.wincombinations[i][2][0]][self.wincombinations[i][2][1]];
+            if wertNeu == 1:
+                return True
+        #es wurde kein Gewinn verhindert
+        return False
+
     def play(self, move: MoveFacade):
         #global reachy_moveCounter, board
         while not self.game_closed:
@@ -199,6 +215,9 @@ class Game:
                 check_board_status = self.check_board(input)
                 if check_board_status == True:
                     self.check_state(self.move)
+                    if self.check_win_rui(input):
+                        print("Reachys Gewinn wurde ruiniert!")
+                        #Audio für Spieler verhindert Sieg einfügen
                     if not self.game_closed:
                         self.think()
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
