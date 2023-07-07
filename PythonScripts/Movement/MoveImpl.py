@@ -241,19 +241,22 @@ class MoveImpl:
                 pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
                 pos_from += [-0.05]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
                 print("Detected nearest Block with Coordinate:", pos_from)
-                ## Adjustments since
+                ## Adjustments
                 # pos_from[0] += 0.00
                 # pos_from[1] -= 0.02
-                print("Adjusted Coordinate:", pos_from)
+                #print("Adjusted Coordinate:", pos_from)
 
                 # Check if the return values are within the desired range
                 if -20 <= pos_from[0] <= 20 and -20 <= pos_from[1] <= 20:
                     break
+                else:
+                    print("The detected Coordinate are outside of desired range")
             except Exception as exeption:
                 print(exeption)
                 print("Could not detect an unused block")
-                print("Uses Coordinates of Predefined Block 1 instead")
-                pos_from = Outside.BLOCK_1.value
+                #print("Uses Coordinates of Predefined Block 1 instead")
+                #pos_from = Outside.BLOCK_1.value
+            print("Restarting Detection")
         self.gotoposabove5() # Returns arm to a Position above Block 5
         return pos_from
 
