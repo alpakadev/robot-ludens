@@ -212,9 +212,11 @@ def scan_trap(state):
        for feld in GKv4:
            if GKv4.count(feld) > 1 and board[feld[0]][feld[1]] == -1:
                print("fallensteller ", feld)
-               board[feld[0]][feld[1]] = 1
-               # chosen = (feld[0],feld[1])
-               # Schummelbewegung aufrufen (feld[0],feld[1])
+               # Bewegung nur ausführen, wenn in range vom linken Arm (linke Spalte)
+               if feld[1] == 0:
+                board[feld[0]][feld[1]] = 0
+                print('Reachy schummelt')
+                # Schummelbewegung aufrufen (feld[0],feld[1])
                return True
     return False
           
