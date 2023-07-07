@@ -4,8 +4,8 @@ from Perception.PerceptionFacade import PerceptionFacade
 from Strategy.StrategyFacade import StrategyFacade
 import time
 
-# reachy = ReachySDK("localhost")
-reachy = ReachySDK("192.168.1.94") # with_mobile_base = True) 
+reachy = ReachySDK("localhost")
+# reachy = ReachySDK("192.168.1.94") # with_mobile_base = True) 
 
 move = MoveFacade()
 perc = PerceptionFacade()
@@ -21,5 +21,5 @@ starttime = time.time()
 
 while True:
     if time.time() - starttime >= 5:
-        nearest_unused_piece = perc.perception_implementation.get_nearest_unused_piece(move)        
+        nearest_unused_piece = perc.perception_implementation.get_already_placed_pieces_coordinates(move)        
         starttime = time.time()

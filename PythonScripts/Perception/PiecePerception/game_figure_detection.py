@@ -5,16 +5,16 @@ from .estimate_metric_distance import estimate_metric_distance
 
 def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates):
     imageFrame = frame.copy()
-    config = yaml.safe_load(open("global_config.yml"))
+    # config = yaml.safe_load(open("global_config.yml"))
 
     piece_centers = [0] * 9
 
     # Define the lower and upper bounds for red and green color
-    lower_green = np.array(config["color_bounds"]["green_lower"])
-    upper_green = np.array(config["color_bounds"]["green_upper"])
+    lower_green = np.array([35, 50, 50])
+    upper_green = np.array([90, 255, 255])
 
-    lower_red = np.array(config["color_bounds"]["red_lower"])
-    upper_red = np.array(config["color_bounds"]["red_upper"])
+    lower_red = np.array([0, 70, 50])
+    upper_red = np.array([10, 255, 255])
 
     # Crop the image to get only the shape of the board
     mask = np.zeros(frame.shape[:2], dtype="uint8")
@@ -31,6 +31,7 @@ def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates
         # Crop the image to the coordinates of the current board case
         case_mask = np.zeros(frame.shape[:2], dtype="uint8")
         case_roi = np.array([case["upLeft"], case["upRight"], case["downRight"], case["downLeft"]])
+        print(case_roi)
         cv2.fillPoly(case_mask, [case_roi], (255, 255, 255))
         case_masked = cv2.bitwise_and(hsv, hsv, mask=case_mask)
 
