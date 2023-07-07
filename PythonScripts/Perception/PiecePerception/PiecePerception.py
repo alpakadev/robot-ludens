@@ -1,4 +1,4 @@
-from .unused_pieces_detection import unused_pieces_detection
+# from .unused_pieces_detection import unused_pieces_detection
 from .nearest_unused_piece import get_nearest_unused_piece
 from .game_figure_detection import get_all_pieces_coordinates
 from .estimate_metric_distance import estimate_metric_distance
