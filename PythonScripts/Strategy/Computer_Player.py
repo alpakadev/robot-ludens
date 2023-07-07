@@ -151,7 +151,7 @@ def in001setzen(p):
             #print("freies Feld: ", feld)
             board[feld[0]][feld[1]] = 1
             chosen = (feld[0],feld[1])
-            print("in001gesetzt")
+            #print("in001gesetzt")
             return True
 
 def setup_trap(p, move: MoveFacade):
