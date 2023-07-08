@@ -86,12 +86,15 @@ class MoveImpl:
     def deactivate_right_arm(self):
         self.reachy.turn_off_smoothly("r_arm")
 
+    def deactivate_left_arm(self):
+        self.reachy.turn_off_smoothly("l_arm")
+
     def gotoposabove5(self):
         self.activate_right_arm()
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-    
+
     def set_arm_to_side_position(self):
         self._move_arm(constants.POS_ARM_SIDE, rotation={'y': -90, 'x': 0, 'z': 90})
 
@@ -99,7 +102,7 @@ class MoveImpl:
         """
         Moves object from 'position_from' to 'position_to'
 
-        Note: "position_from" is not an "Outside"-Type anymore, since this function can 
+        Note: "position_from" is not an "Outside"-Type anymore, since this function can
         be called with coordinates from dedected Blocks "get_nearest_unused_pieces()"
         """
         self.move_finished = False
@@ -144,7 +147,6 @@ class MoveImpl:
 
         #open hand for taking block
         self._grip_open()
-
         #Add the constant distance (to the front)
         position_from_coordinates[0] += constants.DELTA_FRONT
         position_from_coordinates[0] += 0.02 #move 2 cm further to the front to have the block being safe within the hand
@@ -157,18 +159,18 @@ class MoveImpl:
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #beginning of pos_to 
+        #beginning of pos_to
         #Add safe height to pos_to coordinates and move to pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
-        
+
         #Subtract safe height from pos_to
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         # tilt hand 70 degrees down to not touch other blocks
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
-        
+
         #Open Grip to release block
         self._grip_open()
 
@@ -180,7 +182,7 @@ class MoveImpl:
         #Close grip and move back to waiting position above block 5
         self._grip_close()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-        
+
         #move is finished, reachy looks down and turns off his head
         self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
@@ -190,7 +192,7 @@ class MoveImpl:
     def head_follows_arm(self):
         """
         Head following the Hand Continiously until the Movement of a block is finished
-        v1 Has to be called as a thread **inside** `move_object()`. 
+        v1 Has to be called as a thread **inside** `move_object()`.
         The movement function needs to set the Variable `move_finished` to True
         """
         self.move_head()
@@ -204,7 +206,7 @@ class MoveImpl:
     def head_follows_arm_v2(self, thread_moving_object: Thread):
         """
         Head following the Hand Continiously until the Movement of a block is finished
-        v2 Has to be called **beside** `move_object()` in a parallel thread. 
+        v2 Has to be called **beside** `move_object()` in a parallel thread.
         Finishes when the thread_moving_object finishes
         """
         self.move_head()
@@ -257,7 +259,7 @@ class MoveImpl:
         self.gotoposabove5() # Returns arm to a Position above Block 5
         return pos_from
 
-        
+
     def _move_arm(self, pos_to: list, rotation: dict):
         """
         Moving arm to Position
@@ -333,7 +335,7 @@ class MoveImpl:
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
             self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=0.1)
-            
+
 
 
         # Head looks at given x,y,z
@@ -381,3 +383,52 @@ class MoveImpl:
                 animation_clueless(self.reachy)
             case Animation.HAPPY:
                 animation_happy(self.reachy)
+
+    def steal_object(self, block: Board):
+        self.reachy.turn_on('l_arm')
+
+        self._move_l_arm([0.1, 0.4, 0.05])
+        self._open_l_gripper()
+        match block:
+            case Board.BOTTOM_LEFT:
+                self._move_l_arm([-0.03, 0.4, 0])
+                self._move_l_arm([0, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([-0.03, 0.4, 0.05])
+            case Board.CENTER_LEFT:
+                self._move_l_arm([0.1, 0.4, 0])
+                self._move_l_arm([0.1, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([0.1, 0.4, 0.05])
+            case Board.TOP_LEFT:
+                self._move_l_arm([0.2, 0.4, 0])
+                self._move_l_arm([0.2, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([0.2, 0.4, 0.05])
+            case Board.BOTTOM_CENTER:
+                self._move_l_arm([0.09, 0.2, 0.1])
+                self._move_l_arm([0.09, 0.2, 0.1])
+                # self._move_l_arm([0.0, 0.3, 0.1])
+                self._close_l_gripper()
+                self._move_l_arm([0.09, 0.1, 0.2])
+                self._move_l_arm([0.0, 0.4, 0.2])
+            case Board.CENTER:
+                self._move_l_arm([0.18, 0.11, 0.08])
+                self._close_l_gripper()
+                self._move_l_arm([0.18, 0.4, 0.08])
+
+    def _move_l_arm(self, pos, rot=None, duration=None):
+        if rot is None:
+            rot = {'x': 0, 'y': -90, 'z': -90}
+        if duration is None:
+            duration = 1.5
+        pos = add_lists(pos, self.get_origin())
+        m_target_kinematic = self.kinematic_model_helper.get_kinematic_move(pos, rot)
+        m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration)
+
+    def _close_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_CLOSE}, duration=1)
+
+    def _open_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_OPEN}, duration=1)
