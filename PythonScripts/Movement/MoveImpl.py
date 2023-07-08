@@ -475,7 +475,7 @@ class MoveImpl:
         if duration is None:
             duration = 1.5
         pos = add_lists(pos, self.get_origin())
-        m_target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pos, rot)
+        m_target_kinematic = self.kinematic_model_helper.get_kinematic_move(pos, rot)
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
         goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration)
 
