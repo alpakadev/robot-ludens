@@ -212,15 +212,12 @@ class MoveImpl:
         while thread_moving_object.is_alive():
             self.move_head()
 
-    def start_move_object_as_threads(self, goal: Board):
+    def start_move_object_as_threads(self, pos_from: list, pos_to: Board):
         """
         This function is an approach for Moving the head parallel to the arm
         It currently also is the function utilizing the detection of unused Blocks.
-        
-        TODO: Decide, where the arm should be moved when detecting Blocks
         """
-        print("Detected nearest Block at Coordinate: ", start)
-        thread_moving_object = Thread(target=self.move_object, args=(start, goal))
+        thread_moving_object = Thread(target=self.move_object, args=(pos_from, pos_to))
         thread_head_following_hand = Thread(target=self.head_follows_arm_v2, args=[thread_moving_object])
 
         thread_moving_object.start()
