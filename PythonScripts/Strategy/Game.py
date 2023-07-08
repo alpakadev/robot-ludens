@@ -13,7 +13,7 @@ class Game:
         self.player_score = 0
         self.reachy_moveCounter = 0
         self.player_moveCounter = 0
-        self.level = 2
+        self.level = 1
         self.enableCheating = True
         self.winHistory = []
 
@@ -74,12 +74,14 @@ class Game:
                 return False
         if new_piece != 1 and illegal_change:
             print("wrong amount of new pieces: " + str(new_piece) + " and illegal change detected")
+            self.move.do_say(Sentence.ILLEGALMOVE_HM)
             return False
         if new_piece != 1:
             print("wrong amount of new pieces: " + str(new_piece))
             return False
         if illegal_change:
             print("illegal change detected")
+            self.move.do_say(Sentence.ILLEGALMOVE_HM)
             return False
         # check if reachys chance was ruined
         self.check_win_rui(input)
@@ -112,9 +114,9 @@ class Game:
             self.react(0, self.move)
         elif not self.game_closed and self.regtie():
                 print("incoming Tie")
-
+                move.do_say(Sentence.DETECT_TIE)
         if self.enableCheating:
-            Reachy.scan_trap(self.board)
+            Reachy.scan_trap(self.board, move)
 
     def react(self, last, move: MoveFacade):
         self.winHistory.append(last)
@@ -136,8 +138,8 @@ class Game:
         # falls 3x unentschieden in Level 3: frustriert
         if self.winHistory.count(0) == 3 and self.level == 3:
             print('Reachy wants to leave')
+            move.do_say(Sentence.JOKE)
 
-        
 
 
     def check_combo_move(self, n):
@@ -153,7 +155,7 @@ class Game:
         p = random.randint(0, 100)
         if p < (100 - self.thinkProbability[self.level]):
             return False
-        print('Reachy is thinking')
+        self.move.do_animation(Animation.CLUELESS)
 
     #Unentschieden frühzeitig erkennen
     def regtie(self):
@@ -175,6 +177,7 @@ class Game:
                 for combo in range(len(self.wincombinations)):
                     if (combo == 1 or 4 or 6 or 7) and self.combovalue(combo) == 0:
                         #print("tie erkannt in regtie")
+                        self.move.do_animation(Animation.TIE)
                         return True
         #print("kein tie erkannt in regtie")
         return False
@@ -205,6 +208,7 @@ class Game:
         while not self.game_closed:
             counter = 0
             check_board_status = False
+            move.do_say(Sentence.NEXT_MOVE_HM)
             while counter <= 4:
                 time.sleep(3)
                 input = HI.make_user_move_unity(self.board, self.perc)
@@ -214,6 +218,7 @@ class Game:
                 if check_board_status == True:
                     self.check_state(self.move)
                     if not self.game_closed:
+                        move.do_say(Sentence.NEXT_MOVE_RH)
                         self.think()
                         self.board = Reachy.make_computer_move(self.board, self.level, self.reachy_moveCounter, self.player_moveCounter, self.move)
                         self.reachy_moveCounter += 1
@@ -221,6 +226,7 @@ class Game:
                         self.check_state(self.move)
                     HI.print_board(self.board)
                     counter = 5
+                move.do_animation(Animation.CLUELESS)
             if check_board_status == False:
                 move.do_animation(Animation.DISAPPROVAL)
                 # print("reachy shakes head")
@@ -234,8 +240,21 @@ class Game:
         #global level
         if win_state == -1 and self.level > 0:
             self.level -= 1
+            self.move.do_say(Sentence.LEVEL_DEC)
         elif win_state == 1 and self.level < 4:
             self.level += 1
+            self.move.do_say(Sentence.LEVEL_INC)
+
+    def show_level(self):
+        if self.level == 0:
+            self.move.do_animation(Animation.LEVEL0)
+        elif self.level == 1:
+            self.move.do_animation(Animation.LEVEL1)
+        elif self.level == 2:
+            self.move.do_animation(Animation.LEVEL2)
+        elif self.level == 3:
+            self.move.do_animation(Animation.LEVEL3)
+
 
     def who_starts(self):
         # check previous startplayer, if 0 -> first game -> random
@@ -244,7 +263,6 @@ class Game:
             return r
         # check winhistory, if last one was a tie -> random, else the one who lost starts
         elif len(self.winHistory) > 0:
-            print(self.winHistory)
             if self.winHistory[-1] == 0:
                 print(r, 'starts')
                 return r
@@ -267,26 +285,23 @@ class Game:
             #self.first = input("who goes first? \n 1 for Reachy, 2 for Player: ")
             tmp = self.who_starts()
             self.first = tmp
+            self.show_level()
             if self.first == 1:
                 # reachy's first move
+                self.move.do_animation(Animation.START_REACHY)
                 self.board = Reachy.make_first_move(self.board,self.reachy_moveCounter, self.move)
                 self.reachy_moveCounter = self.reachy_moveCounter + 1
                 HI.print_board(self.board)
                 self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
             elif self.first == 2:
+                self.move.do_animation(Animation.START_OPPONENT)
                 HI.print_board(self.board)
                 self.play(self.move)
                 exit_game = input("Press 1 to play again, Press any button to exit: ")
             else:
                 print("input invalid")
-
-
-#arcadeModus()
-
-# board = [[0, -1, 0], [0, 1, 0], [0, 0, 0]]
-# input = [[0, -1, 0], [1, 1, 0], [0, -1, 0]]
-# print(check_board(input))
+        self.move.do_animation(Animation.SAD_ANTENNAS)
 
 
 
