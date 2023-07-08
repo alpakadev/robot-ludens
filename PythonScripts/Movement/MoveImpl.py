@@ -80,14 +80,6 @@ class MoveImpl:
     def set_arm_to_origin(self):
         self._move_arm(self.origin, rotation={'y': -90, 'x': 0, 'z': 0})
 
-    def get_origin(self):
-        # Returns the origin point to which all other coordinates are relative from
-        return self.origin_coordinate
-
-    def set_origin(self, coordinate):
-        # Returns the origin point to which all other coordinates are relative from
-        self.origin_coordinate = coordinate
-
     def activate_right_arm(self):
         self.reachy.turn_on("r_arm")
 
