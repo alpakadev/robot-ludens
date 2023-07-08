@@ -22,16 +22,20 @@ def get_stable_image(reachy, config):
                 gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
                 gray_prev_roi = cv2.cvtColor(prev_roi, cv2.COLOR_BGR2GRAY)
                 gray_roi = cv2.GaussianBlur(gray_roi, (5, 5), sigmaX=0)
-                gray_prev_roi = cv2.GaussianBlur(gray_prev_roi, (5, 5), sigmaX=0)
+                gray_prev_roi = cv2.GaussianBlur(
+                    gray_prev_roi, 
+                    (5, 5), 
+                    sigmaX=0
+                )
 
                 # Calculate absolute difference between grayscale ROIs
                 diff = cv2.absdiff(gray_roi, gray_prev_roi)
 
-                # 4/5 Only take different areas that are different enough (>20 / 255)
+                # Only take different areas that are different enough
                 _, thresh = cv2.threshold(diff, 20, 255, cv2.THRESH_BINARY)
 
-                # 4/5 Dilate the image a bit to make differences more seeable; more suitable for contour detection
-                kernel = np.ones((5,5),np.uint8)
+                # Dilate the image a bit to make differences more seeable
+                kernel = np.ones((5,5), np.uint8)
                 thresh = cv2.dilate(thresh, kernel, iterations=1)
 
                 contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, 

@@ -3,18 +3,19 @@ import numpy as np
 import yaml
 from .estimate_metric_distance import estimate_metric_distance
 
-def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates):
+def get_all_pieces_coordinates(frame, board_coordinates, 
+                               board_cases_coordinates):
     imageFrame = frame.copy()
-    config = yaml.safe_load(open("global_config.yml"))
+    # config = yaml.safe_load(open("global_config.yml"))
 
     piece_centers = [0] * 9
 
     # Define the lower and upper bounds for red and green color
-    lower_green = np.array(config["color_bounds"]["green_lower"])
-    upper_green = np.array(config["color_bounds"]["green_upper"])
+    lower_green = np.array([35, 50, 50])
+    upper_green = np.array([90, 255, 255])
 
-    lower_red = np.array(config["color_bounds"]["red_lower"])
-    upper_red = np.array(config["color_bounds"]["red_upper"])
+    lower_red = np.array([0, 70, 50])
+    upper_red = np.array([10, 255, 255])
 
     # Crop the image to get only the shape of the board
     mask = np.zeros(frame.shape[:2], dtype="uint8")
@@ -30,7 +31,12 @@ def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates
 
         # Crop the image to the coordinates of the current board case
         case_mask = np.zeros(frame.shape[:2], dtype="uint8")
-        case_roi = np.array([case["upLeft"], case["upRight"], case["downRight"], case["downLeft"]])
+        case_roi = np.array(
+            [case["upLeft"], 
+            case["upRight"], 
+            case["downRight"], 
+            case["downLeft"]]
+        )
         cv2.fillPoly(case_mask, [case_roi], (255, 255, 255))
         case_masked = cv2.bitwise_and(hsv, hsv, mask=case_mask)
 
@@ -38,7 +44,8 @@ def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates
         red_mask = cv2.inRange(case_masked, lower_red, upper_red)
 
         # Find the contours of red regions
-        red_contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        red_contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, 
+                                                   cv2.CHAIN_APPROX_SIMPLE)
 
         # Sort the red contours by area in descending order
         red_contours = sorted(red_contours, key=cv2.contourArea, reverse=True)
@@ -52,17 +59,25 @@ def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates
                 M = cv2.moments(red_contour)
                 centroid_x = int(M['m10'] / M['m00'])
                 centroid_y = int(M['m01'] / M['m00'])
-                x_distance, y_distance = estimate_metric_distance(frame, board_coordinates)
+                x_distance, y_distance = estimate_metric_distance(
+                    frame, 
+                    board_coordinates
+                )
                 piece_centers[case_coords] = (x_distance, y_distance, "R")
 
         # Threshold the image to get the green color regions
         green_mask = cv2.inRange(case_masked, lower_green, upper_green)
 
         # Find the contours of green regions
-        green_contours, hierarchy = cv2.findContours(green_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        green_contours, hierarchy = cv2.findContours(
+            green_mask, 
+            cv2.RETR_EXTERNAL, 
+            cv2.CHAIN_APPROX_SIMPLE
+        )
 
         # Sort the green contours by area in descending order
-        green_contours = sorted(green_contours, key=cv2.contourArea, reverse=True)
+        green_contours = sorted(green_contours, key=cv2.contourArea, 
+                                reverse=True)
 
         # Proceed only with the largest contour
         if len(green_contours) > 0:
@@ -73,7 +88,12 @@ def get_all_pieces_coordinates(frame, board_coordinates, board_cases_coordinates
                 M = cv2.moments(green_contour)
                 centroid_x = int(M['m10'] / M['m00'])
                 centroid_y = int(M['m01'] / M['m00'])
-                x_distance, y_distance = estimate_metric_distance(frame, board_coordinates, centroid_x, centroid_y)
+                x_distance, y_distance = estimate_metric_distance(
+                    frame, 
+                    board_coordinates, 
+                    centroid_x, 
+                    centroid_y
+                )
                 piece_centers[case_coords] = (x_distance, y_distance, "G")
 
     return piece_centers

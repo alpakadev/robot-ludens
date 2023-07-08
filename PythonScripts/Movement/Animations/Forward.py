@@ -13,7 +13,7 @@ def animation_forward(reachy): #!!!not tested yet!!!!
     reachy.turn_on("l_arm")
     
     # safe position arms to move from table 
-    right_base_position = {
+    base_position = {
         reachy.r_arm.r_shoulder_pitch: -50,
         reachy.r_arm.r_shoulder_roll: 0,  # moves left to right
         reachy.r_arm.r_arm_yaw: 0,  # forward/back
@@ -22,15 +22,7 @@ def animation_forward(reachy): #!!!not tested yet!!!!
         reachy.r_arm.r_wrist_pitch: 0,
         reachy.r_arm.r_wrist_roll: 0,
         reachy.r_arm.r_gripper: 0,
-    }
-    
-    goto(
-        goal_positions=right_base_position,
-        duration=0.90,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
-    )
 
-    left_base_position = {
         reachy.l_arm.l_shoulder_pitch: -50,
         reachy.l_arm.l_shoulder_roll: 0,  # moves left to right
         reachy.l_arm.l_arm_yaw: 0,  # forward/back
@@ -40,15 +32,16 @@ def animation_forward(reachy): #!!!not tested yet!!!!
         reachy.l_arm.l_wrist_roll: 0,
         reachy.l_arm.l_gripper: 0,
     }
+    
     goto(
-        goal_positions=left_base_position,
+        goal_positions=base_position,
         duration=0.90,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
     )
 
-
    # reachy.mobile.reset_odometry() #resets current posiiton of reachy
   # if you ask for a goto(0, 0, 0) the robot will try to comeback to the position it was at boot-up.
-    reachy.mobile_base.goto(x=0.10, y=0.0, theta=0) 
+    reachy.mobile_base.goto(x=0.0, y=0.0, theta= -180) #turn around
+    reachy.mobile_base.goto(x=0.40, y=0.0, theta=0) #go back 40cm
     #x == Front, y == Left in meter,
     #positive theta counterclockwise in degree,...negative theta clockwise (?)

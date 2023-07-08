@@ -1,4 +1,3 @@
-stage: "simulation"
 time_between_images: 1
 color_bounds:
   red_lower: [0, 70, 50]
@@ -13,3 +12,7 @@ thresholds:
 line_distance_factors:
   first: 0.33
   second: 0.66
+  green: 0.08
+thresholds:
+  red: 0.08
+  green: 0.08
