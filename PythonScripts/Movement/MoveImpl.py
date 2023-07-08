@@ -145,9 +145,9 @@ class MoveImpl:
         position_from_coordinates[2] -= 0.11
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-#open hand for taking block
+        #open hand for taking block
         self._grip_open()
-#Add the constant distance (to the front)
+        #Add the constant distance (to the front)
         position_from_coordinates[0] += constants.DELTA_FRONT
         position_from_coordinates[0] += 0.02 #move 2 cm further to the front to have the block being safe within the hand
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
