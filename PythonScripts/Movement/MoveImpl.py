@@ -388,7 +388,6 @@ class MoveImpl:
         self.reachy.turn_on('l_arm')
 
         self._move_l_arm([0.1, 0.4, 0.05])
-
         self._open_l_gripper()
         match block:
             case Board.BOTTOM_LEFT:
