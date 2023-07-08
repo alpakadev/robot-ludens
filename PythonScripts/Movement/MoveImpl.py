@@ -460,7 +460,6 @@ class MoveImpl:
         self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
         self._move_l_arm([-0.03, 0.45, 0.02])
 
-
     def _move_l_arm(self, pos, rot=None, duration=None):
         if rot is None:
             rot = {'x': 0, 'y': -90, 'z': -90}
