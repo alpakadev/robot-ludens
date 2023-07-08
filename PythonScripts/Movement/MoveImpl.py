@@ -110,7 +110,7 @@ class MoveImpl:
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
 
-#Define coordinates
+        #Define coordinates
         position_from_coordinates = position_from
         position_to_coordinates = position_to.value
 
