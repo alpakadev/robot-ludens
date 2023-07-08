@@ -73,6 +73,9 @@ class MoveImpl:
     def deactivate_right_arm(self):
         self.reachy.turn_off_smoothly("r_arm")
 
+    def deactivate_left_arm(self):
+        self.reachy.turn_off_smoothly("l_arm")
+
     def gotoposabove5(self):
         self.activate_right_arm()
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
@@ -84,7 +87,7 @@ class MoveImpl:
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
-        
+
         position_from_coordinates = position_from.value
         position_to_coordinates = position_to.value
 
@@ -108,16 +111,16 @@ class MoveImpl:
         position_from_coordinates[2] -= 0.11
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        
+
         self._grip_open()
-        
+
         position_from_coordinates[0] += constants.DELTA_FRONT
         position_from_coordinates[0] += 0.02
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
         self._grip_close()
 
-        
+
 
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
@@ -127,18 +130,18 @@ class MoveImpl:
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
-        #Here neigung -70 
+        #Here neigung -70
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
-        
+
         self._grip_open()
 
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': mapper.get_hand_rotation(
             position_to)})
-        
+
         self._grip_close()
-        
+
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
 
 
@@ -148,7 +151,7 @@ class MoveImpl:
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
         mapper = HandRotationMapper()
-        
+
         #self._grip_open()
         #self._grip_close()
 
@@ -161,7 +164,7 @@ class MoveImpl:
         #Second waiting point is 20 cm closer to Reachy (Above Block 1)
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
 
-        
+
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
         #move to save point above origin point
@@ -172,7 +175,7 @@ class MoveImpl:
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
-    
+
 
 
 
@@ -229,7 +232,7 @@ class MoveImpl:
 
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
-        
+
 
         mapper = HandRotationMapper()
 
@@ -390,3 +393,60 @@ class MoveImpl:
                 animation_sad_antennas(self.reachy)
             case Animation.HAPPY:
                 animation_happy_antennas(self.reachy)
+
+    def steal_object(self, block: Board):
+        self.reachy.turn_on('l_arm')
+
+        self._move_l_arm([0.1, 0.4, 0.05])
+
+        self._open_l_gripper()
+        match block:
+            case Board.BOTTOM_LEFT:
+                self._move_l_arm([-0.03, 0.4, 0])
+                self._move_l_arm([0, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([-0.03, 0.4, 0.05])
+            case Board.CENTER_LEFT:
+                self._move_l_arm([0.1, 0.4, 0])
+                self._move_l_arm([0.1, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([0.1, 0.4, 0.05])
+            case Board.TOP_LEFT:
+                self._move_l_arm([0.2, 0.4, 0])
+                self._move_l_arm([0.2, 0.27, 0])
+                self._close_l_gripper()
+                self._move_l_arm([0.2, 0.4, 0.05])
+            case Board.BOTTOM_CENTER:
+                self._move_l_arm([0.09, 0.2, 0.1])
+                self._move_l_arm([0.09, 0.2, 0.1])
+                # self._move_l_arm([0.0, 0.3, 0.1])
+                self._close_l_gripper()
+                self._move_l_arm([0.09, 0.1, 0.2])
+                self._move_l_arm([0.0, 0.4, 0.2])
+            case Board.CENTER:
+                self._move_l_arm([0.18, 0.11, 0.08])
+                self._close_l_gripper()
+                self._move_l_arm([0.18, 0.4, 0.08])
+
+        self._move_l_arm(constants.STEAL_PLACE)
+        self._open_l_gripper()
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
+        self._move_l_arm([-0.03, 0.45, 0.02])
+
+
+    def _move_l_arm(self, pos, rot=None, duration=None):
+        if rot is None:
+            rot = {'x': 0, 'y': -90, 'z': -90}
+        if duration is None:
+            duration = 1.5
+        pos = add_lists(pos, self.get_origin())
+        m_target_kinematic = self.kinematic_moder_helper.get_kinematic_move(pos, rot)
+        m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
+        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration)
+
+    def _close_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_CLOSE}, duration=1)
+
+    def _open_l_gripper(self):
+        goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_OPEN}, duration=1)
