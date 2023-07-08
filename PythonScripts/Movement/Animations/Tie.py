@@ -1,4 +1,8 @@
 import time
+import random
+
+from ..constants import TIE
+from .Player import play_sound
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 def animation_tie(reachy): 
@@ -10,7 +14,7 @@ def animation_tie(reachy):
     reachy.turn_on("r_arm")
     reachy.head.l_antenna.speed_limit = 90.0
     reachy.head.r_antenna.speed_limit = 90.0
-
+    
     tie_start = {
         reachy.r_arm.r_shoulder_pitch: 5,
         reachy.r_arm.r_shoulder_roll: -10,  # moves left to right
@@ -44,7 +48,7 @@ def animation_tie(reachy):
         )
    
     #shrugging 
-    for _ in range(2):
+    for x in range(2):
 
         tie_up = {
             reachy.head.l_antenna: -35,
@@ -72,6 +76,9 @@ def animation_tie(reachy):
 
         }
 
+        if x == 0:
+            play_sound(random.choice(TIE), block = False)
+
         goto(
             goal_positions=tie_up,
             duration=1.0,
@@ -83,6 +90,7 @@ def animation_tie(reachy):
             duration=1.0,
             interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
+       
             
         
     reachy.head.look_at(0.5, 0, 0, duration = 0.8)

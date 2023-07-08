@@ -1,4 +1,5 @@
 import time
+import random
 
 def animation_level0(reachy):
     """

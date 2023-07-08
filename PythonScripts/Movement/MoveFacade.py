@@ -1,14 +1,16 @@
 from .Enums.Board import Board
 from .Enums.Outside import Outside
 from .Enums.Animation import Animation
+from .Enums.Sentence import Sentence
 from .MoveImpl import MoveImpl
 from .OutsideBlockFacade import OutsideBlockFacade
-
+from .Sentences.Speak import sentence_line
 
 class MoveFacade:
     def __init__(self):
         self.block_manager = OutsideBlockFacade()
         self.move = MoveImpl()
+        
         """ 
         False: Use predefined unused block positions
         True: Utilize perceptions "get_nearest_unused_piece()" 
@@ -72,3 +74,8 @@ class MoveFacade:
 
     def do_animation(self, animation_type: Animation):
         self.move.perform_animation(animation_type)
+    
+    def do_say(self, sentence_type: Sentence): #??
+        sentence_line(sentence_type)
+
+    

@@ -1,4 +1,8 @@
 import time
+import random 
+
+from ..constants import START_HUMAN
+from .Player import play_sound
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
@@ -13,6 +17,7 @@ def animation_start_opponent(reachy):
 
     reachy.head.l_antenna.goal_position = 30.0
     reachy.head.r_antenna.goal_position = -40.0
+    
 
     l_arm_start = {
             reachy.head.l_antenna: 45,
@@ -52,8 +57,10 @@ def animation_start_opponent(reachy):
 
     time.sleep(0.1)
 
-    for _ in range(2):
+    
 
+    for x in range(2):
+        
         l_arm_tilted_head = {
             reachy.head.l_antenna: 45,
             reachy.head.r_antenna: 20,  
@@ -76,6 +83,9 @@ def animation_start_opponent(reachy):
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
         
+        if x == 0:
+            play_sound(random.choice(START_HUMAN), block = False)
+
         l_arm_point_tilted_head = {
             reachy.head.l_antenna: 50,
             reachy.head.r_antenna: -10,  
@@ -97,7 +107,8 @@ def animation_start_opponent(reachy):
             duration = 1.3,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
-
+           
+            
         reachy.head.l_antenna.goal_position = 30.0
         reachy.head.r_antenna.goal_position = -40.0
 

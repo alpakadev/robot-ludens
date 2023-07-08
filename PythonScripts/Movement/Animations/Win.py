@@ -1,13 +1,16 @@
 import time
+import random
 
+from ..constants import WINNING
+from .Player import play_sound
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+#from .HappyAntennas import animation_happy_antennas
 
-from .HappyAntennas import animation_happy_antennas
 
-def animation_win(reachy):
+def animation_win(reachy): 
     """
-    arms up and down with grippers opening/closing with head swinging
+    arms up and down with grippers opening/closing as head moves
     """
     reachy.turn_on("head")
     reachy.turn_on("r_arm")
@@ -16,10 +19,12 @@ def animation_win(reachy):
     reachy.head.look_at(0.05, 0, -0.05, duration=1.0) 
     time.sleep(0.5)
 
+    play_sound(random.choice(WINNING), block = False)
+   
     reachy.head.look_at(0.5, 0, 0, duration=0.5)       
     time.sleep(0.2)
 
-    for i in range(4):
+    for _ in range(4):
         arms_up_position = {
             reachy.head.l_antenna: 30,
             reachy.head.r_antenna: -30,  
@@ -35,7 +40,7 @@ def animation_win(reachy):
             reachy.r_arm.r_wrist_pitch: 0,
             reachy.r_arm.r_wrist_roll: 0,
             reachy.r_arm.r_gripper: 40,
-
+            
             reachy.l_arm.l_shoulder_pitch: -60,
             reachy.l_arm.l_shoulder_roll: 0,
             reachy.l_arm.l_arm_yaw: 0,
@@ -59,7 +64,7 @@ def animation_win(reachy):
         )
 
         #animation_happy_antennas(reachy) 
-
+        
         arms_up2_position = {
             reachy.head.l_antenna: 40,
             reachy.head.r_antenna: -40,  

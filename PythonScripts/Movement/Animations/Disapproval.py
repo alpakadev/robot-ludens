@@ -1,6 +1,8 @@
 import time
 import random
 
+from ..constants import CHANCE_WIN_HUMAN, CHANCE_WIN_REACHY
+from .Player import play_sound
 
 def animation_disapproval(reachy):
     """
@@ -19,8 +21,13 @@ def animation_disapproval(reachy):
 
     reachy.head.look_at(0.05, 0, 0, duration=0.5,)
 
-    # Head shaking
+    p = random.random()
+    if p < 0.5:
+        play_sound(random.choice(CHANCE_WIN_HUMAN), block = False)
+    else: 
+        play_sound(random.choice(CHANCE_WIN_REACHY), block = False)
 
+    # Head shaking
     for i in range(3):
         degree = random.randint(50,80) #randomized degree for antennas
        

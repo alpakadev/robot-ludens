@@ -1,5 +1,8 @@
 import time
+import random 
 
+from ..constants import LOSING
+from .Player import play_sound
 
 def animation_lose(reachy): 
     """
@@ -12,6 +15,8 @@ def animation_lose(reachy):
 
     reachy.head.look_at(0.05, 0, -0.05, 0.7)
     time.sleep(0.5)
+
+    play_sound(random.choice(LOSING), block = False) #async ?
 
     reachy.head.l_antenna.speed_limit = 90.0
     reachy.head.r_antenna.speed_limit = 90.0

@@ -1,4 +1,8 @@
 import time
+import random 
+
+from ..constants import START_REACHY
+from .Player import play_sound
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
@@ -43,8 +47,8 @@ def animation_start_reachy(reachy):
 
     l_arm3 = {
         reachy.l_arm.l_shoulder_pitch: -20,
-        reachy.l_arm.l_shoulder_roll: 5,   # moves left to right
-        reachy.l_arm.l_arm_yaw: -40,    # forward/back
+        reachy.l_arm.l_shoulder_roll: 5,   
+        reachy.l_arm.l_arm_yaw: -40,    
         reachy.l_arm.l_elbow_pitch: -140,
         reachy.l_arm.l_forearm_yaw: 30,
         reachy.l_arm.l_wrist_pitch: -20,
@@ -52,8 +56,8 @@ def animation_start_reachy(reachy):
         reachy.l_arm.l_gripper: -45,
         reachy.head.l_antenna: 45,
         reachy.head.r_antenna: 20,  
-        reachy.head.neck_roll: 0,  # tilt +left to -right 35
-        reachy.head.neck_pitch: 5,   # up down
+        reachy.head.neck_roll: 0, 
+        reachy.head.neck_pitch: 5,   
         reachy.head.neck_yaw: -5,
     }
     
@@ -65,17 +69,17 @@ def animation_start_reachy(reachy):
     
     reachy.head.look_at(0.5, 0, -0.15, 1)
     
-    for _ in range(2):
+    for x in range(2):
         
         l_point = {
             reachy.head.l_antenna: 45,
             reachy.head.r_antenna: 20,  
-            reachy.head.neck_roll: -10,  # tilt +left to -right 35
-            reachy.head.neck_pitch: 5,   # up down
+            reachy.head.neck_roll: -10,  
+            reachy.head.neck_pitch: 5,   
             reachy.head.neck_yaw: 10,
             reachy.l_arm.l_shoulder_pitch: -20,
-            reachy.l_arm.l_shoulder_roll: 5,   # moves left to right
-            reachy.l_arm.l_arm_yaw: -40,    # forward/back
+            reachy.l_arm.l_shoulder_roll: 5,   
+            reachy.l_arm.l_arm_yaw: -40,    
             reachy.l_arm.l_elbow_pitch: -140,
             reachy.l_arm.l_forearm_yaw: 30,
             reachy.l_arm.l_wrist_pitch: -25,
@@ -88,16 +92,18 @@ def animation_start_reachy(reachy):
             duration = 1.0,
             interpolation_mode=InterpolationMode.MINIMUM_JERK
         )
-        
+        if x == 0:
+            play_sound(random.choice(START_REACHY), block = False)
+
         l_point2 = {
             reachy.head.l_antenna: 45,
             reachy.head.r_antenna: 20,  
-            reachy.head.neck_roll: -15,  # tilt +left to -right 35
-            reachy.head.neck_pitch: 10,   # up down
+            reachy.head.neck_roll: -15,  
+            reachy.head.neck_pitch: 10,   
             reachy.head.neck_yaw: -5,
             reachy.l_arm.l_shoulder_pitch: -27,
-            reachy.l_arm.l_shoulder_roll: 15,   # moves left to right
-            reachy.l_arm.l_arm_yaw: -55,    # forward/back
+            reachy.l_arm.l_shoulder_roll: 15,   
+            reachy.l_arm.l_arm_yaw: -55,    
             reachy.l_arm.l_elbow_pitch: -130,
             reachy.l_arm.l_forearm_yaw: 35,
             reachy.l_arm.l_wrist_pitch: -10,
@@ -114,8 +120,8 @@ def animation_start_reachy(reachy):
     #back to default   
     left_base_position = {
         reachy.l_arm.l_shoulder_pitch: -25,
-        reachy.l_arm.l_shoulder_roll: 0,  # moves left to right
-        reachy.l_arm.l_arm_yaw: 15,  # forward/back
+        reachy.l_arm.l_shoulder_roll: 0,  
+        reachy.l_arm.l_arm_yaw: 15,  
         reachy.l_arm.l_elbow_pitch: -40,
         reachy.l_arm.l_forearm_yaw: -15,
         reachy.l_arm.l_wrist_pitch: -25,

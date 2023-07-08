@@ -5,6 +5,7 @@ from Strategy.StrategyFacade import StrategyFacade
 from Movement.Enums import Outside
 from Movement.Enums import Board
 from Movement.Enums.Animation import Animation
+from Movement.Enums.Sentence import Sentence
 import time
 
 reachy = ReachySDK("localhost")
@@ -26,10 +27,13 @@ move.do_deactivate_right_arm()
 # time.sleep(5) # Enough time, to move away after calibration
 
 # To ensure a safe arm position without collision with the blocks
-move.do_safe_arm_pos()
+#move.do_safe_arm_pos()
 
 # Sets the mode to detecting unused blocks, instead of predefined marked positions
 # move.set_mode_to_detecting_blocks()
 
 # Starting the Game
-strat.start_game()
+#strat.start_game()
+
+#move.do_animation(Animation.)
+#move.do_say(Sentence.WAITING)
