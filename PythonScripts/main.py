@@ -1,6 +1,4 @@
 from reachy_sdk import ReachySDK
-
-from Movement import constants
 from Movement.MoveFacade import MoveFacade
 from Perception.PerceptionFacade import PerceptionFacade
 from Strategy.StrategyFacade import StrategyFacade
@@ -10,34 +8,29 @@ from Movement.Enums.Animation import Animation
 import time
 
 reachy = ReachySDK("localhost")
-# reachy = ReachySDK("192.168.1.94")
+#reachy = ReachySDK("192.168.1.94") # with_mobile_base = True) 
 
 move = MoveFacade()
-perc = PerceptionFacade(reachy)
+perc = PerceptionFacade()
 strat = StrategyFacade()
 
-
-
-perc.set_dependencies(move, strat)
+perc.set_dependencies(reachy, move, strat)
 move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
-#move.do_animation(Animation.HAPPY)
-
 # If the Arm gets stuck, call this function
-# move.do_deactivate_right_arm()
+move.do_deactivate_right_arm()
 
 # Calibrating real Reachy; Not needed in simulation
 # move.do_calibration()
+# time.sleep(5) # Enough time, to move away after calibration
 
-# time.sleep(5)
 # To ensure a safe arm position without collision with the blocks
-# Outsource this as one command in MoveFacade
-# move.do_safe_arm_pos()
+move.do_safe_arm_pos()
+
+# Sets the mode to detecting unused blocks, instead of predefined marked positions
+# Does not work reliably in simulation
+# move.set_mode_to_detecting_blocks()
 
 # Starting the Game
-
-# move.do_move_block(Outside.Outside.BLOCK_1, Board.Board.CENTER_LEFT)
-move.steal_block(Board.Board.BOTTOM_LEFT)
-
-# strat.start_game()
+strat.start_game()
