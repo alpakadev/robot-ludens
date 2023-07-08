@@ -29,6 +29,7 @@ move.do_deactivate_right_arm()
 move.do_safe_arm_pos()
 
 # Sets the mode to detecting unused blocks, instead of predefined marked positions
+# Does not work reliably in simulation
 # move.set_mode_to_detecting_blocks()
 
 # Starting the Game
