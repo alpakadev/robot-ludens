@@ -418,48 +418,6 @@ class MoveImpl:
                 self._close_l_gripper()
                 self._move_l_arm([0.18, 0.4, 0.08])
 
-    def steal_object(self, block: Board):
-        self.reachy.turn_on('l_arm')
-        self.reachy.turn_on('r_arm')
-
-        self._move_l_arm([0.1, 0.4, 0.05])
-
-
-        self._open_l_gripper()
-        match block:
-            case Board.BOTTOM_LEFT:
-                self._move_l_arm([-0.03, 0.4, 0])
-                self._move_l_arm([0, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([-0.03, 0.4, 0.05])
-            case Board.CENTER_LEFT:
-                self._move_l_arm([0.1, 0.4, 0])
-                self._move_l_arm([0.1, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([0.1, 0.4, 0.05])
-            case Board.TOP_LEFT:
-                self._move_l_arm([0.2, 0.4, 0])
-                self._move_l_arm([0.2, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([0.2, 0.4, 0.05])
-            case Board.BOTTOM_CENTER:
-                self._move_l_arm([0.09, 0.2, 0.1])
-                self._move_l_arm([0.09, 0.2, 0.1])
-                # self._move_l_arm([0.0, 0.3, 0.1])
-                self._close_l_gripper()
-                self._move_l_arm([0.09, 0.1, 0.2])
-                self._move_l_arm([0.0, 0.4, 0.2])
-            case Board.CENTER:
-                self._move_l_arm([0.18, 0.11, 0.08])
-                self._close_l_gripper()
-                self._move_l_arm([0.18, 0.4, 0.08])
-
-        self._move_l_arm(constants.STEAL_PLACE)
-        self._open_l_gripper()
-        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
-        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
-        self._move_l_arm([-0.03, 0.45, 0.02])
-
     def _move_l_arm(self, pos, rot=None, duration=None):
         if rot is None:
             rot = {'x': 0, 'y': -90, 'z': -90}
