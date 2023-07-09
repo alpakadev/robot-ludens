@@ -3,6 +3,7 @@ import random
 
 from ..constants import START_HUMAN
 from .Player import play_sound
+from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
@@ -84,7 +85,8 @@ def animation_start_opponent(reachy):
         )
         
         if x == 0:
-            play_sound(random.choice(START_HUMAN), block = False)
+            safely_run(play_sound(random.choice(START_HUMAN), False),
+                       "[Anim StartOpponent] Sound konnte nicht abgespielt werden")
 
         l_arm_point_tilted_head = {
             reachy.head.l_antenna: 50,

@@ -3,6 +3,7 @@ import random
 
 from ..constants import WINNING
 from .Player import play_sound
+from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 #from .HappyAntennas import animation_happy_antennas
@@ -19,7 +20,8 @@ def animation_win(reachy):
     reachy.head.look_at(0.05, 0, -0.05, duration=1.0) 
     time.sleep(0.5)
 
-    play_sound(random.choice(WINNING), block = False)
+    safely_run(play_sound(random.choice(WINNING), False),
+               "[Anim Win] Sound konnte nicht abgespielt werden")
    
     reachy.head.look_at(0.5, 0, 0, duration=0.5)       
     time.sleep(0.2)

@@ -3,6 +3,7 @@ import random
 
 from ..constants import BEFORE_THINKING, THINKING
 from .Player import play_sound
+from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
@@ -19,8 +20,8 @@ def animation_thinking(reachy):
     reachy.head.r_antenna.goal_position = -80.0
     time.sleep(0.50)
 
-    
-    play_sound(random.choice(BEFORE_THINKING), block = True)
+    safely_run(play_sound(random.choice(BEFORE_THINKING), False),
+               "[Anim Thinking] Sound konnte nicht abgespielt werden")
 
     for x in range(3):
         degree  = random.randint(20,55)
@@ -44,7 +45,8 @@ def animation_thinking(reachy):
         time.sleep(0.1)
         
         if x == 1:
-            play_sound(random.choice(THINKING), block = False)
+            safely_run(play_sound(random.choice(THINKING), False),
+                       "[Anim Thinking] Sound konnte nicht abgespielt werden")
 
         reachy.head.l_antenna.speed_limit = 90.0 - degree//2
         reachy.head.r_antenna.speed_limit = 60.0 - degree//2

@@ -3,6 +3,7 @@ import random
 
 from ..constants import LOSING
 from .Player import play_sound
+from ..Helper.Safely import safely_run
 
 def animation_lose(reachy): 
     """
@@ -16,7 +17,8 @@ def animation_lose(reachy):
     reachy.head.look_at(0.05, 0, -0.05, 0.7)
     time.sleep(0.5)
 
-    play_sound(random.choice(LOSING), block = False) #async ?
+    safely_run(play_sound(random.choice(LOSING), False),
+               "[Anim Losing] Sound konnte nicht abgespielt werden")
 
     reachy.head.l_antenna.speed_limit = 90.0
     reachy.head.r_antenna.speed_limit = 90.0

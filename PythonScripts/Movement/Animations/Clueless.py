@@ -4,6 +4,7 @@ import random
 
 from ..constants import THINKING
 from .Player import play_sound
+from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
@@ -20,8 +21,8 @@ def animation_clueless(reachy):
     reachy.head.l_antenna.goal_position = -35.0
     reachy.head.r_antenna.goal_position = 50.0
     time.sleep(1.0)
-    
-    play_sound(random.choice(THINKING), block = False)
+
+    safely_run(play_sound(random.choice(THINKING), False), "[Anim Clueless] Sound konnte nicht abgespielt werden")
 
     for _ in range(2):
 
