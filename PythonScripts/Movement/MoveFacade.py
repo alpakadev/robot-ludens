@@ -16,6 +16,7 @@ class MoveFacade:
         True: Utilize perceptions "get_nearest_unused_piece()" 
         """
         self.mode_detected_blocks = False
+        self.mode_playing_sounds = False
 
     def set_dependencies(self, reachy, perc, strat):
         self.move.set_dependencies(reachy, perc, strat)
@@ -24,6 +25,9 @@ class MoveFacade:
         # True: Utilize perceptions "get_nearest_unused_piece()" 
         self.mode_detected_blocks = True
     
+    def set_mode_to_playing_sounds(self):
+        self.mode_playing_sounds = True
+
     # TESTING REQUIRED: outside blocks are detected by perception.
     def do_move_block_v2_auto_detect_outside_block(self, to_board_pos: Board):
         self.move.start_move_object_as_threads(to_board_pos)
@@ -51,9 +55,15 @@ class MoveFacade:
 
     def do_pos_above_block_5(self):
         self.move.gotoposabove5()
+    
+    def do_deactivate_reachys_joints(self):
+        self.move.reachy.turn_off_smoothly("reachy")
 
     def do_deactivate_right_arm(self):
         self.move.deactivate_right_arm()
+
+    def do_deactivate_left_arm(self):
+        self.move.deactivate_left_arm()
 
     def do_calibration(self):
         self.move.calibrate()
@@ -76,7 +86,8 @@ class MoveFacade:
         self.move.perform_animation(animation_type)
 
     def do_say(self, sentence_type: Sentence): #??
-        sentence_line(sentence_type)
+        if(self.mode_playing_sounds):
+            sentence_line(sentence_type)
 
     def steal_block(self, f: Board):
         self.move.steal_object(f)
