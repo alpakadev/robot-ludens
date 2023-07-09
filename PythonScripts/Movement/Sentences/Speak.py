@@ -22,7 +22,7 @@ def sentence_line(sentence_type: Sentence):
             case Sentence.LEVEL_INC:
                 sentence_level_inc()
             case Sentence.CHANCE_HM:
-                  sentence_chance_hm()
+                sentence_chance_hm()
             case Sentence.CHANCE_RH:
                 sentence_chance_rh()
             case Sentence.DETECT_TIE:
@@ -48,4 +48,3 @@ def sentence_line(sentence_type: Sentence):
             case Sentence.WIN_PREVENT_FAILED:
                 sentence_win_prevent_failed()
     
-                
