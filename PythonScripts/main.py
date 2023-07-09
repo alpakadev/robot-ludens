@@ -27,45 +27,11 @@ move.do_deactivate_right_arm()
 # time.sleep(5) # Enough time, to move away after calibration
 
 # To ensure a safe arm position without collision with the blocks
-#move.do_safe_arm_pos()
+move.do_safe_arm_pos()
 
 # Sets the mode to detecting unused blocks, instead of predefined marked positions
 # Does not work reliably in simulation
 # move.set_mode_to_detecting_blocks()
 
 # Starting the Game
-#strat.start_game()
-
-#move.do_animation(Animation.)
-move.do_say(Sentence.CHANCE_HM)
-time.sleep(3)
-move.do_say(Sentence.CHANCE_RH)
-time.sleep(3)
-move.do_say(Sentence.DETECT_TIE)
-time.sleep(3)
-move.do_say(Sentence.ILLEGALMOVE_HM)
-time.sleep(3)
-move.do_say(Sentence.ILLEGALMOVE_RH)
-time.sleep(3)
-move.do_say(Sentence.JOKE)
-time.sleep(3)
-move.do_say(Sentence.LEVEL_DEC)
-time.sleep(3)
-move.do_say(Sentence.NEXT_MOVE_HM)
-time.sleep(3)
-move.do_say(Sentence.NEXT_MOVE_RH)
-time.sleep(3)
-move.do_say(Sentence.LEVEL_INC)
-time.sleep(3)
-move.do_say(Sentence.TRAP_DONE_RH)
-time.sleep(3)
-move.do_say(Sentence.TRAP_RECOGNIZE)
-time.sleep(3)
-move.do_say(Sentence.WIN_PREVENT)
-time.sleep(3)
-move.do_say(Sentence.ILLEGALMOVE_HM)
-time.sleep(3)
-move.do_say(Sentence.WIN_PREVENT_FAILED)
-time.sleep(3)
-move.do_say(Sentence.WAITING)
-time.sleep(3)
+strat.start_game()
