@@ -128,7 +128,8 @@ class MoveImpl:
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
 
         #move arm to position above block 5 then above block 1
-        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        ## Commented assuming Arm already is above Block 5
+        #self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Add hand width
