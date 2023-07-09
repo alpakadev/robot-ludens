@@ -1,8 +1,12 @@
 import time
 import random
 
+from ..constants import BEFORE_THINKING, THINKING
+from .Player import play_sound
+from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+
 
 def animation_thinking(reachy):
     """
@@ -15,6 +19,9 @@ def animation_thinking(reachy):
     reachy.head.l_antenna.goal_position = 40.0
     reachy.head.r_antenna.goal_position = -80.0
     time.sleep(0.50)
+
+    safely_run(play_sound(random.choice(BEFORE_THINKING), False),
+               "[Anim Thinking] Sound konnte nicht abgespielt werden")
 
     for x in range(3):
         degree  = random.randint(20,55)
@@ -37,11 +44,16 @@ def animation_thinking(reachy):
         )
         time.sleep(0.1)
         
+        if x == 1:
+            safely_run(play_sound(random.choice(THINKING), False),
+                       "[Anim Thinking] Sound konnte nicht abgespielt werden")
+
         reachy.head.l_antenna.speed_limit = 90.0 - degree//2
         reachy.head.r_antenna.speed_limit = 60.0 - degree//2
         reachy.head.l_antenna.goal_position = 50.0 - degree
         reachy.head.r_antenna.goal_position = -90.0 + degree
         time.sleep(0.1)
+       
 
         left_scratch = {
             reachy.l_arm.l_shoulder_pitch: -75,  
@@ -54,6 +66,8 @@ def animation_thinking(reachy):
             reachy.l_arm.l_gripper: 0,
         }
 
+        
+    
         goto(
             goal_positions=left_scratch,
             duration=0.80,
@@ -77,14 +91,18 @@ def animation_thinking(reachy):
         duration=1.2,
         interpolation_mode=InterpolationMode.MINIMUM_JERK
     )
+
     
+
     reachy.head.look_at(0.5, 0, 0, duration=0.60)
     reachy.head.l_antenna.speed_limit = 20.0 
     reachy.head.r_antenna.speed_limit = 20.0 
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
+
     reachy.turn_off_smoothly("l_arm")
     time.sleep(1.0)
     reachy.turn_off_smoothly("head")
-     
+
+    
     

@@ -13,7 +13,6 @@ from .Animations.Thinking import animation_thinking
 from .Animations.Disapproval import animation_disapproval
 from .Animations.SadAntennas import animation_sad_antennas
 from .Animations.HappyAntennas import animation_happy_antennas
-from .Animations.Inhale import animation_inhale
 from .Animations.Level0 import animation_level0
 from .Animations.Level1 import animation_level1
 from .Animations.Level2 import animation_level2
@@ -128,7 +127,8 @@ class MoveImpl:
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
 
         #move arm to position above block 5 then above block 1
-        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        ## Commented assuming Arm already is above Block 5
+        #self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Add hand width
@@ -361,8 +361,6 @@ class MoveImpl:
                 animation_sad_antennas(self.reachy)
             case Animation.HAPPY_ANTENNAS:
                 animation_happy_antennas(self.reachy)
-            case Animation.INHALE:
-                animation_inhale()
             case Animation.LEVEL0:
                 animation_level0(self.reachy)
             case Animation.LEVEL1:
