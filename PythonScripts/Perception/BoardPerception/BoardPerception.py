@@ -27,4 +27,4 @@ class BoardPerception:
         return case
     
     def get_stable_board_image(self):
-        get_stable_image(self.reachy, self.config)
+        return get_stable_image(self.reachy, self.config)

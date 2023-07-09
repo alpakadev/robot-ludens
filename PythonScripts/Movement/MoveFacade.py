@@ -74,8 +74,9 @@ class MoveFacade:
 
     def do_animation(self, animation_type: Animation):
         self.move.perform_animation(animation_type)
-    
+
     def do_say(self, sentence_type: Sentence): #??
         sentence_line(sentence_type)
 
-    
+    def steal_block(self, f: Board):
+        self.move.steal_object(f)

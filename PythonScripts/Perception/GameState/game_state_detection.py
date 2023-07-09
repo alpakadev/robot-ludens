@@ -32,13 +32,13 @@ def _get_case_value(case, frame, config):
     upper_red = np.array(config["color_bounds"]["red_upper"])
 
     # Crop the image to get only the current rectangle
-    mask = np.zeros(frame.shape[:2], dtype="uint8")
+    mask = np.zeros(frame.shape[:2], dtype= np.uint8)
 
     # Transform case coordinates in array format
     roi = np.array([[case["upLeft"]["x"], case["upLeft"]["y"]], 
                     [case["upRight"]["x"], case["upRight"]["y"]], 
                     [case["downRight"]["x"], case["downRight"]["y"]], 
-                    [case["downLeft"]["x"], case["downLeft"]["y"]]])
+                    [case["downLeft"]["x"], case["downLeft"]["y"]]], dtype=np.int32)
     
     # Cut everything from image except the area of the case
     cv2.fillPoly(mask, [roi], (255, 255, 255))

@@ -2,7 +2,7 @@ HOST_ADDRESS = '192.168.1.94'
 
 ORIGIN_COORDINATES = [0.15, -0.31, -0.38]
 
-GRIP_FORCE_HOLDING = 50
+GRIP_FORCE_HOLDING = 60
 GRIP_FORCE_HOLDING_THRESHOLD = 100
 
 # The distance to position hand in front of object
@@ -26,6 +26,10 @@ HEAD_LOOK_DOWN = [0.05, 0, -0.05]
 GRIPPER_OPEN_FULL = -40
 GRIPPER_CLOSED = 5
 
+STEAL_PLACE = [0.3, 0.44, 0.08]
+
+L_GRIPPER_CLOSE = 0
+L_GRIPPER_OPEN = 50
 #sounds
 
 ANGRY_SOUND =  ["PythonScripts/Movement/Sounds/angry/gedult erschöpft.m4a","PythonScripts/Movement/Sounds/angry/so gehts nicht weiter.m4a" ]

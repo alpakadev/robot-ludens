@@ -12,3 +12,7 @@ thresholds:
 line_distance_factors:
   first: 0.33
   second: 0.66
+  green: 0.08
+thresholds:
+  red: 0.08
+  green: 0.08
