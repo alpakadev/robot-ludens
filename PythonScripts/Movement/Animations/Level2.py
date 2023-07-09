@@ -1,5 +1,6 @@
 import time
 
+
 def animation_level2(reachy):
     """
     indicating level 2: intermediate 

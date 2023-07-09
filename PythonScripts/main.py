@@ -5,6 +5,7 @@ from Strategy.StrategyFacade import StrategyFacade
 from Movement.Enums import Outside
 from Movement.Enums import Board
 from Movement.Enums.Animation import Animation
+from Movement.Enums.Sentence import Sentence
 import time
 
 reachy = ReachySDK("localhost")

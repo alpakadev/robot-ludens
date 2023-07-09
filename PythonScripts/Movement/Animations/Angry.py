@@ -1,5 +1,9 @@
 import time
+import random
 
+from ..constants import ANGRY_SOUND
+from .Player import play_sound
+from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
@@ -13,8 +17,9 @@ def animation_angry(reachy):
 
     reachy.head.l_antenna.speed_limit = 50.0
     reachy.head.r_antenna.speed_limit = 50.0 
-
-    reachy.head.look_at(0.5, -0.4, -0.4, duration=0.8) 
+    
+    reachy.head.look_at(0.5, -0.4, -0.4, duration=0.8)
+    safely_run(play_sound(random.choice(ANGRY_SOUND), False), "[Anim Angry] Sound konnte nicht abgespielt werden")
     time.sleep(1.0)
 
     reachy.head.l_antenna.goal_position = -90

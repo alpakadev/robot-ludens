@@ -9,7 +9,8 @@ class Animation(Enum):
     THINKING = "thinking",
     SAD_ANTENNAS = "sad_antennas",
     HAPPY_ANTENNAS = "happy_antennas",
-    INHALE = "inhale",
+    LEVEL_INC = "level_inc"
+    LEVEL_DEC = "level_dec"
     LEVEL0 = "level0",
     LEVEL1 = "level1",
     LEVEL2 = "level2",
@@ -20,5 +21,6 @@ class Animation(Enum):
     FORWARD = "forward",
     CLUELESS = "clueless",
     HAPPY = "happy",
+  
     
   
