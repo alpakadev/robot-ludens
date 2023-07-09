@@ -5,6 +5,7 @@ from Movement.MoveFacade import MoveFacade
 from Perception.PerceptionFacade import PerceptionFacade
 import time
 from Movement.Enums.Animation import Animation
+from Movement.Enums.Sentence import Sentence
 
 class Game:
     def __init__(self):
