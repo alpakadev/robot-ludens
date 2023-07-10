@@ -48,13 +48,13 @@ START_HUMAN = ["PythonScripts/Movement/Sounds/game_start_human/start_hm1.wav", "
 
 START_REACHY = ["PythonScripts/Movement/Sounds/game_start_reachy/start_rh1.wav", " PythonScripts/Movement/Sounds/game_start_reachy/start_rh2.wav", "PythonScripts/Movement/Sounds/game_start_reachy/start_rh3.wav", "PythonScripts/Movement/Sounds/game_start_reachy/start_rh4.wav", "PythonScripts/Movement/Sounds/game_start_reachy/start_rh5.wav"]
 
-ILLEGALMOVE_REACHY = ["PythonScripts/Movement/Sounds/illegalmove_human PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm1.wav PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm2.wav PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm3.wav PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm4.wav"]
+ILLEGALMOVE_REACHY = ["PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm1.wav", "PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm2.wav", "PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm3.wav", "PythonScripts/Movement/Sounds/illegalmove_human/illegalmove_hm4.wav"]
 
-ILLEGALMOVE_HUMAN = ["PythonScripts/Movement/Sounds/illegalmove_reachy/illegalmove_rh1.wav PythonScripts/Movement/Sounds/illegalmove_reachy/regelkonform.wav PythonScripts/Movement/Sounds/illegalmove_reachy/total_richtig.wav PythonScripts/Movement/Sounds/illegalmove_reachy/völlig_legal.wav"]
+ILLEGALMOVE_HUMAN = ["PythonScripts/Movement/Sounds/illegalmove_reachy/illegalmove_rh1.wav", "PythonScripts/Movement/Sounds/illegalmove_reachy/regelkonform.wav", "PythonScripts/Movement/Sounds/illegalmove_reachy/total_richtig.wav", "PythonScripts/Movement/Sounds/illegalmove_reachy/völlig_legal.wav"]
 
 JOKE = ["PythonScripts/Movement/Sounds/joke/joke.wav"]
 
-LEVEL_DECREASE = ["PythonScripts/Movement/Sounds/level_decrease/du_kannst_gewinnen.wav", "PythonScripts/Movement/Sounds/level_decrease/ohne_mühe.wav PythonScripts/Movement/Sounds/level_decrease/streng_dich_an.wav", "PythonScripts/Movement/Sounds/level_decrease/zurücklegen.wav"]
+LEVEL_DECREASE = ["PythonScripts/Movement/Sounds/level_decrease/du_kannst_gewinnen.wav", "PythonScripts/Movement/Sounds/level_decrease/ohne_mühe.wav", "PythonScripts/Movement/Sounds/level_decrease/streng_dich_an.wav", "PythonScripts/Movement/Sounds/level_decrease/zurücklegen.wav"]
 
 LEVEL_INCREASE = ["PythonScripts/Movement/Sounds/level_increase/viel_mühe.wav", "PythonScripts/Movement/Sounds/level_increase/mehr_anstrengen.wav", "PythonScripts/Movement/Sounds/level_increase/jz_strenge_mehr_an.wav"]
 
