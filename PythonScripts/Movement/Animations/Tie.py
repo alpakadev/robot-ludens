@@ -8,7 +8,7 @@ from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
 
-def animation_tie(reachy):
+def animation_tie(reachy, use_sound):
     """
     reaction to tie, shoulder shrugging 
     """
@@ -81,7 +81,7 @@ def animation_tie(reachy):
 
         if x == 0:
             safely_run(play_sound(random.choice(TIE), False),
-                       "[Anim Tie] Sound konnte nicht abgespielt werden")
+                       "[Anim Tie] Sound konnte nicht abgespielt werden") if use_sound else None
 
         goto(
             goal_positions=tie_up,

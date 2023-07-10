@@ -6,7 +6,7 @@ from .Player import play_sound
 from ..Helper.Safely import safely_run
 
 
-def animation_disapproval(reachy):
+def animation_disapproval(reachy, use_sound):
     """
     head shaking with changing antennas 
     """
@@ -26,10 +26,10 @@ def animation_disapproval(reachy):
     p = random.random()
     if p < 0.5:
         safely_run(play_sound(random.choice(CHANCE_WIN_HUMAN), False),
-                   "[Anim Disapproval] Sound konnte nicht abgespielt werden")
+                   "[Anim Disapproval] Sound konnte nicht abgespielt werden") if use_sound else None
     else:
         safely_run(play_sound(random.choice(CHANCE_WIN_REACHY), False),
-                   "[Anim Clueless] Sound konnte nicht abgespielt werden")
+                   "[Anim Clueless] Sound konnte nicht abgespielt werden") if use_sound else None
 
     # Head shaking
     for i in range(3):

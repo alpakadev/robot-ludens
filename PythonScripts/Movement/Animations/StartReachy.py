@@ -8,7 +8,7 @@ from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
 
-def animation_start_reachy(reachy):
+def animation_start_reachy(reachy, use_sound):
     """
     pointing at themself
     """
@@ -95,7 +95,7 @@ def animation_start_reachy(reachy):
         )
         if x == 0:
             safely_run(play_sound(random.choice(START_REACHY), False),
-                       "[Anim StartReachy] Sound konnte nicht abgespielt werden")
+                       "[Anim StartReachy] Sound konnte nicht abgespielt werden") if use_sound else None
 
         l_point2 = {
             reachy.head.l_antenna: 45,
