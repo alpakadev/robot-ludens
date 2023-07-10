@@ -20,18 +20,25 @@ move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
 # If the Arm gets stuck, call this function
-move.do_deactivate_right_arm()
+#move.do_deactivate_right_arm()
 
 # Calibrating real Reachy; Not needed in simulation
 # move.do_calibration()
 # time.sleep(5) # Enough time, to move away after calibration
 
 # To ensure a safe arm position without collision with the blocks
-move.do_safe_arm_pos()
+#move.do_safe_arm_pos()
 
 # Sets the mode to detecting unused blocks, instead of predefined marked positions
 # Does not work reliably in simulation
 # move.set_mode_to_detecting_blocks()
 
 # Starting the Game
-strat.start_game()
+#strat.start_game()
+
+move.do_say(Sentence.JOKE)
+
+
+
+
+

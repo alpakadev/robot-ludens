@@ -44,7 +44,7 @@ def animation_thinking(reachy):
         )
         time.sleep(0.1)
         
-        if x == 1:
+        if x == 0:
             safely_run(play_sound(random.choice(THINKING), False),
                        "[Anim Thinking] Sound konnte nicht abgespielt werden")
 
