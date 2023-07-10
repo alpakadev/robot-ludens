@@ -4,5 +4,5 @@ class GameState:
     def __init__(self):
         pass
 
-    def get_game_state(self, frame, cases_coords, config):
+    def do_get_game_state(self, frame, cases_coords, config):
         return get_board_state(frame, cases_coords, config)
