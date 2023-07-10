@@ -44,3 +44,10 @@ move.set_mode_to_playing_sounds()
 
 # Starting the Game
 strat.start_game()
+
+# move.do_say(Sentence.JOKE)
+
+
+
+
+
