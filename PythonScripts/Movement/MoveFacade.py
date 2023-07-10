@@ -85,7 +85,7 @@ class MoveFacade:
     def do_animation(self, animation_type: Animation):
         self.move.perform_animation(animation_type)
 
-    def do_say(self, sentence_type: Sentence): #??
+    def do_say(self, sentence_type: Sentence):
         if(self.mode_playing_sounds):
             sentence_line(sentence_type)
 

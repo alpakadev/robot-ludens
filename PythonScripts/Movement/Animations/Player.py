@@ -9,4 +9,3 @@ def play_sound(sound, block):
         print('[Failure] SoundFile "'+'./'+sound+'" Could not be played')
         print(exception)
 
-#playsound("./PythonScripts/Movement/Sounds/chance_human/chance_hm2.wav")
