@@ -25,17 +25,17 @@ class PerceptionImplementation:
         except TypeError:
             print("type error")
             reachy.head.look_at(0.5, 0, -0.6, 1, "simul")
-        frame = self.board_perception.get_stable_board_image()
+        frame = self.board_perception.do_get_stable_board_image()
         return frame
             
     def get_game_state(self, move:MoveFacade):
         # Returns current state of the board
         frame = self.get_non_moving_image(move)
         try:
-            board_corners = self.board_perception.get_board_corners(frame)
+            board_corners = self.board_perception.do_get_board_corners(frame)
             board_cases_coordinates = self.board_perception \
-                                          .get_board_cases(board_corners)
-            game_state = self.game_state.get_game_state(
+                                          .do_get_board_cases(board_corners)
+            game_state = self.game_state.do_get_game_state(
                 frame, 
                 board_cases_coordinates, 
                 self.config
@@ -75,7 +75,7 @@ class PerceptionImplementation:
 
     def get_coordinates_of_square(self, square):
         # Get Real World Coordinates of certain square
-        return self.board_perception.get_coordinates_of_square(square)
+        return self.board_perception.do_get_coordinates_of_square(square)
 
     def get_nearest_unused_piece(self, move):
         # Gibt Position des nähesten freien Spielsteins 
@@ -84,7 +84,7 @@ class PerceptionImplementation:
         frame = self.get_non_moving_image(move)
         try:
             board_corners = self.board_perception \
-                                .get_board_corners(frame)
+                                .do_get_board_corners(frame)
             nearest_piece = self.piece_perception \
                                 .get_nearest_unused_piece(frame, board_corners)
             return nearest_piece
@@ -98,9 +98,9 @@ class PerceptionImplementation:
         # [0, 0, 0, 0, 0, (-5.9299755, 17.198578, 'G'), 0, 0, 0]
         frame = self.get_non_moving_image(move)
         try:
-            board_corners = self.board_perception.get_board_corners(frame)
+            board_corners = self.board_perception.do_get_board_corners(frame)
             board_cases_coordinates = self.board_perception \
-                                          .get_board_cases(board_corners)
+                                          .do_get_board_cases(board_corners)
             red_midpoints, green_midpoints = self.piece_perception \
                                                  .get_all_pieces_coordinates(
                                                     frame, 

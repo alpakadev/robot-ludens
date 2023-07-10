@@ -164,7 +164,7 @@ def _squares(anchors):
     }
     return squares
 
-def get_board_cases(board_coordinates, config):
+def calc_board_cases(board_coordinates, config):
     # Returns pixel positions of corners of all squares on the board
 
     _sort(board_coordinates, 0)
