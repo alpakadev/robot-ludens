@@ -1,4 +1,4 @@
-#import face_recognition as fr
+import face_recognition as fr
 import cv2
 import numpy as np
 import time
