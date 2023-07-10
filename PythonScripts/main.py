@@ -9,7 +9,7 @@ from Movement.Enums.Sentence import Sentence
 import time
 
 reachy = ReachySDK("localhost")
-#reachy = ReachySDK("192.168.1.94") # with_mobile_base = True) 
+#reachy = ReachySDK("192.168.1.94") # with_mobile_base = True)
 
 move = MoveFacade()
 perc = PerceptionFacade()
@@ -19,24 +19,33 @@ perc.set_dependencies(reachy, move, strat)
 move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
-# If the Arm gets stuck, call this function
-#move.do_deactivate_right_arm()
+# If the the joints of reachy gets stuck, call this function
+move.do_deactivate_reachys_joints()
 
-# Calibrating real Reachy; Not needed in simulation
+## Calibration ##
+## Calibrating real Reachy; Not needed in simulation
+## For Calibration hold the middle of the right Hand
+## on top of the bottem right corner of the board
 # move.do_calibration()
 # time.sleep(5) # Enough time, to move away after calibration
 
 # To ensure a safe arm position without collision with the blocks
-#move.do_safe_arm_pos()
+move.do_safe_arm_pos()
 
-# Sets the mode to detecting unused blocks, instead of predefined marked positions
-# Does not work reliably in simulation
+## Block Detection ##
+## Sets the mode to detecting unused blocks, instead of predefined marked positions
+## Does not work reliably in simulation
 # move.set_mode_to_detecting_blocks()
 
-# Starting the Game
-#strat.start_game()
+## Sounds ##
+## Sounds will crash most of the time on Windows and Linux
+## Should work on MacOS
+move.set_mode_to_playing_sounds()
 
-move.do_say(Sentence.JOKE)
+# Starting the Game
+strat.start_game()
+
+# move.do_say(Sentence.JOKE)
 
 
 
