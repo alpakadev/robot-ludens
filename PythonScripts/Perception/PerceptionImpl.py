@@ -120,7 +120,7 @@ class PerceptionImplementation:
         return unused_pieces
 
     def identify_human_player(self):
-        self.face_recognition.identify_human_player(self.reachy, self.move)
+        self.face_recognition.do_identify_human_player(self.reachy, self.move)
     
     def look_at_human_player(self):
-        self.face_recognition.look_at_human_player(self.reachy, self.move)
+        self.face_recognition.do_look_at_human_player(self.reachy, self.move)
