@@ -230,6 +230,7 @@ def scan_trap(state, move: MoveFacade):
                    return True
     return False
           
+          
 
 def corner_move():
     global chosen
