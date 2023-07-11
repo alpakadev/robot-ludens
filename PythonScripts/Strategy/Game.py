@@ -200,7 +200,7 @@ class Game:
                 if wertNeu == 1:
                     print("Reachys Gewinn wurde ruiniert!")
                     # Audio für Spieler verhindert Sieg einfügen
-                    self.move.do_say(Sentence.WIN_RUINED)
+                    self.move.do_say(Sentence.WIN_PREVENT)
                     return True
         #es wurde kein Gewinn verhindert
         return False
