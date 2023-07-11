@@ -13,7 +13,7 @@ def identify_human_player(reachy, move):
 
     reachy.turn_on("head")
     try:
-        move.do_move_head([0.5, 0, 0, 1])
+        move.do_move_head([0.5, 0, 0])
     except NotImplementedError:
         # Check if modified function for simulation has to be used
         reachy.head.look_at(1, 0, 0, 1, "simul")
@@ -76,7 +76,7 @@ def look_at_human_player(reachy, move, face_enc):
     else:
         print("Not in View")
         try:
-            move.do_move_head([0.5, 0, 0, 1])
+            move.do_move_head([0.5, 0, 0])
         except NotImplementedError:
             # Check if modified function for simulation has to be used
             reachy.head.look_at(1, 0, 0, 1, "simul")
@@ -144,8 +144,7 @@ def _center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
         move.do_move_head([
             1, 
             distance_to_move_horizontally, 
-            distance_to_move_vertically, 
-            1
+            distance_to_move_vertically
         ])
     except NotImplementedError:
         # Check if modified function for simulation has to be used
