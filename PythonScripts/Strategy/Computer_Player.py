@@ -4,6 +4,7 @@ import Movement.Enums.Board as Board_enum
 import Movement.Enums.Outside as Outside_enum 
 from Movement.MoveFacade import MoveFacade 
 from Movement.Enums.Animation import Animation
+from Movement.Enums.Sentence import Sentence
 
 # Wahrscheinlichkeiten für bestimmte Züge abhängig vom Level
 winning = {
@@ -61,6 +62,8 @@ reachy_moveCounter = 0
 player_moveCounter = 0
 chosen = tuple()
 
+chose_trapping_move = False
+
 # hier können die Zielkoordinaten für die Bewegung abgelegt werden
 coordinates = []
 
@@ -92,7 +95,7 @@ def combovalue(k, b=board):
 
 
 # versuche zu gewinnen (2) oder einen Gewinn zu verhindern (-2)
-def make_combo_move(n, p):
+def make_combo_move(n, p, move : MoveFacade):
     global chosen
     # Gewinn verhindern nur mit gewisser Wahrscheinlichkeit
     if n == -2:
@@ -107,6 +110,11 @@ def make_combo_move(n, p):
     for combo in range(len(wincombinations)):
         if combovalue(combo) == n:
             # setze auf das freie Feld in der Kombination
+            if n == -2:
+                move.do_say(Sentence.CHANCE_HM)
+                #move.do_say(Sentence.WIN_PREVENT)
+            elif n == 2:
+                move.do_say(Sentence.CHANCE_RH)
             for i in range(3):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
                     board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] = 1
@@ -139,13 +147,11 @@ def GKv1finden(vierboard):
     return GKv1gefunden
 
 def in001setzen(p):
-    print("in001setzten vielleicht")
     global chosen
     # nur mit bestimmter Wahrscheinlichkeit guten Zug machen
     if p < (100 - good[level]):
         return False
     
-    print("in001setzten")
     vierboard = boardtransformation()
     GKv1 = GKv1finden(vierboard)
     for feld in GKv1:
@@ -153,11 +159,11 @@ def in001setzen(p):
             #print("freies Feld: ", feld)
             board[feld[0]][feld[1]] = 1
             chosen = (feld[0],feld[1])
-            print("hat wirklich geklappt")
+            #print("in001gesetzt")
             return True
 
 def setup_trap(p, move: MoveFacade):
-    global chosen
+    global chosen, chose_trapping_move
     # Fallen stellen nur mit gewisser Wahrscheinlichkeit
     if p < (100 - trap[level]):
         return False
@@ -196,7 +202,32 @@ def setup_trap(p, move: MoveFacade):
                 board[feld[0]][feld[1]] = 1
                 chosen = (feld[0],feld[1])
                 move.do_animation(Animation.THINKING)
+                chose_trapping_move = True
                 return True
+    return False
+
+def scan_trap(state, move: MoveFacade):
+    global board
+    board = state
+    vierboard = boardtransformation()
+    GKv4 = []
+    for combo in range(len(wincombinations)):
+        if combovalue(combo, vierboard) == 8:
+            GKv4 += (wincombinations[combo])
+    print(GKv4)
+
+    if len(GKv4) > 1:
+       #Gemeinsames Feld zweier GKv4 finden
+       for feld in GKv4:
+           if GKv4.count(feld) > 1 and board[feld[0]][feld[1]] == -1:
+               print("fallensteller ", feld)
+               # Bewegung nur ausführen, wenn in range vom linken Arm (linke Spalte)
+               if feld[1] == 0:
+                board[feld[0]][feld[1]] = 0
+                print('Reachy schummelt')
+                move.do_say(Sentence.TRAP_RECOGNIZE)
+                # Schummelbewegung aufrufen (feld[0],feld[1])
+               return True
     return False
           
 
@@ -274,6 +305,7 @@ def make_random_move():
 
 def make_first_move(currentboard,reachy_moves, move: MoveFacade):
     global  reachy_moveCounter, chosen
+    print('doing first move')
     reachy_moveCounter = reachy_moves
     #print("trying to make first move")
     tmp_board = copy.deepcopy(currentboard)
@@ -298,15 +330,15 @@ def make_first_move(currentboard,reachy_moves, move: MoveFacade):
 
 # Funktion: Gegner macht auch strategisch gewichtet gute Züge
 def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves, move : MoveFacade):
-    global board, level, reachy_moveCounter, player_moveCounter, chosen
+    global board, level, reachy_moveCounter, player_moveCounter, chosen, chose_trapping_move
     board = copy.deepcopy(currentboard)
     level = currentlevel
     reachy_moveCounter = reachy_moves
     player_moveCounter = player_moves
     # welcher Zug gemacht wird abh. von p
     p = random.randint(0, 100)
-    if not make_combo_move(2, p):
-        if not make_combo_move(-2, p):
+    if not make_combo_move(2, p, move):
+        if not make_combo_move(-2, p, move):
             if not setup_trap(p, move):
                 if not make_good_move(p):
                     if not in001setzen(p):
@@ -318,4 +350,7 @@ def make_computer_move(currentboard, currentlevel, reachy_moves, player_moves, m
     currentblock = block_positions[reachy_moveCounter]
     print(chosenmove , currentblock)
     move.do_move_block(currentblock,chosenmove)
+    if chose_trapping_move:
+        move.do_say(Sentence.TRAP_DONE_RH)
+        chose_trapping_move = False
     return board
