@@ -133,25 +133,19 @@ class MoveImpl:
         self.move_head(constants.HEAD_LOOK_DOWN)
 
         # Define coordinates
-        # Define coordinates
         position_from_coordinates = position_from
         position_to_coordinates = position_to.value
 
-        # Add coordinates to origin point
         # Add coordinates to origin point
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
 
         # Starting Thread for head control
-        # Starting Thread for head control
         thread1 = threading.Thread(target=self.head_follows_arm)
         thread1.start()
 
         # calculate coordinate above block 5 and block 1 (17cm from block 5 in y direction towards Reachy)
-        # calculate coordinate above block 5 and block 1 (17cm from block 5 in y direction towards Reachy)
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
-        point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
-        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17, 0, 0])
         point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17, 0, 0])
 
@@ -164,46 +158,37 @@ class MoveImpl:
         # position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
 
         # Add safe height
-        # Add safe height
         position_from_coordinates[2] += 0.15
 
-        # Subtract constant distance (pull hand back)
         # Subtract constant distance (pull hand back)
         position_from_coordinates[0] -= constants.DELTA_FRONT
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # lower hand 11cm
-        # lower hand 11cm
         position_from_coordinates[2] -= 0.11
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # open hand for taking block
-        self._grip_open()
+        self.grip_open()
         # Add the constant distance (to the front)
         position_from_coordinates[0] += constants.DELTA_FRONT
-        position_from_coordinates[
-            0] += 0.02  # move 2 cm further to the front to have the block being safe within the hand
         position_from_coordinates[
             0] += 0.02  # move 2 cm further to the front to have the block being safe within the hand
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Takes Block
-        self._grip_close()
+        self.grip_close()
 
-        # raise hand 10cm
         # raise hand 10cm
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # beginning of pos_to
         # Add safe height to pos_to coordinates and move to pos_to
-        # beginning of pos_to
-        # Add safe height to pos_to coordinates and move to pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        # Subtract safe height from pos_to
         # Subtract safe height from pos_to
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         # tilt hand 70 degrees down to not touch other blocks
@@ -211,19 +196,17 @@ class MoveImpl:
             position_to)})
 
         # Open Grip to release block
-        self._grip_open()
+        self.grip_open()
 
-        # Add height
         # Add height
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
         # Close grip and move back to waiting position above block 5
-        self._grip_close()
+        self.grip_close()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        # move is finished, reachy looks down and turns off his head
         # move is finished, reachy looks down and turns off his head
         self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
