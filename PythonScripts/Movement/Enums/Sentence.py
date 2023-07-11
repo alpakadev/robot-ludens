@@ -16,6 +16,6 @@ class Sentence(Enum):
     TRAP_RECOGNIZE= "trap_recognize",
     WAITING= "waiting",
     WIN_PREVENT= "win_prevent",
-    WIN_PREVENT_FAILED= "win_prevent_failed",
+    WIN_RUINED= "win_ruined",
 
 

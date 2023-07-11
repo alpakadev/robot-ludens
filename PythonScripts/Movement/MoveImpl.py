@@ -404,7 +404,7 @@ class MoveImpl:
             case Animation.FORWARD:
                 animation_forward(self.reachy)
             case Animation.CLUELESS:
-                animation_clueless(self.reachy, use_sound)
+                animation_clueless(self.reachy)
             case Animation.HAPPY:
                 animation_happy(self.reachy)
 
