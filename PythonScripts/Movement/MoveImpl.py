@@ -150,7 +150,7 @@ class MoveImpl:
         point_above_Block_1 = add_lists(point_above_Block_5, [-0.17, 0, 0])
 
         # move arm to position above block 5 then above block 1
-        # Commented assuming Arm already is above Block 5
+        ## Commented assuming Arm already is above Block 5
         # self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
@@ -267,6 +267,10 @@ class MoveImpl:
                 pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
                 pos_from += [-0.05]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
                 print("Detected nearest Block with Coordinate:", pos_from)
+                ## Adjustments if needed
+                # pos_from[0] += 0.00
+                # pos_from[1] -= 0.02
+                # print("Adjusted Coordinate:", pos_from)
 
                 # Check if the return values are within the desired range
                 if -35 <= pos_from[0] <= 35 and -35 <= pos_from[1] <= 35:
@@ -276,6 +280,7 @@ class MoveImpl:
             except Exception as exeption:
                 print(exeption)
                 print("Could not detect an unused block")
+                # print("Uses Coordinates of Predefined Block 1 instead")
                 # pos_from = Outside.BLOCK_1.value
             print("Restarting Detection")
         self.go_to_pos_above_5()  # Returns arm to a Position above Block 5
@@ -348,7 +353,7 @@ class MoveImpl:
         z = -0.37
         res = [x, y, z]
         self.set_origin(res)
-        print("Calibration of bottem right corner: ", self.get_origin())
+        print("Calibration of bottem right corner: ",self.get_origin())
 
     def move_head(self, look_at=None):
         """
@@ -418,33 +423,36 @@ class MoveImpl:
 
         self._move_l_arm([0.1, 0.4, 0.05])
         self._open_l_gripper()
+        pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
+        # print(pieces)
+        piece = None
+        offset_x = 0
+        offset_y = 0
         match block:
             case Board.BOTTOM_LEFT:
-                self._move_l_arm([-0.03, 0.4, 0])
-                self._move_l_arm([0, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([-0.03, 0.4, 0.05])
+                piece = pieces[6]
+                offset_x = -0.06
             case Board.CENTER_LEFT:
-                self._move_l_arm([0.1, 0.4, 0])
-                self._move_l_arm([0.1, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([0.1, 0.4, 0.05])
+                piece = pieces[3]
             case Board.TOP_LEFT:
-                self._move_l_arm([0.2, 0.4, 0])
-                self._move_l_arm([0.2, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([0.2, 0.4, 0.05])
-            case Board.BOTTOM_CENTER:
-                self._move_l_arm([0.09, 0.2, 0.1])
-                self._move_l_arm([0.09, 0.2, 0.1])
-                # self._move_l_arm([0.0, 0.3, 0.1])
-                self._close_l_gripper()
-                self._move_l_arm([0.09, 0.1, 0.2])
-                self._move_l_arm([0.0, 0.4, 0.2])
-            case Board.CENTER:
-                self._move_l_arm([0.18, 0.11, 0.08])
-                self._close_l_gripper()
-                self._move_l_arm([0.18, 0.4, 0.08])
+                piece = pieces[0]
+                offset_y = -0.04
+
+
+        x = piece[1] / -100
+        y = piece[0] / -100
+        print("x:", x, "y:", y)
+        self._move_l_arm([x - 0.1, y + 0.05, 0])
+        self._move_l_arm([x - offset_x, y + offset_y, 0])
+        self._close_l_gripper()
+        self._move_l_arm([x - 0.06, y, 0.09])
+
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.1]))
+        self._move_l_arm(constants.STEAL_PLACE, duration=0.5)
+        self._open_l_gripper()
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
+        self._move_l_arm([-0.03, 0.45, 0.02])
 
     def _move_l_arm(self, pos, rot=None, duration=None):
         if rot is None:
