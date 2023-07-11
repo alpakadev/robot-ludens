@@ -155,6 +155,8 @@ def _center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
             1, 
             "simul"
         )
+    image = _take_picture(reachy)
+    cv2.imwrite("PythonScripts/Perception/FaceRecognition/Looking_at_you.png", image)
     reachy.turn_off_smoothly("head")
 
 
