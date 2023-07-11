@@ -60,7 +60,7 @@ LEVEL_INCREASE = ["PythonScripts/Movement/Sounds/level_increase/viel_mühe.wav",
 
 LOSING = ["PythonScripts/Movement/Sounds/losing/der_sieg_ist_dein.wav", "PythonScripts/Movement/Sounds/losing/du_hast_gewonnen.wav", "PythonScripts/Movement/Sounds/losing/glückwunsch.wav", "PythonScripts/Movement/Sounds/losing/gut_gespielt.wav", "PythonScripts/Movement/Sounds/losing/starke_leistung.wav"]
 
-NEXT_MOVE_HUMAN = ["PythonScripts/Movement/Sounds/next_move_human", "PythonScripts/Movement/Sounds/next_move_human/dein_zug.wav", "PythonScripts/Movement/Sounds/next_move_human/du_bist_dran.wav", "PythonScripts/Movement/Sounds/next_move_human/jetzt_du.wav"]
+NEXT_MOVE_HUMAN = ["PythonScripts/Movement/Sounds/next_move_human/dein_zug.wav", "PythonScripts/Movement/Sounds/next_move_human/du_bist_dran.wav", "PythonScripts/Movement/Sounds/next_move_human/jetzt_du.wav"]
 
 NEXT_MOVE_REACHY = ["PythonScripts/Movement/Sounds/next_move_reachy/hier_komme_ich.wav", "PythonScripts/Movement/Sounds/next_move_reachy/jetzt_bin_ich_dran.wav", "PythonScripts/Movement/Sounds/next_move_reachy/lass_mich_zeigen.wav", "PythonScripts/Movement/Sounds/next_move_reachy/mit_diesem_zug.wav", "PythonScripts/Movement/Sounds/next_move_reachy/pläne_durchkreuzen.wav", "PythonScripts/Movement/Sounds/next_move_reachy/überraschen.wav"]
 
