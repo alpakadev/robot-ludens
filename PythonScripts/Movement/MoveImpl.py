@@ -223,7 +223,6 @@ class MoveImpl:
         while True:
             self.move_head()
             # time.sleep(0.5)
-            # time.sleep(0.5)
             if (self.move_finished):
                 sys.exit()
 
@@ -263,13 +262,12 @@ class MoveImpl:
         :return: Die erkannte Position des nächstgelegenen unbenutzten Blocks.
         """
         self.set_arm_to_side_position()  # Temporary Position to move Arm out of the view
-        self.set_arm_to_side_position()  # Temporary Position to move Arm out of the view
         while True:
             try:
                 pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
                 pos_from += [-0.05]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
                 print("Detected nearest Block with Coordinate:", pos_from)
-                ## Adjustments
+                ## Adjustments if needed
                 # pos_from[0] += 0.00
                 # pos_from[1] -= 0.02
                 # print("Adjusted Coordinate:", pos_from)
