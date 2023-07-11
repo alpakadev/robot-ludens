@@ -269,7 +269,7 @@ class MoveImpl:
                 print("Detected nearest Block with Coordinate:", pos_from)
 
                 # Check if the return values are within the desired range
-                if -20 <= pos_from[0] <= 20 and -20 <= pos_from[1] <= 20:
+                if -35 <= pos_from[0] <= 35 and -35 <= pos_from[1] <= 35:
                     break
                 else:
                     print("The detected Coordinate are outside of desired range")
