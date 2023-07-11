@@ -12,17 +12,6 @@ class PerceptionFacade:
         # Gibt den Spielstand als 2D Array zurück
         return self.perception_implementation.get_game_state(self.move)
     
-    def check_game_state_validity(self, state):
-        # Gibt zurück, ob der angebene state valide ist. 
-        # Bei nicht Übereinstimmung:
-        #     Zeile und Spalte des Fehlers zurückgegeben
-        # Rückgabewert: boolean, dict
-        return self.perception_implementation.check_state_validity(state)
-    
-    def get_coordinates_of_square(self, square):
-        # Gibt die Echt-Welt Koordinaten eines gegbeen Squares zurück
-        return self.perception_implementation.get_coordinates_of_square(square)
-    
     def get_nearest_unused_piece(self):
         # Returns fixed position of the nearest available token 
         # If token not currently in the game
