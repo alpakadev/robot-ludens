@@ -13,4 +13,4 @@ def animation_level2(reachy):
 
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    time.sleep(5.0)
+    time.sleep(1.0)

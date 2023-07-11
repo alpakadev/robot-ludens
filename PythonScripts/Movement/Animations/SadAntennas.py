@@ -14,7 +14,7 @@ def animation_sad_antennas(reachy):  # fertig
     reachy.head.l_antenna.goal_position = 140.0
     reachy.head.r_antenna.goal_position = -140.0
 
-    time.sleep(5.0)
+    time.sleep(3.0)
     reachy.head.r_antenna.goal_position = 0.0
     reachy.head.l_antenna.goal_position = 0.0
-    time.sleep(5.0)
+    time.sleep(1.0)

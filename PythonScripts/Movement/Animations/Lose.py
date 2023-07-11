@@ -36,6 +36,6 @@ def animation_lose(reachy, use_sound):
     reachy.head.look_at(0.5, 0, 0.0, 1.0)
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    time.sleep(2.0)
+    time.sleep(1.0)
 
     reachy.turn_off_smoothly("head")

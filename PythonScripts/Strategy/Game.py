@@ -211,7 +211,7 @@ class Game:
             counter = 0
             check_board_status = False
             while counter <= 4:
-                time.sleep(3)
+                time.sleep(2.5)
                 input = HI.make_user_move_unity(self.board, self.perc)
                 #input = HI.make_user_move(self.board)
                 counter = counter + 1
