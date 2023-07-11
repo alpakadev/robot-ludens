@@ -1,9 +1,9 @@
-import time
 import random
+import time
 
 from ..constants import LOSING
-from .Player import play_sound
 from ..Helper.Safely import safely_run
+from .Player import play_sound
 
 
 def animation_lose(reachy, use_sound):

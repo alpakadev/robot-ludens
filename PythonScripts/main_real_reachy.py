@@ -17,15 +17,15 @@ Note:
             which would break the head-movement
 """
 
-from reachy_sdk import ReachySDK
-from Movement.MoveFacade import MoveFacade
-from Perception.PerceptionFacade import PerceptionFacade
-from Strategy.StrategyFacade import StrategyFacade
-from Movement.Enums import Outside
-from Movement.Enums import Board
+import time
+
+from Movement.Enums import Board, Outside
 from Movement.Enums.Animation import Animation
 from Movement.Enums.Sentence import Sentence
-import time
+from Movement.MoveFacade import MoveFacade
+from Perception.PerceptionFacade import PerceptionFacade
+from reachy_sdk import ReachySDK
+from Strategy.StrategyFacade import StrategyFacade
 
 ## Choose which connection address you want to use!
 # reachy = ReachySDK("localhost")

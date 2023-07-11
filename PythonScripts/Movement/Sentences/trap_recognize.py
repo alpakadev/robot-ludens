@@ -1,7 +1,7 @@
 import random
 
-from ..constants import TRAP_RECOGNIZE
 from ..Animations.Player import play_sound
+from ..constants import TRAP_RECOGNIZE
 from ..Helper.Safely import safely_run
 
 

@@ -1,6 +1,6 @@
+from .Enums.Animation import Animation
 from .Enums.Board import Board
 from .Enums.Outside import Outside
-from .Enums.Animation import Animation
 from .Enums.Sentence import Sentence
 from .MoveImpl import MoveImpl
 from .OutsideBlockFacade import OutsideBlockFacade

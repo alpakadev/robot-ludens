@@ -1,39 +1,36 @@
+import sys
+import threading
 import time
+from math import pow, sqrt
+from threading import Thread
 
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
-from threading import Thread
-
-from math import pow, sqrt
 
 from . import constants
-from .Animations.Win import animation_win
-from .Animations.Lose import animation_lose
 from .Animations.Angry import animation_angry
-from .Animations.Thinking import animation_thinking
+from .Animations.Clueless import animation_clueless
 from .Animations.Disapproval import animation_disapproval
-from .Animations.SadAntennas import animation_sad_antennas
+from .Animations.Forward import animation_forward
+from .Animations.Happy import animation_happy
 from .Animations.HappyAntennas import animation_happy_antennas
 from .Animations.Level0 import animation_level0
 from .Animations.Level1 import animation_level1
 from .Animations.Level2 import animation_level2
 from .Animations.Level3 import animation_level3
-from .Animations.Tie import animation_tie
-from .Animations.StartReachy import animation_start_reachy
+from .Animations.Lose import animation_lose
+from .Animations.SadAntennas import animation_sad_antennas
 from .Animations.StartOpponent import animation_start_opponent
-from .Animations.Forward import animation_forward
-from .Animations.Clueless import animation_clueless
-from .Animations.Happy import animation_happy
-
+from .Animations.StartReachy import animation_start_reachy
+from .Animations.Thinking import animation_thinking
+from .Animations.Tie import animation_tie
+from .Animations.Win import animation_win
 from .Enums.Animation import Animation
 from .Enums.Board import Board
 from .Enums.Outside import Outside
-from .Helper.KinematicModelHelper import KinematicModelHelper
 from .Helper.HandRotationMapper import HandRotationMapper
-
-import threading
-import sys
+from .Helper.KinematicModelHelper import KinematicModelHelper
 
 
 def add_lists(a, b):

@@ -1,7 +1,7 @@
 import random
 
-from ..constants import ILLEGALMOVE_HUMAN
 from ..Animations.Player import play_sound
+from ..constants import ILLEGALMOVE_HUMAN
 from ..Helper.Safely import safely_run
 
 

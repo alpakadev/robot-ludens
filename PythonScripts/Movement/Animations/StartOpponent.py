@@ -1,11 +1,12 @@
-import time
 import random
+import time
 
-from ..constants import START_HUMAN
-from .Player import play_sound
-from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+
+from ..constants import START_HUMAN
+from ..Helper.Safely import safely_run
+from .Player import play_sound
 
 
 def animation_start_opponent(reachy, use_sound):

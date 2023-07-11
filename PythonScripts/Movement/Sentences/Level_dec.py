@@ -1,7 +1,7 @@
 import random
 
-from ..constants import LEVEL_DECREASE
 from ..Animations.Player import play_sound
+from ..constants import LEVEL_DECREASE
 from ..Helper.Safely import safely_run
 
 

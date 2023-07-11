@@ -1,7 +1,7 @@
 import random
 
-from ..constants import JOKE
 from ..Animations.Player import play_sound
+from ..constants import JOKE
 from ..Helper.Safely import safely_run
 
 

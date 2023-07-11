@@ -1,9 +1,9 @@
-import time
 import random
+import time
 
 from ..constants import CHANCE_WIN_HUMAN, CHANCE_WIN_REACHY
-from .Player import play_sound
 from ..Helper.Safely import safely_run
+from .Player import play_sound
 
 
 def animation_disapproval(reachy, use_sound):

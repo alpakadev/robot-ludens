@@ -1,7 +1,7 @@
 import random
 
-from ..constants import DETECT_TIE
 from ..Animations.Player import play_sound
+from ..constants import DETECT_TIE
 from ..Helper.Safely import safely_run
 
 

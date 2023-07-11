@@ -1,12 +1,12 @@
-import time
 import random
+import time
 
-from ..constants import WINNING
-from .Player import play_sound
-from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
+from ..constants import WINNING
+from ..Helper.Safely import safely_run
+from .Player import play_sound
 
 # from .HappyAntennas import animation_happy_antennas
 

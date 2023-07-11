@@ -1,11 +1,12 @@
-import time
 import random
+import time
 
-from ..constants import ANGRY_SOUND
-from .Player import play_sound
-from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
+
+from ..constants import ANGRY_SOUND
+from ..Helper.Safely import safely_run
+from .Player import play_sound
 
 
 def animation_angry(reachy, use_sound):

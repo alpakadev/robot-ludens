@@ -1,7 +1,7 @@
 import random
 
-from ..constants import WAITING
 from ..Animations.Player import play_sound
+from ..constants import WAITING
 from ..Helper.Safely import safely_run
 
 

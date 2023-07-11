@@ -1,4 +1,5 @@
 import time
+
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 

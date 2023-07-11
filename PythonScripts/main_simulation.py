@@ -8,19 +8,15 @@ The activated extra Features are:
 Note: The Simulation runs with reachy-SDK version 0.4.0.
     - higher versions break the head movement 
 """
-from reachy_sdk import ReachySDK
-from Movement.MoveFacade import MoveFacade
-from Perception.PerceptionFacade import PerceptionFacade
-from Strategy.StrategyFacade import StrategyFacade
-from Movement.Enums import Outside
-from Movement.Enums import Board
-from Movement.Enums.Animation import Animation
-from Movement.Enums.Sentence import Sentence
 import time
 
-
-
-
+from Movement.Enums import Board, Outside
+from Movement.Enums.Animation import Animation
+from Movement.Enums.Sentence import Sentence
+from Movement.MoveFacade import MoveFacade
+from Perception.PerceptionFacade import PerceptionFacade
+from reachy_sdk import ReachySDK
+from Strategy.StrategyFacade import StrategyFacade
 
 reachy = ReachySDK("localhost")
 #reachy = ReachySDK("192.168.1.94") # with_mobile_base = True)

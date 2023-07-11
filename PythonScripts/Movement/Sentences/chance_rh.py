@@ -1,7 +1,7 @@
 import random
 
-from ..constants import CHANCE_WIN_REACHY
 from ..Animations.Player import play_sound
+from ..constants import CHANCE_WIN_REACHY
 from ..Helper.Safely import safely_run
 
 

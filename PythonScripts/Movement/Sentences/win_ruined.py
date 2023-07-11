@@ -1,7 +1,7 @@
 import random
 
-from ..constants import WIN_PREVENT_FAILED
 from ..Animations.Player import play_sound
+from ..constants import WIN_PREVENT_FAILED
 from ..Helper.Safely import safely_run
 
 

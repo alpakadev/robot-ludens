@@ -1,7 +1,7 @@
 import random
 
-from ..constants import TRAP_DONE
 from ..Animations.Player import play_sound
+from ..constants import TRAP_DONE
 from ..Helper.Safely import safely_run
 
 
