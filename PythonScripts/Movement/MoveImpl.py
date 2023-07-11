@@ -5,6 +5,8 @@ from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 from threading import Thread
 
+from math import pow, sqrt
+
 from . import constants
 from .Animations.Win import animation_win
 from .Animations.Lose import animation_lose
@@ -38,6 +40,13 @@ def add_lists(a, b):
     c = a[::]
     for i in range(len(c)):
         c[i] += b[i]
+    return c
+
+
+def sub_lists(a, b):
+    c = a[::]
+    for i in range(len(c)):
+        c[i] -= b[i]
     return c
 
 
@@ -288,9 +297,11 @@ class MoveImpl:
         :param pos_to: Die Zielposition des Arms.
         :param rotation: Die Rotationswerte für den Arm.
         """
+        duration = self.calculate_dynamic_duration(pos_to)
         target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
-        goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration=1.25)
+        print("actual duration: " + str(duration + 0.5))
+        goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration + 0.5, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _change_grip_force(self, force):
         self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
@@ -461,3 +472,13 @@ class MoveImpl:
 
     def _open_l_gripper(self):
         goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_OPEN}, duration=1)
+
+    def calculate_dynamic_duration(self, pos_to):
+        matrix = self.reachy.r_arm.forward_kinematics()
+        x = round(matrix[0][3], 2)
+        y = round(matrix[1][3], 2)
+        z = -0.37
+        pos_from = add_lists([x, y, z], self.get_origin())
+        res = sub_lists(pos_to, pos_from)
+        distance = sqrt(pow(res[0], 2) + pow(res[1], 2) + pow(res[2], 2))
+        return distance * constants.ARM_SPEED_FACTOR
