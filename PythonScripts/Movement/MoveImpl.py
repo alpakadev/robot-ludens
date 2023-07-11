@@ -300,7 +300,6 @@ class MoveImpl:
         duration = self.calculate_dynamic_duration(pos_to)
         target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
-        print("actual duration: " + str(duration + 0.5))
         goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration + 0.5, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
     def _change_grip_force(self, force):
