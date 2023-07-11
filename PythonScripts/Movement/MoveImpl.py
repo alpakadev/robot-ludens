@@ -34,8 +34,6 @@ import threading
 import sys
 
 
-
-
 def add_lists(a, b):
     c = a[::]
     for i in range(len(c)):
@@ -44,7 +42,6 @@ def add_lists(a, b):
 
 
 class MoveImpl:
-
 
     def __init__(self):
         self.strategy = None
@@ -109,85 +106,85 @@ class MoveImpl:
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
 
-        #Define coordinates
+        # Define coordinates
         position_from_coordinates = position_from
         position_to_coordinates = position_to.value
 
-        #Add coordinates to origin point
+        # Add coordinates to origin point
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
 
-        #Starting Thread for head control
+        # Starting Thread for head control
         thread1 = threading.Thread(target=self.head_follows_arm)
         thread1.start()
 
-        #calculate coordinate above block 5 and block 1 (17cm from block 5 in y direction towards Reachy)
+        # calculate coordinate above block 5 and block 1 (17cm from block 5 in y direction towards Reachy)
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
-        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
-        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
+        point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
+        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17, 0, 0])
 
-        #move arm to position above block 5 then above block 1
+        # move arm to position above block 5 then above block 1
         ## Commented assuming Arm already is above Block 5
-        #self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        # self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Add hand width
         # position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
 
-        #Add safe height
+        # Add safe height
         position_from_coordinates[2] += 0.15
 
-        #Subtract constant distance (pull hand back)
+        # Subtract constant distance (pull hand back)
         position_from_coordinates[0] -= constants.DELTA_FRONT
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #lower hand 11cm
+        # lower hand 11cm
         position_from_coordinates[2] -= 0.11
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #open hand for taking block
+        # open hand for taking block
         self._grip_open()
-        #Add the constant distance (to the front)
+        # Add the constant distance (to the front)
         position_from_coordinates[0] += constants.DELTA_FRONT
-        position_from_coordinates[0] += 0.02 #move 2 cm further to the front to have the block being safe within the hand
+        position_from_coordinates[
+            0] += 0.02  # move 2 cm further to the front to have the block being safe within the hand
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #Takes Block
+        # Takes Block
         self._grip_close()
 
-        #raise hand 10cm
+        # raise hand 10cm
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #beginning of pos_to
-        #Add safe height to pos_to coordinates and move to pos_to
+        # beginning of pos_to
+        # Add safe height to pos_to coordinates and move to pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        #Subtract safe height from pos_to
+        # Subtract safe height from pos_to
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         # tilt hand 70 degrees down to not touch other blocks
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        #Open Grip to release block
+        # Open Grip to release block
         self._grip_open()
 
-        #Add height
+        # Add height
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        #Close grip and move back to waiting position above block 5
+        # Close grip and move back to waiting position above block 5
         self._grip_close()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #move is finished, reachy looks down and turns off his head
+        # move is finished, reachy looks down and turns off his head
         self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
         self.reachy.turn_off_smoothly("head")
-
 
     def head_follows_arm(self):
         """
@@ -199,7 +196,7 @@ class MoveImpl:
         time.sleep(0.5)
         while True:
             self.move_head()
-            #time.sleep(0.5)
+            # time.sleep(0.5)
             if (self.move_finished):
                 sys.exit()
 
@@ -234,7 +231,7 @@ class MoveImpl:
         Moves arm out of field of Vision
         returns detected nearest unused piece
         """
-        self.set_arm_to_side_position() # Temporary Position to move Arm out of the view
+        self.set_arm_to_side_position()  # Temporary Position to move Arm out of the view
         while True:
             try:
                 pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
@@ -243,7 +240,7 @@ class MoveImpl:
                 ## Adjustments
                 # pos_from[0] += 0.00
                 # pos_from[1] -= 0.02
-                #print("Adjusted Coordinate:", pos_from)
+                # print("Adjusted Coordinate:", pos_from)
 
                 # Check if the return values are within the desired range
                 if -20 <= pos_from[0] <= 20 and -20 <= pos_from[1] <= 20:
@@ -253,12 +250,11 @@ class MoveImpl:
             except Exception as exeption:
                 print(exeption)
                 print("Could not detect an unused block")
-                #print("Uses Coordinates of Predefined Block 1 instead")
-                #pos_from = Outside.BLOCK_1.value
+                # print("Uses Coordinates of Predefined Block 1 instead")
+                # pos_from = Outside.BLOCK_1.value
             print("Restarting Detection")
-        self.gotoposabove5() # Returns arm to a Position above Block 5
+        self.gotoposabove5()  # Returns arm to a Position above Block 5
         return pos_from
-
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
@@ -321,7 +317,8 @@ class MoveImpl:
         z = -0.37
         res = [x, y, z]
         self.set_origin(res)
-        print("Calibration of bottem right corner: ",self.get_origin())
+        self.set_origin([0.15, -0.21, -0.37])
+        print("Calibration of bottem right corner: ", self.get_origin())
 
     def move_head(self, look_at=None):
         """
@@ -329,7 +326,7 @@ class MoveImpl:
         follows the right arm's coordinates with delay
 
         """
-        #self.reachy.turn_on("head")
+        # self.reachy.turn_on("head")
 
         # Head follows arm
         if look_at is None:
@@ -343,7 +340,7 @@ class MoveImpl:
             x, y, z = look_at
             self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
 
-        #self.reachy.turn_off_smoothly("head")
+        # self.reachy.turn_off_smoothly("head")
 
     def perform_animation(self, animation_type: Animation):
         match animation_type:
@@ -387,33 +384,39 @@ class MoveImpl:
 
         self._move_l_arm([0.1, 0.4, 0.05])
         self._open_l_gripper()
+        pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
+        # print(pieces)
         match block:
             case Board.BOTTOM_LEFT:
+                piece = pieces[6]
+                x = piece[0] / 100
+                y = piece[1] / 100
                 self._move_l_arm([-0.03, 0.4, 0])
-                self._move_l_arm([0, 0.27, 0])
+                self._move_l_arm([0, y, 0])
                 self._close_l_gripper()
                 self._move_l_arm([-0.03, 0.4, 0.05])
             case Board.CENTER_LEFT:
-                self._move_l_arm([0.1, 0.4, 0])
-                self._move_l_arm([0.1, 0.27, 0])
+                piece = pieces[3]
+                x = piece[1] / -100
+                y = piece[0] / -100
+                print("x:", x, "y:", y)
+                self._move_l_arm([x - 0.1, y + 0.05, 0])
+                self._move_l_arm([x - 0.06, y, 0])
                 self._close_l_gripper()
-                self._move_l_arm([0.1, 0.4, 0.05])
+                self._move_l_arm([x - 0.06, y, 0.09])
+                #  self._move_l_arm([0.1, 0.4, 0.05])
             case Board.TOP_LEFT:
                 self._move_l_arm([0.2, 0.4, 0])
                 self._move_l_arm([0.2, 0.27, 0])
                 self._close_l_gripper()
                 self._move_l_arm([0.2, 0.4, 0.05])
-            case Board.BOTTOM_CENTER:
-                self._move_l_arm([0.09, 0.2, 0.1])
-                self._move_l_arm([0.09, 0.2, 0.1])
-                # self._move_l_arm([0.0, 0.3, 0.1])
-                self._close_l_gripper()
-                self._move_l_arm([0.09, 0.1, 0.2])
-                self._move_l_arm([0.0, 0.4, 0.2])
-            case Board.CENTER:
-                self._move_l_arm([0.18, 0.11, 0.08])
-                self._close_l_gripper()
-                self._move_l_arm([0.18, 0.4, 0.08])
+
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.1]))
+        self._move_l_arm(constants.STEAL_PLACE, duration=0.5)
+        self._open_l_gripper()
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
+        self._move_l_arm([-0.03, 0.45, 0.02])
 
     def _move_l_arm(self, pos, rot=None, duration=None):
         if rot is None:
