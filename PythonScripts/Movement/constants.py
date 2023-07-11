@@ -31,6 +31,8 @@ STEAL_PLACE = [0.3, 0.44, 0.08]
 L_GRIPPER_CLOSE = 0
 L_GRIPPER_OPEN = 50
 
+ARM_SPEED_FACTOR = 1.6
+
 #sounds
 
 ANGRY_SOUND = ["PythonScripts/Movement/Sounds/angry/angr1.wav", "PythonScripts/Movement/Sounds/angry/angry2.wav"] 
