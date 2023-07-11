@@ -1,7 +1,7 @@
 import time
 import random
 
-from ..constants import BEFORE_THINKING, THINKING
+from ..constants import THINKING
 from .Player import play_sound
 from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
@@ -19,9 +19,6 @@ def animation_thinking(reachy, use_sound):
     reachy.head.l_antenna.goal_position = 40.0
     reachy.head.r_antenna.goal_position = -80.0
     time.sleep(0.50)
-
-    safely_run(play_sound(random.choice(BEFORE_THINKING), False),
-               "[Anim Thinking] Sound konnte nicht abgespielt werden") if use_sound else None
 
     for x in range(3):
         degree = random.randint(20, 55)

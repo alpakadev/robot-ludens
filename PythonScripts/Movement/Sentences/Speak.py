@@ -12,7 +12,7 @@ from ..Sentences.next_move_rh import sentence_nextmove_rh
 from ..Sentences.trap_done_rh import sentence_trap_done
 from ..Sentences.trap_recognize import sentence_trap_recognize
 from ..Sentences.win_prevent import sentence_win_prevent
-from ..Sentences.win_prevent_failed import sentence_win_prevent_failed
+from .win_ruined import sentence_win_ruined
 from ..Sentences.waiting import sentence_waiting
 
 def sentence_line(sentence_type: Sentence):
@@ -45,6 +45,6 @@ def sentence_line(sentence_type: Sentence):
                 sentence_waiting()
             case Sentence.WIN_PREVENT:
                 sentence_win_prevent()
-            case Sentence.WIN_PREVENT_FAILED:
-                sentence_win_prevent_failed()
+            case Sentence.WIN_RUINED:
+                sentence_win_ruined()
     
