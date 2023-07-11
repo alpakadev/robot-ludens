@@ -29,14 +29,11 @@ def get_nearest_unused_piece(frame, board_corners):
     # Crop the image to the ROI, exclude everythin but the table
     roi_image = image[roi_y_min:roi_y_max, roi_x_min:roi_x_max]
 
-    # lower_green = np.array([0, 100, 0], dtype=np.uint8)
-    # upper_green = np.array([130, 255, 100], dtype=np.uint8)
+    lower_green = np.array([0, 100, 0], dtype=np.uint8)
+    upper_green = np.array([130, 255, 100], dtype=np.uint8)
 
-    lower_green = np.array([35, 50, 50], dtype=np.uint8)
-    upper_green = np.array([90, 255, 255], dtype=np.uint8)
-
-    # lower_green = np.array([0, 50, 0], dtype=np.uint8)
-    # upper_green = np.array([180, 100, 100], dtype=np.uint8)
+    # lower_green = np.array([35, 50, 50], dtype=np.uint8)
+    # upper_green = np.array([90, 255, 255], dtype=np.uint8)
 
     mask = cv2.inRange(roi_image, lower_green, upper_green)
 
