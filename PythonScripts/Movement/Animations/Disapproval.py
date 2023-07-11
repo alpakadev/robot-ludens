@@ -8,7 +8,7 @@ from .Player import play_sound
 
 def animation_disapproval(reachy, use_sound):
     """
-    head shaking with changing antennas 
+    head shaking with changing antennas
     """
     reachy.turn_on("head")
     reachy.head.look_at(0.05, 0, -0.03, 1.0)
@@ -21,15 +21,24 @@ def animation_disapproval(reachy, use_sound):
     reachy.head.l_antenna.goal_position = 65.0
     time.sleep(1.5)
 
-    reachy.head.look_at(0.05, 0, 0, duration=0.5, )
+    reachy.head.look_at(
+        0.05,
+        0,
+        0,
+        duration=0.5,
+    )
 
     p = random.random()
     if p < 0.5:
-        safely_run(play_sound(random.choice(CHANCE_WIN_HUMAN), False),
-                   "[Anim Disapproval] Sound konnte nicht abgespielt werden") if use_sound else None
+        safely_run(
+            play_sound(random.choice(CHANCE_WIN_HUMAN), False),
+            "[Anim Disapproval] Sound konnte nicht abgespielt werden",
+        ) if use_sound else None
     else:
-        safely_run(play_sound(random.choice(CHANCE_WIN_REACHY), False),
-                   "[Anim Clueless] Sound konnte nicht abgespielt werden") if use_sound else None
+        safely_run(
+            play_sound(random.choice(CHANCE_WIN_REACHY), False),
+            "[Anim Clueless] Sound konnte nicht abgespielt werden",
+        ) if use_sound else None
 
     # Head shaking
     for i in range(3):

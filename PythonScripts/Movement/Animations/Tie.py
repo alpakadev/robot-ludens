@@ -11,7 +11,7 @@ from .Player import play_sound
 
 def animation_tie(reachy, use_sound):
     """
-    reaction to tie, shoulder shrugging 
+    reaction to tie, shoulder shrugging
     """
     reachy.turn_on("head")
     reachy.turn_on("l_arm")
@@ -28,7 +28,6 @@ def animation_tie(reachy, use_sound):
         reachy.r_arm.r_wrist_pitch: 5,
         reachy.r_arm.r_wrist_roll: 0,
         reachy.r_arm.r_gripper: 40,
-
         reachy.l_arm.l_shoulder_pitch: 5,
         reachy.l_arm.l_shoulder_roll: 10,  # moves left to right
         reachy.l_arm.l_arm_yaw: 60,  # forward/back
@@ -37,7 +36,6 @@ def animation_tie(reachy, use_sound):
         reachy.l_arm.l_wrist_pitch: 5,
         reachy.l_arm.l_wrist_roll: 0,
         reachy.l_arm.l_gripper: -40,
-
         reachy.head.l_antenna: -45,
         reachy.head.r_antenna: 45,
         reachy.head.neck_roll: -10,  # tilt +left to -right 35
@@ -53,7 +51,6 @@ def animation_tie(reachy, use_sound):
 
     # shrugging
     for x in range(2):
-
         tie_up = {
             reachy.head.l_antenna: -35,
             reachy.head.r_antenna: 55,
@@ -68,7 +65,6 @@ def animation_tie(reachy, use_sound):
             reachy.r_arm.r_wrist_pitch: 45,
             reachy.r_arm.r_wrist_roll: 0,
             reachy.r_arm.r_gripper: 40,
-
             reachy.l_arm.l_shoulder_pitch: 5,
             reachy.l_arm.l_shoulder_roll: 45,
             reachy.l_arm.l_arm_yaw: 90,
@@ -77,12 +73,13 @@ def animation_tie(reachy, use_sound):
             reachy.l_arm.l_wrist_pitch: 45,
             reachy.l_arm.l_wrist_roll: 0,
             reachy.l_arm.l_gripper: -40,
-
         }
 
         if x == 0:
-            safely_run(play_sound(random.choice(TIE), False),
-                       "[Anim Tie] Sound konnte nicht abgespielt werden") if use_sound else None
+            safely_run(
+                play_sound(random.choice(TIE), False),
+                "[Anim Tie] Sound konnte nicht abgespielt werden",
+            ) if use_sound else None
 
         goto(
             goal_positions=tie_up,
@@ -111,7 +108,6 @@ def animation_tie(reachy, use_sound):
         reachy.r_arm.r_wrist_pitch: -25,
         reachy.r_arm.r_wrist_roll: 0,
         reachy.r_arm.r_gripper: 0,
-
         reachy.l_arm.l_shoulder_pitch: -25,
         reachy.l_arm.l_shoulder_roll: 0,  # moves left to right
         reachy.l_arm.l_arm_yaw: 15,  # forward/back
@@ -125,7 +121,7 @@ def animation_tie(reachy, use_sound):
     goto(
         goal_positions=arms_base_position,
         duration=1.20,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     reachy.head.look_at(0.5, 0, 0, 1)

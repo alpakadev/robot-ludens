@@ -51,11 +51,13 @@ class MoveFacade:
         """
         Calls a Function to move a Block to Board.
         Mode 1: Utilizing Predefined Positions for the Outside Blocks
-        Mode 2: Utilizing Outside Block Detection via Perception 
+        Mode 2: Utilizing Outside Block Detection via Perception
         #TODO: Variable to change Modes easily
         """
         if not self.mode_detected_blocks:
-            self.move.move_object(position_from=from_enum.value, position_to=to_enum)  # Mode 1
+            self.move.move_object(
+                position_from=from_enum.value, position_to=to_enum
+            )  # Mode 1
         else:
             pos_from = self.move.detecting_nearest_block()
             self.move.move_object(pos_from, to_enum)  # Mode 2
@@ -65,9 +67,9 @@ class MoveFacade:
         Bewegt den Kopf zur gegebenen Blickrichtung.
         Der Kopf wird eingeschaltet, wenn die Methode aufgerufen wird, und am Ende ausgeschaltet.
         """
-        self.move.reachy.turn_on('head')
+        self.move.reachy.turn_on("head")
         self.move.move_head(look_at)
-        self.move.reachy.turn_off_smoothly('head')
+        self.move.reachy.turn_off_smoothly("head")
 
     def do_activate_right_arm(self):
         self.move.activate_right_arm()

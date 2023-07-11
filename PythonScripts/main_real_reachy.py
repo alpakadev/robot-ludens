@@ -29,7 +29,7 @@ from Strategy.StrategyFacade import StrategyFacade
 
 ## Choose which connection address you want to use!
 # reachy = ReachySDK("localhost")
-reachy = ReachySDK("192.168.1.94") # , with_mobile_base = True)
+reachy = ReachySDK("192.168.1.94")  # , with_mobile_base = True)
 
 move = MoveFacade()
 perc = PerceptionFacade()
@@ -47,13 +47,13 @@ move.do_deactivate_reachys_joints()
 ## For Calibration: hold the middle of the right Hand of reachy
 ## on top of the bottem right corner of the board
 move.do_calibration()
-time.sleep(5) # Enough time, to move away after calibration
+time.sleep(5)  # Enough time, to move away after calibration
 
 ## Face Recognition ##
 # time.sleep(3)
 # Identify and save face of the person opposite of reachy
-#perc.identify_human_player()
-#perc.look_at_human_player() 
+# perc.identify_human_player()
+# perc.look_at_human_player()
 # Every call of look_at_human_player will cause delay of at least 2 seconds
 
 ## To ensure a safe arm position without collision with the blocks
@@ -73,9 +73,3 @@ move.set_mode_to_playing_sounds()
 
 # Starting the Game
 strat.start_game()
-
-
-
-
-
-

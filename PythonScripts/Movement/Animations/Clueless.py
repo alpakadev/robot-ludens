@@ -7,7 +7,7 @@ from reachy_sdk.trajectory.interpolation import InterpolationMode
 def animation_clueless(reachy):
     """
     head tilted left to right with leaning antennas in same direction
-    
+
     """
     reachy.turn_on("head")
     reachy.head.l_antenna.speed_limit = 90.0
@@ -16,7 +16,6 @@ def animation_clueless(reachy):
     reachy.head.l_antenna.goal_position = -35.0
     reachy.head.r_antenna.goal_position = 50.0
     time.sleep(1.0)
-
 
     for _ in range(2):
         head_tilt_l = {
@@ -30,7 +29,7 @@ def animation_clueless(reachy):
         goto(
             goal_positions=head_tilt_l,
             duration=1.6,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
 
         head_tilt_r = {

@@ -6,5 +6,7 @@ from ..Helper.Safely import safely_run
 
 
 def sentence_detect_tie():
-    safely_run(play_sound(random.choice(DETECT_TIE), True),
-               "[Sentence detect_tie] Sound konnte nicht abgespielt werden")
+    safely_run(
+        play_sound(random.choice(DETECT_TIE), True),
+        "[Sentence detect_tie] Sound konnte nicht abgespielt werden",
+    )

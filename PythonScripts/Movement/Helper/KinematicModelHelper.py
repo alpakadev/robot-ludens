@@ -50,11 +50,11 @@ class KinematicModelHelper:
 
         for key, value in rotation.items():
             rot = self._calculate_rot_mat(key, value)
-            if key == 'x':
+            if key == "x":
                 X = rot
-            if key == 'y':
+            if key == "y":
                 Y = rot
-            if key == 'z':
+            if key == "z":
                 Z = rot
 
         rotations_combined = numpy.matmul(Z, Y, X)

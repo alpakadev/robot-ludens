@@ -38,13 +38,15 @@ def animation_thinking(reachy, use_sound):
         goto(
             goal_positions=left_touch_head_position,
             duration=1.5,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
         time.sleep(0.1)
 
         if x == 0:
-            safely_run(play_sound(random.choice(THINKING), False),
-                       "[Anim Thinking] Sound konnte nicht abgespielt werden") if use_sound else None
+            safely_run(
+                play_sound(random.choice(THINKING), False),
+                "[Anim Thinking] Sound konnte nicht abgespielt werden",
+            ) if use_sound else None
 
         reachy.head.l_antenna.speed_limit = 90.0 - degree // 2
         reachy.head.r_antenna.speed_limit = 60.0 - degree // 2
@@ -66,7 +68,7 @@ def animation_thinking(reachy, use_sound):
         goto(
             goal_positions=left_scratch,
             duration=0.80,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
 
     # back to default
@@ -84,7 +86,7 @@ def animation_thinking(reachy, use_sound):
     goto(
         goal_positions=left_base_position,
         duration=1.2,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     reachy.head.look_at(0.5, 0, 0, duration=0.60)

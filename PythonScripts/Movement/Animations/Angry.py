@@ -20,8 +20,10 @@ def animation_angry(reachy, use_sound):
     reachy.head.r_antenna.speed_limit = 50.0
 
     reachy.head.look_at(0.5, -0.4, -0.4, duration=0.8)
-    safely_run(play_sound(random.choice(ANGRY_SOUND), False),
-               "[Anim Angry] Sound konnte nicht abgespielt werden") if use_sound else None
+    safely_run(
+        play_sound(random.choice(ANGRY_SOUND), False),
+        "[Anim Angry] Sound konnte nicht abgespielt werden",
+    ) if use_sound else None
     time.sleep(1.0)
 
     reachy.head.l_antenna.goal_position = -90
@@ -46,7 +48,7 @@ def animation_angry(reachy, use_sound):
     goto(
         goal_positions=r_start_position,
         duration=1.0,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     r_sweep_position = {
@@ -63,7 +65,7 @@ def animation_angry(reachy, use_sound):
     goto(
         goal_positions=r_sweep_position,
         duration=1.6,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     # arm to safe default position
@@ -81,7 +83,7 @@ def animation_angry(reachy, use_sound):
     goto(
         goal_positions=rbase_position,
         duration=2.0,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     time.sleep(1.0)

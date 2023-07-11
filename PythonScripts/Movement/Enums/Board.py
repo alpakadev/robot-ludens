@@ -6,6 +6,7 @@ class Board(Enum):
     """
     Enum class representing the Tic Tac Toe board positions
     """
+
     TOP_LEFT = [0.28, 0.33, 0]
     TOP_CENTER = [0.28, 0.18, 0]
     TOP_RIGHT = [0.28, 0.05, 0]

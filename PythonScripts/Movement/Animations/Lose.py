@@ -18,8 +18,10 @@ def animation_lose(reachy, use_sound):
     reachy.head.look_at(0.05, 0, -0.05, 0.7)
     time.sleep(0.5)
 
-    safely_run(play_sound(random.choice(LOSING), False),
-               "[Anim Losing] Sound konnte nicht abgespielt werden") if use_sound else None
+    safely_run(
+        play_sound(random.choice(LOSING), False),
+        "[Anim Losing] Sound konnte nicht abgespielt werden",
+    ) if use_sound else None
 
     reachy.head.l_antenna.speed_limit = 90.0
     reachy.head.r_antenna.speed_limit = 90.0

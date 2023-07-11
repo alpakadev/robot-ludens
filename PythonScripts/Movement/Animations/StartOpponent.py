@@ -11,7 +11,7 @@ from .Player import play_sound
 
 def animation_start_opponent(reachy, use_sound):
     """
-    pointing at opponent to start playing 
+    pointing at opponent to start playing
     """
     reachy.turn_on("l_arm")
     reachy.turn_on("head")
@@ -40,7 +40,7 @@ def animation_start_opponent(reachy, use_sound):
     goto(
         goal_positions=l_arm_start,
         duration=1.3,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     head_tilt_r = {
@@ -60,7 +60,6 @@ def animation_start_opponent(reachy, use_sound):
     time.sleep(0.1)
 
     for x in range(2):
-
         l_arm_tilted_head = {
             reachy.head.l_antenna: 45,
             reachy.head.r_antenna: 20,
@@ -80,12 +79,14 @@ def animation_start_opponent(reachy, use_sound):
         goto(
             goal_positions=l_arm_tilted_head,
             duration=1.3,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
 
         if x == 0:
-            safely_run(play_sound(random.choice(START_HUMAN), False),
-                       "[Anim StartOpponent] Sound konnte nicht abgespielt werden") if use_sound else None
+            safely_run(
+                play_sound(random.choice(START_HUMAN), False),
+                "[Anim StartOpponent] Sound konnte nicht abgespielt werden",
+            ) if use_sound else None
 
         l_arm_point_tilted_head = {
             reachy.head.l_antenna: 50,
@@ -106,7 +107,7 @@ def animation_start_opponent(reachy, use_sound):
         goto(
             goal_positions=l_arm_point_tilted_head,
             duration=1.3,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
 
         reachy.head.l_antenna.goal_position = 30.0
@@ -127,7 +128,7 @@ def animation_start_opponent(reachy, use_sound):
     goto(
         goal_positions=l_arm_base,
         duration=1.0,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     reachy.head.l_antenna.goal_position = 0.0

@@ -19,7 +19,7 @@ from reachy_sdk import ReachySDK
 from Strategy.StrategyFacade import StrategyFacade
 
 reachy = ReachySDK("localhost")
-#reachy = ReachySDK("192.168.1.94") # with_mobile_base = True)
+# reachy = ReachySDK("192.168.1.94") # with_mobile_base = True)
 
 move = MoveFacade()
 perc = PerceptionFacade()
@@ -42,8 +42,8 @@ move.do_deactivate_reachys_joints()
 ## Face Recognition ##
 # time.sleep(3)
 # Identify and save face of the person opposite of reachy
-#perc.identify_human_player()
-#perc.look_at_human_player()
+# perc.identify_human_player()
+# perc.look_at_human_player()
 # Every call of look_at_human_player will cause delay of at least 2 seconds
 
 ## To ensure a safe arm position without collision with the blocks
@@ -63,9 +63,3 @@ move.do_safe_arm_pos()
 
 # Starting the Game
 strat.start_game()
-
-
-
-
-
-

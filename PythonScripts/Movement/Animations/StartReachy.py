@@ -41,7 +41,7 @@ def animation_start_reachy(reachy, use_sound):
     goto(
         goal_positions=l_arm,
         duration=0.8,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     reachy.head.look_at(0.5, 0.1, -0.05, 1)
@@ -66,13 +66,12 @@ def animation_start_reachy(reachy, use_sound):
     goto(
         goal_positions=l_arm3,
         duration=0.8,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     reachy.head.look_at(0.5, 0, -0.15, 1)
 
     for x in range(2):
-
         l_point = {
             reachy.head.l_antenna: 45,
             reachy.head.r_antenna: 20,
@@ -92,11 +91,13 @@ def animation_start_reachy(reachy, use_sound):
         goto(
             goal_positions=l_point,
             duration=1.0,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
         if x == 0:
-            safely_run(play_sound(random.choice(START_REACHY), False),
-                       "[Anim StartReachy] Sound konnte nicht abgespielt werden") if use_sound else None
+            safely_run(
+                play_sound(random.choice(START_REACHY), False),
+                "[Anim StartReachy] Sound konnte nicht abgespielt werden",
+            ) if use_sound else None
 
         l_point2 = {
             reachy.head.l_antenna: 45,
@@ -117,7 +118,7 @@ def animation_start_reachy(reachy, use_sound):
         goto(
             goal_positions=l_point2,
             duration=1.0,
-            interpolation_mode=InterpolationMode.MINIMUM_JERK
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
         )
 
     # back to default
@@ -135,7 +136,7 @@ def animation_start_reachy(reachy, use_sound):
     goto(
         goal_positions=left_base_position,
         duration=1.0,
-        interpolation_mode=InterpolationMode.MINIMUM_JERK
+        interpolation_mode=InterpolationMode.MINIMUM_JERK,
     )
 
     reachy.head.l_antenna.goal_position = 0.0

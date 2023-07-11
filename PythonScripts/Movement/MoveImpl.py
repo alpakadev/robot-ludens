@@ -48,7 +48,6 @@ def sub_lists(a, b):
 
 
 class MoveImpl:
-
     def __init__(self):
         """
         Initialisiert eine neue Instanz der MoveImpl-Klasse.
@@ -94,13 +93,15 @@ class MoveImpl:
         self.origin = coordinate
 
     def set_arm_to_right_angle_position(self):
-        self._move_arm(constants.POS_ARM_AT_RIGHT_ANGLE, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(
+            constants.POS_ARM_AT_RIGHT_ANGLE, rotation={"y": -90, "x": 0, "z": 0}
+        )
 
     def set_arm_to_origin(self):
         """
         Setzt den Arm auf den kalibrierten Ursprungspunkt.
         """
-        self._move_arm(self.origin, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(self.origin, rotation={"y": -90, "x": 0, "z": 0})
 
     def activate_right_arm(self):
         self.reachy.turn_on("r_arm")
@@ -118,10 +119,10 @@ class MoveImpl:
         self.activate_right_arm()
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
-        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(point_above_Block_5, rotation={"y": -90, "x": 0, "z": 0})
 
     def set_arm_to_side_position(self):
-        self._move_arm(constants.POS_ARM_SIDE, rotation={'y': -90, 'x': 0, 'z': 90})
+        self._move_arm(constants.POS_ARM_SIDE, rotation={"y": -90, "x": 0, "z": 90})
 
     def move_object(self, position_from: list, position_to: Board):
         """
@@ -158,7 +159,7 @@ class MoveImpl:
         # move arm to position above block 5 then above block 1
         ## Commented assuming Arm already is above Block 5
         # self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
-        self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(point_above_Block_1, rotation={"y": -90, "x": 0, "z": 0})
 
         # Add hand width
         # position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
@@ -168,50 +169,69 @@ class MoveImpl:
 
         # Subtract constant distance (pull hand back)
         position_from_coordinates[0] -= constants.DELTA_FRONT
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(position_from_coordinates, rotation={"y": -90, "x": 0, "z": 0})
 
         # lower hand 11cm
         position_from_coordinates[2] -= 0.11
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(position_from_coordinates, rotation={"y": -90, "x": 0, "z": 0})
 
         # open hand for taking block
         self.grip_open()
         # Add the constant distance (to the front)
         position_from_coordinates[0] += constants.DELTA_FRONT
         position_from_coordinates[
-            0] += 0.02  # move 2 cm further to the front to have the block being safe within the hand
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+            0
+        ] += 0.02  # move 2 cm further to the front to have the block being safe within the hand
+        self._move_arm(position_from_coordinates, rotation={"y": -90, "x": 0, "z": 0})
 
         # Takes Block
         self.grip_close()
 
         # raise hand 10cm
         position_from_coordinates[2] += 0.1
-        self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(position_from_coordinates, rotation={"y": -90, "x": 0, "z": 0})
 
         # beginning of pos_to
         # Add safe height to pos_to coordinates and move to pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
-            position_to)})
+        self._move_arm(
+            position_to_coordinates,
+            rotation={
+                "y": -90,
+                "x": 0,
+                "z": self.mapper.get_hand_rotation(position_to),
+            },
+        )
 
         # Subtract safe height from pos_to
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         # tilt hand 70 degrees down to not touch other blocks
-        self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': self.mapper.get_hand_rotation(
-            position_to)})
+        self._move_arm(
+            position_to_coordinates,
+            rotation={
+                "y": -70,
+                "x": 0,
+                "z": self.mapper.get_hand_rotation(position_to),
+            },
+        )
 
         # Open Grip to release block
         self.grip_open()
 
         # Add height
         position_to_coordinates[2] += constants.DELTA_HEIGHT
-        self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
-            position_to)})
+        self._move_arm(
+            position_to_coordinates,
+            rotation={
+                "y": -90,
+                "x": 0,
+                "z": self.mapper.get_hand_rotation(position_to),
+            },
+        )
 
         # Close grip and move back to waiting position above block 5
         self.grip_close()
-        self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        self._move_arm(point_above_Block_5, rotation={"y": -90, "x": 0, "z": 0})
 
         # move is finished, reachy looks down and turns off his head
         self.move_finished = True
@@ -229,7 +249,7 @@ class MoveImpl:
         while True:
             self.move_head()
             # time.sleep(0.5)
-            if (self.move_finished):
+            if self.move_finished:
                 sys.exit()
 
     def head_follows_arm_v2(self, thread_moving_object: Thread):
@@ -252,7 +272,9 @@ class MoveImpl:
         :param pos_to: Die Zielposition des Objekts.
         """
         thread_moving_object = Thread(target=self.move_object, args=(pos_from, pos_to))
-        thread_head_following_hand = Thread(target=self.head_follows_arm_v2, args=[thread_moving_object])
+        thread_head_following_hand = Thread(
+            target=self.head_follows_arm_v2, args=[thread_moving_object]
+        )
 
         thread_moving_object.start()
         thread_head_following_hand.start()
@@ -270,8 +292,12 @@ class MoveImpl:
         self.set_arm_to_side_position()  # Temporary Position to move Arm out of the view
         while True:
             try:
-                pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
-                pos_from += [-0.05]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
+                pos_from = (
+                    self.perception.get_nearest_unused_piece()
+                )  # returns list [x,y] coord
+                pos_from += [
+                    -0.05
+                ]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
                 print("Detected nearest Block with Coordinate:", pos_from)
                 ## Adjustments if needed
                 # pos_from[0] += 0.00
@@ -300,9 +326,18 @@ class MoveImpl:
         :param rotation: Die Rotationswerte für den Arm.
         """
         duration = self.calculate_dynamic_duration(pos_to)
-        target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
+        target_kinematic = self.kinematic_model_helper.get_kinematic_move(
+            pose=pos_to, rotation=rotation
+        )
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
-        goto({joint: pos for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)}, duration + 0.5, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(
+            {
+                joint: pos
+                for joint, pos in zip(self.reachy.r_arm.joints.values(), joint_pos_A)
+            },
+            duration + 0.5,
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
+        )
 
     def _change_grip_force(self, force):
         self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
@@ -310,14 +345,22 @@ class MoveImpl:
 
     def grip_open(self):
         self._change_grip_force(constants.GRIPPER_OPEN_FULL)
-        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(
+            goal_positions=self.POS_GRIPPER,
+            duration=1.0,
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
+        )
 
     def grip_close(self):
         """
         Schließt den Greifer, bis er etwas hält.
         """
         self._change_grip_force(constants.GRIPPER_CLOSED)
-        goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
+        goto(
+            goal_positions=self.POS_GRIPPER,
+            duration=1.0,
+            interpolation_mode=InterpolationMode.MINIMUM_JERK,
+        )
 
     def _is_holding(self):
         """
@@ -325,7 +368,10 @@ class MoveImpl:
         """
         # ERROR: force sensors gives too high values (> 10000); but code is equal to official
         # reachy documentation
-        if self.reachy.force_sensors.r_force_gripper.force > constants.GRIP_FORCE_HOLDING:
+        if (
+            self.reachy.force_sensors.r_force_gripper.force
+            > constants.GRIP_FORCE_HOLDING
+        ):
             # TODO: Warning when to much Force is applied
             return True
         return False
@@ -360,7 +406,7 @@ class MoveImpl:
         z = -0.37
         res = [x, y, z]
         self.set_origin(res)
-        print("Calibration of bottem right corner: ",self.get_origin())
+        print("Calibration of bottem right corner: ", self.get_origin())
 
     def move_head(self, look_at=None):
         """
@@ -426,7 +472,7 @@ class MoveImpl:
 
         :param block: Der zu stehlende Block
         """
-        self.reachy.turn_on('l_arm')
+        self.reachy.turn_on("l_arm")
 
         self._move_l_arm([0.1, 0.4, 0.05])
         self._open_l_gripper()
@@ -445,7 +491,6 @@ class MoveImpl:
                 piece = pieces[0]
                 offset_y = -0.04
 
-
         x = piece[1] / -100
         y = piece[0] / -100
         print("x:", x, "y:", y)
@@ -458,18 +503,23 @@ class MoveImpl:
         self._move_l_arm(constants.STEAL_PLACE, duration=0.5)
         self._open_l_gripper()
         self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
-        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75)
+        self._move_l_arm(
+            add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75
+        )
         self._move_l_arm([-0.03, 0.45, 0.02])
 
     def _move_l_arm(self, pos, rot=None, duration=None):
         if rot is None:
-            rot = {'x': 0, 'y': -90, 'z': -90}
+            rot = {"x": 0, "y": -90, "z": -90}
         if duration is None:
             duration = 1.5
         pos = add_lists(pos, self.get_origin())
         m_target_kinematic = self.kinematic_model_helper.get_kinematic_move(pos, rot)
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
-        goto({joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)}, duration)
+        goto(
+            {joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)},
+            duration,
+        )
 
     def _close_l_gripper(self):
         goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_CLOSE}, duration=1)
