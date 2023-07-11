@@ -1,6 +1,6 @@
 def _sort(array, index):
-    # Bubblesort aufsteigend für 2D Array. 
-    # Index bestimmt welche Stelle der Subarrays als Kriterium genutzt wird
+    # Bubblesort for 2D Array in ascending order 
+    # index determines wich field of subarray will be used as criterion
     n = len(array)
     swapped = False
     for i in range(n-1):
@@ -13,12 +13,8 @@ def _sort(array, index):
         if not swapped:
             return
 
-def _addBetweenAnchors(corners, config):
-    # Berechnet die Punkte (O) zwischen zwei Ecken (X)
-    # Updatet das Corner Dictionary um die entsprechenden Koordinaten
-    # Der Weg ziwschne zwei Punkten wird gedrittelt. 
-    # Der erste Punkt (firstAnchor) befindet sich auf 33% der Strecke
-    # Der zweite bei 66%
+def _add_between_anchors(corners, config):
+    # Calculates two "Midway Points" for each border
 
     borderlines = {"upperBorder": {
                        "start": corners["upRightCorner"], 
@@ -63,9 +59,8 @@ def _addBetweenAnchors(corners, config):
 
     return anchors
 
-def _lineIntersection(hLine, vLine):
-    # Berechnet Geradengleichungen von gegenüberliegenden Punkten
-    # Schnittpunkte bestimmen die Eckpunkte des mittleren Quadrats
+def _line_intersection(hLine, vLine):
+    # Calculation of intersection points between two "orthogonal" lines
 
     if vLine[0]["x"] > vLine[1]["x"]:
         temp = vLine[0]
@@ -85,20 +80,22 @@ def _lineIntersection(hLine, vLine):
 
     return {"x": int(x), "y": int(y)}
 
-def _addLineintersectionAnchors(anchors):
-    upLeftIntersect = _lineIntersection(
+def _add_line_intersection_anchors(anchors):
+    # Adding line intersection to dictionary
+
+    upLeftIntersect = _line_intersection(
         [anchors["rightBorderBetween2"], anchors["leftBorderBetween2"]], 
         [anchors["lowerBorderBetween2"], anchors["upperBorderBetween2"]]
     )
-    upRightIntersect = _lineIntersection(
+    upRightIntersect = _line_intersection(
         [anchors["rightBorderBetween2"], anchors["leftBorderBetween2"]], 
         [anchors["lowerBorderBetween1"], anchors["upperBorderBetween1"]]
     )
-    downLeftIntersect = _lineIntersection(
+    downLeftIntersect = _line_intersection(
         [anchors["rightBorderBetween1"], anchors["leftBorderBetween1"]], 
         [anchors["lowerBorderBetween2"], anchors["upperBorderBetween2"]]
     )
-    downRightIntersect = _lineIntersection(
+    downRightIntersect = _line_intersection(
         [anchors["rightBorderBetween1"], anchors["leftBorderBetween1"]], 
         [anchors["lowerBorderBetween1"], anchors["upperBorderBetween1"]]
     )
@@ -115,8 +112,8 @@ def _addLineintersectionAnchors(anchors):
     return anchors
 
 def _squares(anchors):
-    # Definiert die Eckpunkte der einzelnen Bildquadrate. 
-    # Die Richtungsangaben sind vom Ursprung ausgesehen
+    # Naming of points within anchors dictionary 
+    # for debugging and readability
 
     squares = {
         "TOP_LEFT_CORNER": {
@@ -167,7 +164,9 @@ def _squares(anchors):
     }
     return squares
 
-def get_board_cases(board_coordinates, config):
+def calc_board_cases(board_coordinates, config):
+    # Returns pixel positions of corners of all squares on the board
+
     _sort(board_coordinates, 0)
     corner_dict = {
         "upLeftCorner": {"x": 0, "y": 0}, 
@@ -198,10 +197,7 @@ def get_board_cases(board_coordinates, config):
         corner_dict["upLeftCorner"]["x"] = board_coordinates[2][0]
         corner_dict["upLeftCorner"]["y"] = board_coordinates[2][1]
     
-    # Eckpunkte um Punkte zwischen den Ecken ergänzen
-    anchors  = _addBetweenAnchors(corner_dict, config)
-    # Ankerpunkte um die Punkte in der Mitte des Boards ergänzen
-    allAnchors = _addLineintersectionAnchors(anchors)
-    # Koordinaten der Board Quadrate bestimmen
+    anchors  = _add_between_anchors(corner_dict, config)
+    allAnchors = _add_line_intersection_anchors(anchors)
     sqrs = _squares(allAnchors)
     return sqrs

@@ -35,11 +35,11 @@ def estimate_metric_distance(frame, board_corners, centroid_x, centroid_y):
         unknown_point.reshape(-1, 1, 2), homography).reshape(-1, 2)
 
     # Calculate the distance along the x-axis
-    x_distance = transformed_unknown_point[0, 0] - transformed_points[1, 0]
+    x_distance = transformed_unknown_point[0, 0] - transformed_points[3, 0]
 
     # Calculate the distance along the y-axis
-    y_distance = transformed_unknown_point[0, 1] - transformed_points[1, 1]
+    y_distance = transformed_unknown_point[0, 1] - transformed_points[3, 1]
 
-    print(f"Distance along the x-axis for contour: {x_distance} cm")
-    print(f"Distance along the y-axis for contour: {y_distance} cm")
+    # print(f"Distance along the x-axis for contour: {x_distance} cm")
+    # print(f"Distance along the y-axis for contour: {y_distance} cm")
     return x_distance, y_distance

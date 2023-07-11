@@ -5,18 +5,20 @@ import time
 from math import ceil, radians, sin
 import json
 from Perception.FaceRecognition.NumpyEncoder import NumpyEncoder
-#import dlib
+import dlib
 
-# Durchsucht ein aufgenommenes Bild auf Gesichter und entnimmt das größte
 def identify_human_player(reachy, move):
-    # Reachys Kopf in Basis Position bringen
+    # Identify the largest face in the picture as human player
+    # Returns face encoding of human player
+
     reachy.turn_on("head")
     try:
-        move.do_move_head([0.5, 0, 0, 1])
-    except:
+        move.do_move_head([0.5, 0, 0])
+    except NotImplementedError:
+        # Check if modified function for simulation has to be used
         reachy.head.look_at(1, 0, 0, 1, "simul")
     
-    image = take_picture(reachy)
+    image = _take_picture(reachy)
 
     face_locations = fr.face_locations(image, number_of_times_to_upsample=1)
     box_size = 0
@@ -31,7 +33,7 @@ def identify_human_player(reachy, move):
             face_encoding = enc
             face_box = face
 
-    # Größtes Gesicht ermitteln
+    # Save largest face as png for debugging and showcase
     cv2.rectangle(
         image, 
         (face_box[3], face_box[0]), 
@@ -63,24 +65,25 @@ def deserialize_player_face():
         encoding = json.load(file)
     return np.array(encoding["playerFace"])
 
-# Steuer Funktion um Reachy dazu zubringen den Player anzuschauen
 def look_at_human_player(reachy, move, face_enc):
     print("Looking at Player")
-    image = take_picture(reachy)
-    player_face_pos = compare_faces_for_pos(image, face_enc)
+    image = _take_picture(reachy)
+    player_face_pos = _compare_faces_for_pos(image, face_enc)
     print(player_face_pos)
 
     if player_face_pos is not None:
-        center_vision_on_face(reachy, move, image, player_face_pos, face_enc)
+        _center_vision_on_face(reachy, move, image, player_face_pos, face_enc)
     else:
         print("Not in View")
         try:
-            move.do_move_head([0.5, 0, 0, 1])
-        except:
+            move.do_move_head([0.5, 0, 0])
+        except NotImplementedError:
+            # Check if modified function for simulation has to be used
             reachy.head.look_at(1, 0, 0, 1, "simul")
 
-# Überprüft wo sich das Player Gesicht im Bild befindet
-def compare_faces_for_pos(image, player_face_enc):
+def _compare_faces_for_pos(image, player_face_enc):
+    # Checks where player face is in image
+
     face_positions = fr.face_locations(image, number_of_times_to_upsample=1)
     smallest_distance = None
     face_box = []
@@ -102,40 +105,29 @@ def compare_faces_for_pos(image, player_face_enc):
     
     return face_box
 
-def take_picture(reachy):
+def _take_picture(reachy):
     camera = reachy.right_camera
     image = camera.last_frame
     return image
 
-def get_largest_face(face_locations):
-    # Die Bounding Box mit größter Fläche auswählen
-    max = 0
-    largest_face = None
-    for face in face_locations:
-        bottom, left, top, right = face
-        size = (top - bottom) * (left - right)
-        if size > max:
-            max = size
-            largest_face = face
-    return largest_face
+def _center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
+    # Calculate exact Movement of Reachys Neck joint
 
-# Berechnet wie sich der Kopf bewegen muss um den Player direkt anzuschauen
-def center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
     print("Moving head to look at Player")
-    # Dimensionen das aufgenommenen Bildes speichern
     im_height, im_width, _ = image.shape
 
     bottom, left, top, right = face_pos
     face_center = [ceil(right + (left - right) / 2), 
                    ceil(bottom + (top - bottom) / 2)]
-    # Abweichung der Oberen rechten Ecke von den Mittellinien des Bildes
+
+    # Deviation from top right corner of face bounding box
     x_diff = face_center[0] - im_width/2
     y_diff = face_center[1] - im_height/2
 
     reachy.turn_on("head")
 
-    x_perc_contr = calc_center_diff(x_diff, im_width)
-    y_perc_contr = calc_center_diff(y_diff, im_height)
+    x_perc_contr = _calc_center_diff(x_diff, im_width)
+    y_perc_contr = _calc_center_diff(y_diff, im_height)
 
     x_coor = ceil(im_width/2 + im_width*(x_perc_contr * 0.5))
     y_coor = ceil(im_height/2 + im_height*(y_perc_contr * 0.05))
@@ -152,10 +144,10 @@ def center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
         move.do_move_head([
             1, 
             distance_to_move_horizontally, 
-            distance_to_move_vertically, 
-            1
+            distance_to_move_vertically
         ])
-    except:
+    except NotImplementedError:
+        # Check if modified function for simulation has to be used
         reachy.head.look_at(
             1, 
             distance_to_move_horizontally, 
@@ -163,10 +155,16 @@ def center_vision_on_face(reachy, move, image, face_pos, player_face_enc):
             1, 
             "simul"
         )
+    image = _take_picture(reachy)
+    cv2.imwrite("PythonScripts/Perception/FaceRecognition/Looking_at_you.png", image)
     reachy.turn_off_smoothly("head")
 
 
-def calc_center_diff(p_c_diff, im_dim):
+def _calc_center_diff(p_c_diff, im_dim):
+    # Correct differences to face center point according to Reachys Lense
+    # im_dim = width or height of image
+    # p_c_diff = difference from point p to face center in dimension im_dim
+
     lense_radius = 10
     lense_degrees = 180
     reachy_degress = 92
@@ -174,7 +172,7 @@ def calc_center_diff(p_c_diff, im_dim):
     
     real_perc_diff = (100 / (im_dim / p_c_diff)) * 0.01
     real_angle_diff = 180 * (real_perc_diff)
-    real_p_c_dis = lense_radius * 2 * sin(radians(real_angle_diff/2))
-    real_p_c_dis_perc = (100 / (lense_circumference / real_p_c_dis)) * 0.01
+    real_p_c_dist = lense_radius * 2 * sin(radians(real_angle_diff/2))
+    real_p_c_dist_perc = (100 / (lense_circumference / real_p_c_dist)) * 0.01
 
-    return (lense_degrees / reachy_degress) * real_p_c_dis_perc
+    return (lense_degrees / reachy_degress) * real_p_c_dist_perc

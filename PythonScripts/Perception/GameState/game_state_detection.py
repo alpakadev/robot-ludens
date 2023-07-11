@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 def get_board_state(frame, cases_coords, config):
+    # Get current placement of pieces in the squares
     game_state = []
 
     imageFrame = frame.copy()

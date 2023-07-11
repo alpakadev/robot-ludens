@@ -34,8 +34,6 @@ import threading
 import sys
 
 
-
-
 def add_lists(a, b):
     c = a[::]
     for i in range(len(c)):
@@ -45,8 +43,10 @@ def add_lists(a, b):
 
 class MoveImpl:
 
-
     def __init__(self):
+        """
+        Initialisiert eine neue Instanz der MoveImpl-Klasse.
+        """
         self.strategy = None
         self.perception = None
         self.reachy = None
@@ -58,6 +58,13 @@ class MoveImpl:
         self.move_finished = True
 
     def set_dependencies(self, reachy: ReachySDK, perc, strat):
+        """
+        Setzt die Abhängigkeiten für die MoveImpl-Klasse.
+
+        :param reachy: Eine Instanz der ReachySDK-Klasse.
+        :param perc: Die Perception-Instanz.
+        :param strat: Die Strategy-Instanz.
+        """
         self.reachy = reachy
         self.perception = perc
         self.strategy = strat
@@ -66,17 +73,27 @@ class MoveImpl:
 
     def get_origin(self):
         """
-        Returns the origin point to which all other coordinates are relative from
+        Gibt den Ursprungspunkt zurück, auf den alle anderen Koordinaten bezogen sind.
+
+        :return: Die Koordinaten des Ursprungspunkts.
         """
         return self.origin
 
     def set_origin(self, coordinate):
+        """
+        Setzt den Ursprungspunkt auf die angegebene Koordinate.
+
+        :param coordinate: Die Koordinaten des Ursprungspunkts.
+        """
         self.origin = coordinate
 
     def set_arm_to_right_angle_position(self):
         self._move_arm(constants.POS_ARM_AT_RIGHT_ANGLE, rotation={'y': -90, 'x': 0, 'z': 0})
 
     def set_arm_to_origin(self):
+        """
+        Setzt den Arm auf den kalibrierten Ursprungspunkt.
+        """
         self._move_arm(self.origin, rotation={'y': -90, 'x': 0, 'z': 0})
 
     def activate_right_arm(self):
@@ -88,7 +105,10 @@ class MoveImpl:
     def deactivate_left_arm(self):
         self.reachy.turn_off_smoothly("l_arm")
 
-    def gotoposabove5(self):
+    def go_to_pos_above_5(self):
+        """
+        Bewegt den Arm in die Warteposition über Block 5.
+        """
         self.activate_right_arm()
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
         point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
@@ -99,7 +119,10 @@ class MoveImpl:
 
     def move_object(self, position_from: list, position_to: Board):
         """
-        Moves object from 'position_from' to 'position_to'
+        Bewegt ein Objekt von der Position 'position_from' zur Position 'position_to'.
+
+        :param position_from: Die Ausgangsposition des Objekts.
+        :param position_to: Die Zielposition des Objekts.
 
         Note: "position_from" is not an "Outside"-Type anymore, since this function can
         be called with coordinates from dedected Blocks "get_nearest_unused_pieces()"
@@ -109,105 +132,105 @@ class MoveImpl:
         self.activate_right_arm()
         self.move_head(constants.HEAD_LOOK_DOWN)
 
-        #Define coordinates
+        # Define coordinates
         position_from_coordinates = position_from
         position_to_coordinates = position_to.value
 
-        #Add coordinates to origin point
+        # Add coordinates to origin point
         position_to_coordinates = add_lists(self.origin, position_to_coordinates)
         position_from_coordinates = add_lists(self.origin, position_from_coordinates)
 
-        #Starting Thread for head control
+        # Starting Thread for head control
         thread1 = threading.Thread(target=self.head_follows_arm)
         thread1.start()
 
-        #calculate coordinate above block 5 and block 1 (17cm from block 5 in y direction towards Reachy)
+        # calculate coordinate above block 5 and block 1 (17cm from block 5 in y direction towards Reachy)
         temp_waiting_point = add_lists(self.origin, Outside.BLOCK_5.value)
-        point_above_Block_5 = add_lists(temp_waiting_point, [0,0,0.2])
-        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17,0,0])
+        point_above_Block_5 = add_lists(temp_waiting_point, [0, 0, 0.2])
+        point_above_Block_1 = add_lists(point_above_Block_5, [-0.17, 0, 0])
 
-        #move arm to position above block 5 then above block 1
-        ## Commented assuming Arm already is above Block 5
-        #self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
+        # move arm to position above block 5 then above block 1
+        # Commented assuming Arm already is above Block 5
+        # self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
         self._move_arm(point_above_Block_1, rotation={'y': -90, 'x': 0, 'z': 0})
 
         # Add hand width
         # position_from_coordinates[1] += constants.DELTA_HAND_WIDTH
 
-        #Add safe height
+        # Add safe height
         position_from_coordinates[2] += 0.15
 
-        #Subtract constant distance (pull hand back)
+        # Subtract constant distance (pull hand back)
         position_from_coordinates[0] -= constants.DELTA_FRONT
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #lower hand 11cm
+        # lower hand 11cm
         position_from_coordinates[2] -= 0.11
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #open hand for taking block
-        self._grip_open()
-        #Add the constant distance (to the front)
+        # open hand for taking block
+        self.grip_open()
+        # Add the constant distance (to the front)
         position_from_coordinates[0] += constants.DELTA_FRONT
-        position_from_coordinates[0] += 0.02 #move 2 cm further to the front to have the block being safe within the hand
+        position_from_coordinates[
+            0] += 0.02  # move 2 cm further to the front to have the block being safe within the hand
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #Takes Block
-        self._grip_close()
+        # Takes Block
+        self.grip_close()
 
-        #raise hand 10cm
+        # raise hand 10cm
         position_from_coordinates[2] += 0.1
         self._move_arm(position_from_coordinates, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #beginning of pos_to
-        #Add safe height to pos_to coordinates and move to pos_to
+        # beginning of pos_to
+        # Add safe height to pos_to coordinates and move to pos_to
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        #Subtract safe height from pos_to
+        # Subtract safe height from pos_to
         position_to_coordinates[2] -= constants.DELTA_HEIGHT
         # tilt hand 70 degrees down to not touch other blocks
         self._move_arm(position_to_coordinates, rotation={'y': -70, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        #Open Grip to release block
-        self._grip_open()
+        # Open Grip to release block
+        self.grip_open()
 
-        #Add height
+        # Add height
         position_to_coordinates[2] += constants.DELTA_HEIGHT
         self._move_arm(position_to_coordinates, rotation={'y': -90, 'x': 0, 'z': self.mapper.get_hand_rotation(
             position_to)})
 
-        #Close grip and move back to waiting position above block 5
-        self._grip_close()
+        # Close grip and move back to waiting position above block 5
+        self.grip_close()
         self._move_arm(point_above_Block_5, rotation={'y': -90, 'x': 0, 'z': 0})
 
-        #move is finished, reachy looks down and turns off his head
+        # move is finished, reachy looks down and turns off his head
         self.move_finished = True
         self.move_head(constants.HEAD_LOOK_DOWN)
         self.reachy.turn_off_smoothly("head")
 
-
     def head_follows_arm(self):
         """
-        Head following the Hand Continiously until the Movement of a block is finished
-        v1 Has to be called as a thread **inside** `move_object()`.
-        The movement function needs to set the Variable `move_finished` to True
+        Der Kopf folgt der Hand fortlaufend, bis die Bewegung eines Blocks abgeschlossen ist.
+        Diese Funktion muss als Thread innerhalb der `move_object`-Methode aufgerufen werden.
+        Die `move_object`-Methode muss die Variable `move_finished` auf True setzen, um die Funktion zu beenden.
         """
         self.move_head()
         time.sleep(0.5)
         while True:
             self.move_head()
-            #time.sleep(0.5)
+            # time.sleep(0.5)
             if (self.move_finished):
                 sys.exit()
 
     def head_follows_arm_v2(self, thread_moving_object: Thread):
         """
-        Head following the Hand Continiously until the Movement of a block is finished
-        v2 Has to be called **beside** `move_object()` in a parallel thread.
-        Finishes when the thread_moving_object finishes
+        Der Kopf folgt der Hand fortlaufend, bis die Bewegung eines Blocks abgeschlossen ist.
+        Diese Funktion muss neben der `move_object`-Methode in einem parallelen Thread aufgerufen werden.
+        Beendet sich, wenn der Thread `thread_moving_object` beendet ist.
         """
         self.move_head()
         time.sleep(0.5)
@@ -216,8 +239,11 @@ class MoveImpl:
 
     def start_move_object_as_threads(self, pos_from: list, pos_to: Board):
         """
-        This function is an approach for Moving the head parallel to the arm
-        It currently also is the function utilizing the detection of unused Blocks.
+        Diese Funktion versucht, die Kopfbewegung parallel zur Armbewegung auszuführen.
+        Sie nutzt auch die Erkennung unbenutzter Blöcke.
+
+        :param pos_from: Die Ausgangsposition des Objekts.
+        :param pos_to: Die Zielposition des Objekts.
         """
         thread_moving_object = Thread(target=self.move_object, args=(pos_from, pos_to))
         thread_head_following_hand = Thread(target=self.head_follows_arm_v2, args=[thread_moving_object])
@@ -231,19 +257,16 @@ class MoveImpl:
 
     def detecting_nearest_block(self):
         """
-        Moves arm out of field of Vision
-        returns detected nearest unused piece
+        Bewegt den Arm außerhalb des Sichtfelds und erkennt den nächstgelegenen unbenutzten Block.
+
+        :return: Die erkannte Position des nächstgelegenen unbenutzten Blocks.
         """
-        self.set_arm_to_side_position() # Temporary Position to move Arm out of the view
+        self.set_arm_to_side_position()  # Temporary Position to move Arm out of the view
         while True:
             try:
                 pos_from = self.perception.get_nearest_unused_piece()  # returns list [x,y] coord
                 pos_from += [-0.05]  # Adds [z] coordinate; Value Adjusted to `Outside.py`
                 print("Detected nearest Block with Coordinate:", pos_from)
-                ## Adjustments
-                # pos_from[0] += 0.00
-                # pos_from[1] -= 0.02
-                #print("Adjusted Coordinate:", pos_from)
 
                 # Check if the return values are within the desired range
                 if -20 <= pos_from[0] <= 20 and -20 <= pos_from[1] <= 20:
@@ -253,17 +276,17 @@ class MoveImpl:
             except Exception as exeption:
                 print(exeption)
                 print("Could not detect an unused block")
-                #print("Uses Coordinates of Predefined Block 1 instead")
-                #pos_from = Outside.BLOCK_1.value
+                # pos_from = Outside.BLOCK_1.value
             print("Restarting Detection")
-        self.gotoposabove5() # Returns arm to a Position above Block 5
+        self.go_to_pos_above_5()  # Returns arm to a Position above Block 5
         return pos_from
-
 
     def _move_arm(self, pos_to: list, rotation: dict):
         """
-        Moving arm to Position
+        Bewegt den Arm in die angegebene Position.
 
+        :param pos_to: Die Zielposition des Arms.
+        :param rotation: Die Rotationswerte für den Arm.
         """
         target_kinematic = self.kinematic_model_helper.get_kinematic_move(pose=pos_to, rotation=rotation)
         joint_pos_A = self.reachy.r_arm.inverse_kinematics(target_kinematic)
@@ -273,16 +296,13 @@ class MoveImpl:
         self.POS_GRIPPER[self.reachy.r_arm.r_gripper] = force
         # print("current force:", self.POS_GRIPPER[self.reachy.r_arm.r_gripper])
 
-    def _grip_open(self):
-        """
-        opens grip completely
-        """
+    def grip_open(self):
         self._change_grip_force(constants.GRIPPER_OPEN_FULL)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
 
-    def _grip_close(self):
+    def grip_close(self):
         """
-        closes grip until is_holding is true
+        Schließt den Greifer, bis er etwas hält.
         """
         self._change_grip_force(constants.GRIPPER_CLOSED)
         goto(goal_positions=self.POS_GRIPPER, duration=1.0, interpolation_mode=InterpolationMode.MINIMUM_JERK)
@@ -300,63 +320,69 @@ class MoveImpl:
 
     def move_body(self, x, y):
         """
-        Moves the Reachy/Robot Body to given Coordinates
-        !Obstacles are ignored/Undefined
+        Bewegt den Körper des Reachy/Roboters zu den angegebenen Koordinaten.
+        ! Hindernisse werden ignoriert/undefiniert
 
+        :param x: X-Koordinate
+        :param y: Y-Koordinate
         """
         self.reachy.mobile_base.goto(x, y, theta=0)
 
     def turn_body(self, degree):
         """
-        Rotates the mobile base by a given angle (counterclockwise)
+        Dreht die mobile Basis um den angegebenen Winkel (gegen den Uhrzeigersinn).
 
-        :param degree: The angle to rotate
+        :param degree: Der zu drehende Winkel
         """
         self.reachy.mobile_base.goto(x=0.0, y=0.0, theta=degree)
 
     def calibrate(self):
+        """
+        Kalibriert den Ursprungspunkt des Reachy/Roboters und setzt den Ursprungspunkt auf den
+        unteren rechten Eckpunkt des Koordinatensystems.
+
+        """
         matrix = self.reachy.r_arm.forward_kinematics()
         x = round(matrix[0][3], 2)
         y = round(matrix[1][3], 2)
         z = -0.37
         res = [x, y, z]
         self.set_origin(res)
-        print("Calibration of bottem right corner: ",self.get_origin())
+        print("Calibration of bottem right corner: ", self.get_origin())
 
     def move_head(self, look_at=None):
         """
-        Moves reachy's head either by the given coordinates defined by look_at or
-        follows the right arm's coordinates with delay
+        Bewegt den Kopf des Reachy/Roboters entweder zu den angegebenen Koordinaten (definiert durch look_at) oder
+        folgt den Koordinaten des rechten Arms mit Verzögerung.
 
+        :param look_at: Die zu betrachtenden x-, y- und z-Koordinaten
         """
-        #self.reachy.turn_on("head")
-
         # Head follows arm
         if look_at is None:
             x, y, z = self.reachy.r_arm.forward_kinematics()[:3, -1]
             self.reachy.head.look_at(x=x, y=y, z=z - 0.05, duration=0.1)
-
-
-
         # Head looks at given x,y,z
         else:
             x, y, z = look_at
             self.reachy.head.look_at(x=x, y=y, z=z, duration=1.0)
 
-        #self.reachy.turn_off_smoothly("head")
+    def perform_animation(self, animation_type: Animation, use_sound: bool):
+        """
+        Führt die angegebene Animation auf dem Reachy/Roboter aus.
 
-    def perform_animation(self, animation_type: Animation):
+        :param animation_type: Der Typ der Animation
+        """
         match animation_type:
             case Animation.WIN:
-                animation_win(self.reachy)
+                animation_win(self.reachy, use_sound)
             case Animation.LOSE:
-                animation_lose(self.reachy)
+                animation_lose(self.reachy, use_sound)
             case Animation.ANGRY:
-                animation_angry(self.reachy)
+                animation_angry(self.reachy, use_sound)
             case Animation.THINKING:
-                animation_thinking(self.reachy)
+                animation_thinking(self.reachy, use_sound)
             case Animation.DISAPPROVAL:
-                animation_disapproval(self.reachy)
+                animation_disapproval(self.reachy, use_sound)
             case Animation.SAD_ANTENNAS:
                 animation_sad_antennas(self.reachy)
             case Animation.HAPPY_ANTENNAS:
@@ -370,19 +396,24 @@ class MoveImpl:
             case Animation.LEVEL3:
                 animation_level3(self.reachy)
             case Animation.TIE:
-                animation_tie(self.reachy)
+                animation_tie(self.reachy, use_sound)
             case Animation.START_REACHY:
-                animation_start_reachy(self.reachy)
+                animation_start_reachy(self.reachy, use_sound)
             case Animation.START_OPPONENT:
-                animation_start_opponent(self.reachy)
+                animation_start_opponent(self.reachy, use_sound)
             case Animation.FORWARD:
                 animation_forward(self.reachy)
             case Animation.CLUELESS:
-                animation_clueless(self.reachy)
+                animation_clueless(self.reachy, use_sound)
             case Animation.HAPPY:
                 animation_happy(self.reachy)
 
     def steal_object(self, block: Board):
+        """
+        Entfernt ein Objekt von einem Block und stiehlt es mit dem linken Arm.
+
+        :param block: Der zu stehlende Block
+        """
         self.reachy.turn_on('l_arm')
 
         self._move_l_arm([0.1, 0.4, 0.05])

@@ -5,11 +5,13 @@ class FaceRecognition:
         pass
 
     
-    def identify_human_player(self, reachy, move):
+    def do_identify_human_player(self, reachy, move):
+        # Identifies the human player at the start of the game
         face_encoding = recognition.identify_human_player(reachy, move)
         recognition.serialize_player_face(face_encoding)
     
-    def look_at_human_player(self, reachy, move):
+    def do_look_at_human_player(self, reachy, move):
+        # move head to look at the human player that was identified
         try:
             face_encoding = recognition.deserialize_player_face()
         except FileNotFoundError:
