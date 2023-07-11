@@ -14,7 +14,7 @@ Robot Ludens is a research project that aims to program the robot Reachy from Po
 - reachy-simulator-Version: `1.1`
 - grpc-Unity-package: the most recent one will work
 
-## How to execute Project
+## How to execute the Project
 
 We still recommend reading the comments in the main file first. If all dependencys are installed, navigate into this Project folder.
 Execute the `main.py` or the variations `main_real_reachy.py`, `main_simulation.py`
@@ -36,7 +36,7 @@ Assets
 |
 +--- ...
 |
-+--- Plugins  (grpc module)
++--- Plugins  (The grpc module)
 |
 +--- ReachySimulator 
 |
