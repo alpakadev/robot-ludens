@@ -1,22 +1,13 @@
-""" main.py
-This is the general main file. It is designed to work in the Simulation.
-    - Please read the Commments in the Main-file first 
-All Feature modes are at default. 
-    - No Calibration (Needed for the Real reachy)
+""" main_simulation.py
+This main file is designed to work in the Simulation.
+The activated extra Features are: 
+    + Voice lines are played (Works on MacOS/Linux, crashes on Windows!)
+    - No Calibration needed
     - No Face Recognition
     - No Outside Block Detection
-    - No Voice lines played (Works on MacOS/Linux not on Windows)
-Note:
-    1. The Simulation runs with reachy-SDK version 0.4.0.
-        - higher versions break the head movement 
-    2. When connecting remotely to the real Reachy: 
-        - required reachy-SDK 0.7.0
-    3. When running on reachy:
-        - Still Requires reachy-SDK 0.7.0
-        - Reachy is beeing shipped with reachy-sdk 0.5.4,  
-            which would break the head-movement
+Note: The Simulation runs with reachy-SDK version 0.4.0.
+    - higher versions break the head movement 
 """
-
 from reachy_sdk import ReachySDK
 from Movement.MoveFacade import MoveFacade
 from Perception.PerceptionFacade import PerceptionFacade
@@ -27,9 +18,12 @@ from Movement.Enums.Animation import Animation
 from Movement.Enums.Sentence import Sentence
 import time
 
-## Choose which connection address you want to use!
+
+
+
+
 reachy = ReachySDK("localhost")
-# reachy = ReachySDK("192.168.1.94") # , with_mobile_base = True)
+#reachy = ReachySDK("192.168.1.94") # with_mobile_base = True)
 
 move = MoveFacade()
 perc = PerceptionFacade()
@@ -53,7 +47,7 @@ move.do_deactivate_reachys_joints()
 # time.sleep(3)
 # Identify and save face of the person opposite of reachy
 #perc.identify_human_player()
-#perc.look_at_human_player() 
+#perc.look_at_human_player()
 # Every call of look_at_human_player will cause delay of at least 2 seconds
 
 ## To ensure a safe arm position without collision with the blocks

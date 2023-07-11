@@ -1,11 +1,11 @@
-""" main.py
-This is the general main file. It is designed to work in the Simulation.
+""" main_real_reachy.py
+This main file is designed to work with the real Reachy.
     - Please read the Commments in the Main-file first 
-All Feature modes are at default. 
-    - No Calibration (Needed for the Real reachy)
+The activated modes are:
+    + Calibration (Needed for the Real reachy)
+    + Voice lines are played (Works on MacOS/Linux, crashes on Windows!)
     - No Face Recognition
     - No Outside Block Detection
-    - No Voice lines played (Works on MacOS/Linux not on Windows)
 Note:
     1. The Simulation runs with reachy-SDK version 0.4.0.
         - higher versions break the head movement 
@@ -28,8 +28,8 @@ from Movement.Enums.Sentence import Sentence
 import time
 
 ## Choose which connection address you want to use!
-reachy = ReachySDK("localhost")
-# reachy = ReachySDK("192.168.1.94") # , with_mobile_base = True)
+# reachy = ReachySDK("localhost")
+reachy = ReachySDK("192.168.1.94") # , with_mobile_base = True)
 
 move = MoveFacade()
 perc = PerceptionFacade()
@@ -44,10 +44,10 @@ move.do_deactivate_reachys_joints()
 
 ## Calibration ##
 ## Calibrating real Reachy; Not needed in simulation
-## For Calibration: hold the middle of the right Hand
+## For Calibration: hold the middle of the right Hand of reachy
 ## on top of the bottem right corner of the board
-# move.do_calibration()
-# time.sleep(5) # Enough time, to move away after calibration
+move.do_calibration()
+time.sleep(5) # Enough time, to move away after calibration
 
 ## Face Recognition ##
 # time.sleep(3)
@@ -68,7 +68,7 @@ move.do_safe_arm_pos()
 ## Sounds ##
 ## Sounds will crash most of the time on Windows
 ## Should work on MacOS and linux (Ubuntu)
-# move.set_mode_to_playing_sounds()
+move.set_mode_to_playing_sounds()
 
 
 # Starting the Game
