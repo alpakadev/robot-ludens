@@ -200,6 +200,7 @@ class Game:
                 if wertNeu == 1:
                     print("Reachys Gewinn wurde ruiniert!")
                     # Audio für Spieler verhindert Sieg einfügen
+                    self.move.do_say(Sentence.WIN_RUINED)
                     return True
         #es wurde kein Gewinn verhindert
         return False
@@ -209,7 +210,6 @@ class Game:
         while not self.game_closed:
             counter = 0
             check_board_status = False
-            move.do_say(Sentence.NEXT_MOVE_HM)
             while counter <= 4:
                 time.sleep(3)
                 input = HI.make_user_move_unity(self.board, self.perc)
@@ -227,9 +227,12 @@ class Game:
                         self.check_state(self.move)
                     HI.print_board(self.board)
                     counter = 5
-                move.do_animation(Animation.CLUELESS)
+                    if not self.game_closed:
+                        # waiting
+                        move.do_say(Sentence.NEXT_MOVE_HM)
+                # move.do_animation(Animation.CLUELESS)
             if check_board_status == False:
-                move.do_animation(Animation.DISAPPROVAL)
+                move.do_say(Sentence.WAITING)
                 # print("reachy shakes head")
                 continue
         print("current score: Reachy ({}) : Player ({})".format(self.reachy_score, self.player_score))
