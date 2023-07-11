@@ -36,24 +36,24 @@ move.do_deactivate_reachys_joints()
 #perc.look_at_human_player() 
 # Every call of look_at_human_player will cause delay of at least 2 seconds
 
-# To ensure a safe arm position without collision with the blocks
+## To ensure a safe arm position without collision with the blocks
+## Always needed; Moves arm "above Block 5"
 move.do_safe_arm_pos()
 
 ## Block Detection ##
 ## Sets the mode to detecting unused blocks, instead of predefined marked positions
-## Does not work reliably in simulation
+## Does not work reliably in simulation, be cautious with real reachy
 # move.set_mode_to_detecting_blocks()
 
 ## Sounds ##
-## Sounds will crash most of the time on Windows and Linux
-## Should work on MacOS
-move.set_mode_to_playing_sounds()
+## Sounds will crash most of the time on Windows
+## Should work on MacOS and linux (Ubuntu)
+# move.set_mode_to_playing_sounds()
 
 
 # Starting the Game
 strat.start_game()
 
-# move.do_say(Sentence.JOKE)
 
 
 
