@@ -386,30 +386,27 @@ class MoveImpl:
         self._open_l_gripper()
         pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
         # print(pieces)
+        piece = None
+        offset_x = 0
+        offset_y = 0
         match block:
             case Board.BOTTOM_LEFT:
                 piece = pieces[6]
-                x = piece[0] / 100
-                y = piece[1] / 100
-                self._move_l_arm([-0.03, 0.4, 0])
-                self._move_l_arm([0, y, 0])
-                self._close_l_gripper()
-                self._move_l_arm([-0.03, 0.4, 0.05])
+                offset_x = -0.06
             case Board.CENTER_LEFT:
                 piece = pieces[3]
-                x = piece[1] / -100
-                y = piece[0] / -100
-                print("x:", x, "y:", y)
-                self._move_l_arm([x - 0.1, y + 0.05, 0])
-                self._move_l_arm([x - 0.06, y, 0])
-                self._close_l_gripper()
-                self._move_l_arm([x - 0.06, y, 0.09])
-                #  self._move_l_arm([0.1, 0.4, 0.05])
             case Board.TOP_LEFT:
-                self._move_l_arm([0.2, 0.4, 0])
-                self._move_l_arm([0.2, 0.27, 0])
-                self._close_l_gripper()
-                self._move_l_arm([0.2, 0.4, 0.05])
+                piece = pieces[0]
+                offset_y = -0.04
+
+
+        x = piece[1] / -100
+        y = piece[0] / -100
+        print("x:", x, "y:", y)
+        self._move_l_arm([x - 0.1, y + 0.05, 0])
+        self._move_l_arm([x - offset_x, y + offset_y, 0])
+        self._close_l_gripper()
+        self._move_l_arm([x - 0.06, y, 0.09])
 
         self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.1]))
         self._move_l_arm(constants.STEAL_PLACE, duration=0.5)
