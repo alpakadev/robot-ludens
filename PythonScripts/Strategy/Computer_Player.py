@@ -223,14 +223,14 @@ def scan_trap(state, move: MoveFacade):
                    board[feld[0]][feld[1]] = 0
                    print('Reachy schummelt')
                    move.do_say(Sentence.ILLEGALMOVE_RH)
-                   move.steal_block(board_positions[feld[0],feld[1]])
+                   move.steal_block(board_positions[(feld[0],feld[1])])
                    return True
                else:
                    move.do_say(Sentence.TRAP_RECOGNIZE)
                    return True
     return False
           
-          
+
 
 def corner_move():
     global chosen
