@@ -223,7 +223,7 @@ def scan_trap(state, move: MoveFacade):
                    board[feld[0]][feld[1]] = 0
                    print('Reachy schummelt')
                    move.do_say(Sentence.ILLEGALMOVE_RH)
-                   # Schummelbewegung aufrufen (feld[0],feld[1])
+                   move.steal_block(feld[0],feld[1])
                    return True
                else:
                    move.do_say(Sentence.TRAP_RECOGNIZE)
