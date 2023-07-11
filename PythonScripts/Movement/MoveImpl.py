@@ -441,7 +441,3 @@ class MoveImpl:
 
     def _open_l_gripper(self):
         goto({self.reachy.l_arm.l_gripper: constants.L_GRIPPER_OPEN}, duration=1)
-
-
-def all_90_rots():
-    return list(dict.fromkeys(permutations([90, 90, 90, -90, -90, -90, 0, 0, 0], 3)))
