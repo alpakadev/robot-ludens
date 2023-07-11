@@ -1,14 +1,10 @@
 import time
-import random
 
-from ..constants import THINKING
-from .Player import play_sound
-from ..Helper.Safely import safely_run
 from reachy_sdk.trajectory import goto
 from reachy_sdk.trajectory.interpolation import InterpolationMode
 
 
-def animation_clueless(reachy, use_sound):
+def animation_clueless(reachy):
     """
     head tilted left to right with leaning antennas in same direction
     
@@ -21,8 +17,6 @@ def animation_clueless(reachy, use_sound):
     reachy.head.r_antenna.goal_position = 50.0
     time.sleep(1.0)
 
-    safely_run(play_sound(random.choice(THINKING), False),
-               "[Anim Clueless] Sound konnte nicht abgespielt werden") if use_sound else None
 
     for _ in range(2):
         head_tilt_l = {

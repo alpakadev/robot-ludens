@@ -7,6 +7,7 @@ def get_nearest_unused_piece(frame, board_corners):
     image = frame.copy()
 
     reference_image_points = board_corners
+    print(reference_image_points)
     reference_real_points = [[36.4, 0], [0, 0], [0, 36.4], [36.4, 36.6]]
 
     # Convert the reference image points to integer tuples
@@ -23,13 +24,13 @@ def get_nearest_unused_piece(frame, board_corners):
     roi_x_min = 0
     roi_x_max = image.shape[1]
     roi_y_min = 220
-    roi_y_max = 560
+    roi_y_max = 600
 
     # Crop the image to the ROI, exclude everythin but the table
     roi_image = image[roi_y_min:roi_y_max, roi_x_min:roi_x_max]
 
     lower_green = np.array([0, 100, 0], dtype=np.uint8)
-    upper_green = np.array([120, 255, 100], dtype=np.uint8)
+    upper_green = np.array([130, 255, 100], dtype=np.uint8)
 
     # lower_green = np.array([35, 50, 50], dtype=np.uint8)
     # upper_green = np.array([90, 255, 255], dtype=np.uint8)
@@ -102,16 +103,17 @@ def get_nearest_unused_piece(frame, board_corners):
             # and the transformed unknown point
             distance = np.linalg.norm(
                 transformed_unknown_point 
-                - transformed_points[3]
+                - transformed_points[2]
             )
 
             # Calculate the distance along the x-axis
             x_distance = (transformed_unknown_point[0, 0] 
-                          - transformed_points[3, 0])
+                          - transformed_points[2, 0])
 
             # Calculate the distance along the y-axis
             y_distance = (transformed_unknown_point[0, 1] 
-                          - transformed_points[3, 1])
+                          - transformed_points[2, 1])
+            print(distance)
             print(x_distance)
             print(y_distance)
             return [float(-1 * y_distance / 100), float(-1 * x_distance / 100)]

@@ -35,13 +35,11 @@ ARM_SPEED_FACTOR = 1.6
 
 #sounds
 
-ANGRY_SOUND = ["PythonScripts/Movement/Sounds/angry/angr1.wav", "PythonScripts/Movement/Sounds/angry/angr1.wav"] 
+ANGRY_SOUND = ["PythonScripts/Movement/Sounds/angry/angr1.wav", "PythonScripts/Movement/Sounds/angry/angry2.wav"] 
 
 CHANCE_WIN_HUMAN = ["PythonScripts/Movement/Sounds/chance_human/chance_hm1.wav", "PythonScripts/Movement/Sounds/chance_human/chance_hm2.wav"]
 
 CHANCE_WIN_REACHY = ["PythonScripts/Movement/Sounds/chance_reachy/chance_rh1.wav", "PythonScripts/Movement/Sounds/chance_reachy/chance_rh2.wav", "PythonScripts/Movement/Sounds/chance_reachy/chance_rh3.wav"]
-
-BEFORE_THINKING = ["PythonScripts/Movement/Sounds/before_thinking/before_thinking1.wav", "PythonScripts/Movement/Sounds/before_thinking/before_thinking2.wav"]
 
 DETECT_TIE = ["PythonScripts/Movement/Sounds/detect_tie/detect_tie1.wav", "PythonScripts/Movement/Sounds/detect_tie/detect_tie2.wav",
                "PythonScripts/Movement/Sounds/detect_tie/detect_tie3.wav", "PythonScripts/Movement/Sounds/detect_tie/detect_tie4.wav", "PythonScripts/Movement/Sounds/detect_tie/detect_tie5.wav"]
@@ -66,7 +64,7 @@ NEXT_MOVE_HUMAN = ["PythonScripts/Movement/Sounds/next_move_human/dein_zug.wav",
 
 NEXT_MOVE_REACHY = ["PythonScripts/Movement/Sounds/next_move_reachy/hier_komme_ich.wav", "PythonScripts/Movement/Sounds/next_move_reachy/jetzt_bin_ich_dran.wav", "PythonScripts/Movement/Sounds/next_move_reachy/lass_mich_zeigen.wav", "PythonScripts/Movement/Sounds/next_move_reachy/mit_diesem_zug.wav", "PythonScripts/Movement/Sounds/next_move_reachy/pläne_durchkreuzen.wav", "PythonScripts/Movement/Sounds/next_move_reachy/überraschen.wav"]
 
-THINKING = ["PythonScripts/Movement/Sounds/thinking/was_ist_nächster_zug.wav", "PythonScripts/Movement/Sounds/thinking/was_mache_ich_jz.wav"]
+THINKING = ["PythonScripts/Movement/Sounds/thinking/was_ist_nächster_zug.wav", "PythonScripts/Movement/Sounds/thinking/was_mache_ich_jz.wav", "PythonScripts/Movement/Sounds/before_thinking/before_thinking1.wav", "PythonScripts/Movement/Sounds/before_thinking/before_thinking2.wav"]
 
 TIE = ["PythonScripts/Movement/Sounds/tie/auf_augenhöhe.wav", "PythonScripts/Movement/Sounds/tie/bestes_gegeben.wav", "PythonScripts/Movement/Sounds/tie/es_ist_unentschieden.wav", "PythonScripts/Movement/Sounds/tie/würdiger_gegner.wav"]
 

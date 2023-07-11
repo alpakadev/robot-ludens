@@ -109,12 +109,9 @@ def make_combo_move(n, p, move : MoveFacade):
     # prüfe, ob eine Kombination passt
     for combo in range(len(wincombinations)):
         if combovalue(combo) == n:
-            # setze auf das freie Feld in der Kombination
-            if n == -2:
-                move.do_say(Sentence.CHANCE_HM)
-                #move.do_say(Sentence.WIN_PREVENT)
-            elif n == 2:
+            if n == 2:
                 move.do_say(Sentence.CHANCE_RH)
+            # setze auf das freie Feld in der Kombination
             for i in range(3):
                 if board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] == 0:
                     board[wincombinations[combo][i][0]][wincombinations[combo][i][1]] = 1
@@ -223,13 +220,17 @@ def scan_trap(state, move: MoveFacade):
                print("fallensteller ", feld)
                # Bewegung nur ausführen, wenn in range vom linken Arm (linke Spalte)
                if feld[1] == 0:
-                board[feld[0]][feld[1]] = 0
-                print('Reachy schummelt')
-                move.do_say(Sentence.TRAP_RECOGNIZE)
-                # Schummelbewegung aufrufen (feld[0],feld[1])
-               return True
+                   board[feld[0]][feld[1]] = 0
+                   print('Reachy schummelt')
+                   move.do_say(Sentence.ILLEGALMOVE_RH)
+                   move.steal_block(board_positions[(feld[0],feld[1])])
+                   return True
+               else:
+                   move.do_say(Sentence.TRAP_RECOGNIZE)
+                   return True
     return False
           
+
 
 def corner_move():
     global chosen

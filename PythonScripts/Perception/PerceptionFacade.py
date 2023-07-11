@@ -28,7 +28,7 @@ class PerceptionFacade:
     def get_already_placed_pieces_coordinates(self):
         #Returns the midpoint coordinates of every token within the gameboard
         return self.perception_implementation \
-                   .get_already_placed_pieces_coordinates()
+                   .get_already_placed_pieces_coordinates(self.move)
 
     def set_dependencies(self, reachy, move, strat):
         self.reachy = reachy
