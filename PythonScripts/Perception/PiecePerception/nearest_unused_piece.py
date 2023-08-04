@@ -103,16 +103,16 @@ def get_nearest_unused_piece(frame, board_corners):
             # and the transformed unknown point
             distance = np.linalg.norm(
                 transformed_unknown_point 
-                - transformed_points[2]
+                - transformed_points[3]
             )
 
             # Calculate the distance along the x-axis
             x_distance = (transformed_unknown_point[0, 0] 
-                          - transformed_points[2, 0])
+                          - transformed_points[3, 0])
 
             # Calculate the distance along the y-axis
             y_distance = (transformed_unknown_point[0, 1] 
-                          - transformed_points[2, 1])
+                          - transformed_points[3, 1])
             print(distance)
             print(x_distance)
             print(y_distance)
