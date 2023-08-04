@@ -40,7 +40,7 @@ move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
 # If the the joints of reachy gets stuck, call this function
-move.do_deactivate_reachys_joints()
+# move.do_deactivate_reachys_joints()
 
 ## Calibration ##
 ## Calibrating real Reachy; Not needed in simulation
@@ -48,6 +48,8 @@ move.do_deactivate_reachys_joints()
 ## on top of the bottem right corner of the board
 move.do_calibration()
 time.sleep(5)  # Enough time, to move away after calibration
+# Can utilize calibration coordinates from before
+# move.do_set_origin([0.16, -0.25, -0.37])
 
 ## Face Recognition ##
 # time.sleep(3)
@@ -63,12 +65,12 @@ move.do_safe_arm_pos()
 ## Block Detection ##
 ## Sets the mode to detecting unused blocks, instead of predefined marked positions
 ## Does not work reliably in simulation, be cautious with real reachy
-# move.set_mode_to_detecting_blocks()
+move.set_mode_to_detecting_blocks()
 
 ## Sounds ##
 ## Sounds will crash most of the time on Windows
 ## Should work on MacOS and linux (Ubuntu)
-move.set_mode_to_playing_sounds()
+# move.set_mode_to_playing_sounds()
 
 
 # Starting the Game
