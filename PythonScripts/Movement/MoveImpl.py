@@ -305,7 +305,7 @@ class MoveImpl:
                 # print("Adjusted Coordinate:", pos_from)
 
                 # Check if the return values are within the desired range
-                if -35 <= pos_from[0] <= 35 and -35 <= pos_from[1] <= 35:
+                if 0 <= pos_from[0] <= 0.25 and -0.35 <= pos_from[1] <= 0:
                     break
                 else:
                     print("The detected Coordinate are outside of desired range")
