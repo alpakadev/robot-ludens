@@ -95,6 +95,12 @@ class MoveFacade:
         mithilfe der Vorwärtskinematik des rechten Arms.
         """
         self.move.calibrate()
+    
+    def do_set_origin(self, coordinate):
+        """
+        Sets the desired Coordinates of the origin point
+        """
+        self.move.set_origin(coordinate)
 
     def do_right_angled_position(self):
         self.move.set_arm_to_right_angle_position()
