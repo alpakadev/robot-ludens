@@ -30,7 +30,7 @@ move.set_dependencies(reachy, perc, strat)
 strat.set_dependencies(move, perc)
 
 # If the the joints of reachy gets stuck, call this function
-move.do_deactivate_reachys_joints()
+# move.do_deactivate_reachys_joints()
 
 ## Calibration ##
 ## Calibrating real Reachy; Not needed in simulation
@@ -45,10 +45,6 @@ move.do_deactivate_reachys_joints()
 # perc.identify_human_player()
 # perc.look_at_human_player()
 # Every call of look_at_human_player will cause delay of at least 2 seconds
-
-## To ensure a safe arm position without collision with the blocks
-## Always needed; Moves arm "above Block 5"
-move.do_safe_arm_pos()
 
 ## Block Detection ##
 ## Sets the mode to detecting unused blocks, instead of predefined marked positions

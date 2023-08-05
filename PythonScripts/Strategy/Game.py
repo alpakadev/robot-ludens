@@ -282,6 +282,7 @@ class Game:
         h = True
         exit_game = "1"
         while exit_game == "1":
+            self.move.do_safe_arm_pos()
             self.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
             self.game_closed = False
             self.reachy_moveCounter = 0
