@@ -51,6 +51,6 @@ def animation_clueless(reachy):
     reachy.head.look_at(0.5, 0, 0, 1)
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    time.sleep(1)
+    # time.sleep(1)
 
     reachy.turn_off_smoothly("head")

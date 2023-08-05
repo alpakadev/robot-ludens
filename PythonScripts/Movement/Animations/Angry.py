@@ -99,6 +99,6 @@ def animation_angry(reachy, use_sound):
 
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    time.sleep(1)
+    # time.sleep(1)
 
     reachy.turn_off_smoothly("head")

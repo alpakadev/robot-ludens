@@ -96,5 +96,5 @@ def animation_thinking(reachy, use_sound):
     reachy.head.r_antenna.goal_position = 0.0
 
     reachy.turn_off_smoothly("l_arm")
-    time.sleep(1.0)
+    # time.sleep(1.0)
     reachy.turn_off_smoothly("head")

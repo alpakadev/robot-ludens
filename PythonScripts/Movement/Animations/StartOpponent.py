@@ -113,7 +113,7 @@ def animation_start_opponent(reachy, use_sound):
         reachy.head.l_antenna.goal_position = 30.0
         reachy.head.r_antenna.goal_position = -40.0
 
-    time.sleep(2.0)
+    time.sleep(1.0)
     l_arm_base = {
         reachy.l_arm.l_shoulder_pitch: -25,
         reachy.l_arm.l_shoulder_roll: 0,  # moves left to right
@@ -135,6 +135,6 @@ def animation_start_opponent(reachy, use_sound):
     reachy.head.r_antenna.goal_position = 0.0
     reachy.head.look_at(0.5, 0, 0, 1)
     reachy.turn_off_smoothly("l_arm")
-    time.sleep(1)
+    # time.sleep(1)
 
     reachy.turn_off_smoothly("head")

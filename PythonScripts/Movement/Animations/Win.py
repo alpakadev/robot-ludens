@@ -132,7 +132,7 @@ def animation_win(reachy, use_sound):
     reachy.head.look_at(0.5, -0, 0, duration=0.5)
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
-    time.sleep(1)
+    # time.sleep(1)
 
     reachy.turn_off_smoothly("l_arm")
     reachy.turn_off_smoothly("r_arm")

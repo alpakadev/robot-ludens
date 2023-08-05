@@ -58,6 +58,6 @@ def animation_disapproval(reachy, use_sound):
     reachy.head.l_antenna.goal_position = 0.0
     reachy.head.r_antenna.goal_position = 0.0
     reachy.head.look_at(0.5, 0, 0, duration=0.5)
-    time.sleep(1)
+    # time.sleep(1)
 
     reachy.turn_off_smoothly("head")

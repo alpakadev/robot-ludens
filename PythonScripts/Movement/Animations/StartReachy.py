@@ -143,6 +143,6 @@ def animation_start_reachy(reachy, use_sound):
     reachy.head.r_antenna.goal_position = 0.0
     reachy.head.look_at(0.5, 0, 0, 1)
     reachy.turn_off_smoothly("l_arm")
-    time.sleep(1)
+    # time.sleep(1)
 
     reachy.turn_off_smoothly("head")
