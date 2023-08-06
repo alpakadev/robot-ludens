@@ -61,7 +61,7 @@ def get_stable_image(reachy, config):
                     movement = False
         else:
             prev_frame = frame.copy()
-            time.sleep(config["time_between_images"])
+            # time.sleep(config["time_between_images"])
             frame = camera.last_frame
 
     return frame
