@@ -369,8 +369,8 @@ class MoveImpl:
         # ERROR: force sensors gives too high values (> 10000); but code is equal to official
         # reachy documentation
         if (
-                self.reachy.force_sensors.r_force_gripper.force
-                > constants.GRIP_FORCE_HOLDING
+            self.reachy.force_sensors.r_force_gripper.force
+            > constants.GRIP_FORCE_HOLDING
         ):
             # TODO: Warning when to much Force is applied
             return True
@@ -505,8 +505,7 @@ class MoveImpl:
         self._move_l_arm(constants.STEAL_PLACE)
         self._open_l_gripper()
         self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]))
-        self._move_l_arm(
-            add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]))
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]))
         self._move_l_arm([-0.03, 0.45, 0.02])
 
     def _move_l_arm(self, pos, rot=None):
