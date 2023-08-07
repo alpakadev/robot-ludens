@@ -474,17 +474,17 @@ class MoveImpl:
         """
         self.reachy.turn_on("l_arm")
 
+        pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
+
         self._move_l_arm([0.1, 0.4, 0.05])
         self._open_l_gripper()
-        pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
-        # print(pieces)
         piece = None
         offset_x = 0
         offset_y = 0
+
         match block:
             case Board.BOTTOM_LEFT:
                 piece = pieces[6]
-                offset_x = -0.06
             case Board.CENTER_LEFT:
                 piece = pieces[3]
             case Board.TOP_LEFT:
@@ -493,9 +493,11 @@ class MoveImpl:
 
         x = piece[1] / -100
         y = piece[0] / -100
-        print("x:", x, "y:", y)
-        self._move_l_arm([x - 0.1, y + 0.05, 0])
-        self._move_l_arm([x - offset_x, y + offset_y, 0])
+
+        print("x: ", x, "y: ", y)
+
+        self._move_l_arm([x - 0.12, y, 0.02])
+        self._move_l_arm([x - 0.12, y - 0.05, -0.02])
         self._close_l_gripper()
         self._move_l_arm([x - 0.06, y, 0.09])
 
@@ -515,7 +517,7 @@ class MoveImpl:
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
         goto(
             {joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)},
-            self.calculate_l_arm_dynamic_duration(self, m_pos) + 0.5,
+            self.calculate_l_arm_dynamic_duration(pos),
         )
 
     def _close_l_gripper(self):
