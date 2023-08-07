@@ -474,17 +474,17 @@ class MoveImpl:
         """
         self.reachy.turn_on("l_arm")
 
+        pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
+
         self._move_l_arm([0.1, 0.4, 0.05])
         self._open_l_gripper()
-        pieces, g_pieces = self.perception.get_already_placed_pieces_coordinates()
-        # print(pieces)
         piece = None
         offset_x = 0
         offset_y = 0
+
         match block:
             case Board.BOTTOM_LEFT:
                 piece = pieces[6]
-                offset_x = -0.06
             case Board.CENTER_LEFT:
                 piece = pieces[3]
             case Board.TOP_LEFT:
@@ -493,32 +493,30 @@ class MoveImpl:
 
         x = piece[1] / -100
         y = piece[0] / -100
-        print("x:", x, "y:", y)
-        self._move_l_arm([x - 0.1, y + 0.05, 0])
-        self._move_l_arm([x - offset_x, y + offset_y, 0])
+
+        print("x: ", x, "y: ", y)
+
+        self._move_l_arm([x - 0.12, y, 0.02])
+        self._move_l_arm([x - 0.12, y - 0.05, -0.02])
         self._close_l_gripper()
         self._move_l_arm([x - 0.06, y, 0.09])
 
         self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.1]))
-        self._move_l_arm(constants.STEAL_PLACE, duration=0.5)
+        self._move_l_arm(constants.STEAL_PLACE)
         self._open_l_gripper()
-        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]), duration=0.75)
-        self._move_l_arm(
-            add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]), duration=0.75
-        )
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [0, 0, 0.05]))
+        self._move_l_arm(add_lists(constants.STEAL_PLACE, [-0.04, 0, 0.04]))
         self._move_l_arm([-0.03, 0.45, 0.02])
 
-    def _move_l_arm(self, pos, rot=None, duration=None):
+    def _move_l_arm(self, pos, rot=None):
         if rot is None:
             rot = {"x": 0, "y": -90, "z": -90}
-        if duration is None:
-            duration = 1.5
         pos = add_lists(pos, self.get_origin())
         m_target_kinematic = self.kinematic_model_helper.get_kinematic_move(pos, rot)
         m_pos = self.reachy.l_arm.inverse_kinematics(m_target_kinematic)
         goto(
             {joint: p for joint, p in zip(self.reachy.l_arm.joints.values(), m_pos)},
-            duration,
+            self.calculate_l_arm_dynamic_duration(pos),
         )
 
     def _close_l_gripper(self):
@@ -529,6 +527,16 @@ class MoveImpl:
 
     def calculate_dynamic_duration(self, pos_to):
         matrix = self.reachy.r_arm.forward_kinematics()
+        x = round(matrix[0][3], 2)
+        y = round(matrix[1][3], 2)
+        z = -0.37
+        pos_from = add_lists([x, y, z], self.get_origin())
+        res = sub_lists(pos_to, pos_from)
+        distance = sqrt(pow(res[0], 2) + pow(res[1], 2) + pow(res[2], 2))
+        return distance * constants.ARM_SPEED_FACTOR
+
+    def calculate_l_arm_dynamic_duration(self, pos_to):
+        matrix = self.reachy.l_arm.forward_kinematics()
         x = round(matrix[0][3], 2)
         y = round(matrix[1][3], 2)
         z = -0.37
